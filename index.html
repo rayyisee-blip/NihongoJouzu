@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日々の学習 — Nihongo Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Firebase (email/password login + cross-device sync). Inert until FIREBASE_CONFIG
+     below is filled in with your own project's keys — see the setup guide. -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<style>
+  :root{
+    --paper:#F6F1E4;
+    --paper-2:#EFE7D3;
+    --ink:#262220;
+    --ink-soft:#5b544c;
+    --indigo:#223A5E;
+    --indigo-2:#3C5A82;
+    --vermillion:#BF3B30;
+    --vermillion-soft:#e2b3ac;
+    --gold:#C99A3B;
+    --line:#DCD3BE;
+    --success:#5C7A5A;
+    --success-soft:#e1e9df;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:22px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:32px;
+    margin:0;
+    line-height:1.1;
+    letter-spacing:.02em;
+  }
+  h1 small{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-soft);
+    letter-spacing:.08em;
+    margin-top:5px;
+  }
+  .streak-badge{
+    font-family:'JetBrains Mono',monospace;
+    text-align:right;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .streak-badge b{
+    display:block;
+    font-family:'Shippori Mincho', serif;
+    font-size:26px;
+    color:var(--vermillion);
+    line-height:1;
+  }
+
+  /* ---------- Account / sync bar ---------- */
+  .authbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 12px;
+    margin-bottom:18px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.03em;
+  }
+  .authbar b{color:var(--indigo); font-weight:600;}
+  .authbar button.linklike{
+    background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.05em;
+    color:var(--vermillion); text-decoration:underline;
+    padding:0;
+  }
+  .authcard{margin-bottom:20px;}
+  .authtabs{display:flex; gap:16px; margin-bottom:16px; border-bottom:1px solid var(--line);}
+  .authtabs button{
+    background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    padding:8px 2px; color:var(--ink-soft); border-bottom:2px solid transparent;
+  }
+  .authtabs button.active{color:var(--ink); border-bottom-color:var(--vermillion); font-weight:600;}
+  .authfield{margin-bottom:12px;}
+  .authfield label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:5px; letter-spacing:.05em;}
+  .authfield input{
+    width:100%; font-family:'Zen Kaku Gothic New',sans-serif; font-size:15px;
+    border:1.5px solid var(--ink); background:var(--paper); padding:10px 12px;
+  }
+  .autherror{color:var(--vermillion); font-size:13px; margin:10px 0 0;}
+  .authnote{color:var(--ink-soft); font-size:12px; margin-top:12px;}
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    display:flex;
+    gap:2px;
+    margin-bottom:24px;
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:none;
+    border:none;
+    padding:10px 4px;
+    margin-right:22px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:color .15s;
+  }
+  nav.tabs button.active{
+    color:var(--ink);
+    border-bottom-color:var(--vermillion);
+    font-weight:600;
+  }
+  nav.tabs button:hover{color:var(--ink);}
+
+  /* ---------- Cards ---------- */
+  .card{
+    background:var(--paper);
+    border:1.5px solid var(--ink);
+    padding:24px;
+    margin-bottom:20px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .card-inner{position:relative;}
+
+  .section-title{
+    font-family:'Shippori Mincho', serif;
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 6px;
+  }
+  .muted{color:var(--ink-soft); font-size:14px;}
+
+  /* ---------- Stamp card (signature element) ---------- */
+  .stampcard{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:18px 0 6px;
+  }
+  .stamp{
+    width:40px;height:40px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Shippori Mincho', serif;
+    font-size:11px;
+    font-weight:800;
+    flex-shrink:0;
+  }
+  .stamp.filled{
+    border:2.5px solid var(--vermillion);
+    color:var(--vermillion);
+    transform:rotate(-6deg);
+    box-shadow:inset 0 0 0 2px rgba(191,59,48,.08);
+    animation:stampland .35s ease-out;
+  }
+  .stamp.empty{
+    border:1.5px dashed var(--line);
+    color:var(--line);
+  }
+  @keyframes stampland{
+    0%{transform:rotate(-6deg) scale(1.9); opacity:0;}
+    60%{transform:rotate(-6deg) scale(0.92); opacity:1;}
+    100%{transform:rotate(-6deg) scale(1);}
+  }
+
+  /* ---------- Buttons ---------- */
+  button.primary{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:.06em;
+    background:var(--indigo);
+    color:var(--paper);
+    border:none;
+    padding:13px 22px;
+    cursor:pointer;
+    text-transform:uppercase;
+    transition:background .15s;
+  }
+  button.primary:hover{background:var(--indigo-2);}
+  button.ghost{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:none;
+    border:1.5px solid var(--ink);
+    color:var(--ink);
+    padding:10px 16px;
+    cursor:pointer;
+    letter-spacing:.05em;
+  }
+  button.ghost:hover{background:var(--ink); color:var(--paper);}
+  button:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* ---------- Progress dots ---------- */
+  .dots{display:flex; gap:6px; margin:14px 0;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line);}
+  .dot.done{background:var(--indigo);}
+  .dot.wrong{background:var(--vermillion);}
+
+  /* ---------- Question ---------- */
+  .qmeta{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .qprompt{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 20px;
+    line-height:1.5;
+  }
+  .choices{display:flex; flex-direction:column; gap:10px;}
+  .choice{
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:16px;
+    background:var(--paper);
+    border:1.5px solid var(--ink);
+    padding:13px 16px;
+    cursor:pointer;
+    transition:.12s;
+  }
+  .choice:hover{background:var(--paper-2);}
+  .choice.correct{
+    background:var(--success-soft);
+    border-color:var(--success);
+    color:var(--success);
+    font-weight:700;
+  }
+  .choice.incorrect{
+    background:#f3dcd9;
+    border-color:var(--vermillion);
+    color:var(--vermillion);
+    font-weight:700;
+  }
+  .choice[disabled]{cursor:default;}
+  .feedback-note{
+    margin-top:16px;
+    padding:12px 14px;
+    background:var(--paper-2);
+    border-left:3px solid var(--gold);
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .nextbar{margin-top:20px; display:flex; justify-content:flex-end;}
+
+  /* ---------- Lessons list ---------- */
+  .lesson-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 4px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .lesson-row:last-child{border-bottom:none;}
+  .lesson-num{
+    font-family:'Shippori Mincho',serif;
+    font-size:22px;
+    font-weight:800;
+    width:34px;
+    color:var(--ink-soft);
+  }
+  .lesson-row.unlocked .lesson-num{color:var(--indigo);}
+  .lesson-row.done .lesson-num{color:var(--vermillion);}
+  .lesson-title{flex:1;}
+  .lesson-title b{display:block; font-size:15px;}
+  .lesson-title span{font-size:12px; color:var(--ink-soft);}
+  .lesson-status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    padding:4px 8px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+  }
+  .lesson-status.avail{border-color:var(--indigo); color:var(--indigo);}
+  .lesson-status.done{border-color:var(--vermillion); color:var(--vermillion);}
+
+  /* ---------- Capstone ---------- */
+  .en-sentence{
+    font-family:'Shippori Mincho', serif;
+    font-style:italic;
+    font-size:19px;
+    margin:0 0 14px;
+    line-height:1.5;
+  }
+  textarea{
+    width:100%;
+    min-height:80px;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:18px;
+    border:1.5px solid var(--ink);
+    background:var(--paper);
+    padding:12px;
+    resize:vertical;
+  }
+  .model-answer{
+    margin-top:16px;
+    padding:16px;
+    background:var(--paper-2);
+    border-left:3px solid var(--indigo);
+  }
+  .model-answer .jp{font-size:20px; font-weight:700; margin-bottom:6px;}
+  .model-answer .note{font-size:13px; color:var(--ink-soft);}
+  .selfgrade{display:flex; gap:10px; margin-top:16px;}
+
+  /* ---------- Stats ---------- */
+  .statgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+  .statbox{border:1px solid var(--line); padding:14px;}
+  .statbox .num{font-family:'Shippori Mincho',serif; font-size:28px; font-weight:800; color:var(--indigo);}
+  .statbox .lbl{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.06em;}
+  .barrow{display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:13px;}
+  .barrow .lname{width:80px; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px;}
+  .barwrap{flex:1; height:8px; background:var(--paper-2); border:1px solid var(--line);}
+  .barfill{height:100%; background:var(--indigo);}
+
+  .empty-state{text-align:center; padding:40px 20px; color:var(--ink-soft);}
+  .empty-state .glyph{font-family:'Shippori Mincho',serif; font-size:40px; color:var(--vermillion); margin-bottom:10px;}
+
+  /* ---------- Grammar tab ---------- */
+  .gstruct{border-bottom:1px solid var(--line); padding:14px 0;}
+  .gstruct:last-child{border-bottom:none;}
+  .gstruct-title{font-family:'Shippori Mincho',serif; font-weight:700; font-size:16px;}
+  .gexample{background:var(--paper-2); border-left:3px solid var(--indigo); padding:10px 12px; margin-top:8px;}
+  .gexample-jp{font-size:16px; font-weight:600; margin-bottom:3px;}
+  .gexample-en{font-size:13px; color:var(--ink-soft); font-style:italic;}
+  .gexample-note{font-size:12px; color:var(--ink-soft); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px;}
+  .particle-list{margin-top:6px;}
+  .particle-row{border-bottom:1px solid var(--line);}
+  .particle-row:last-child{border-bottom:none;}
+  .particle-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:none;
+    border:none;
+    padding:14px 4px;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+  }
+  .particle-char{
+    font-family:'Shippori Mincho',serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--indigo);
+    width:38px;
+    flex-shrink:0;
+  }
+  .particle-role{flex:1; font-size:14px;}
+  .particle-level{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--vermillion);
+    border:1px solid var(--vermillion-soft);
+    padding:2px 6px;
+    flex-shrink:0;
+  }
+  .particle-caret{
+    font-family:'JetBrains Mono',monospace;
+    font-size:16px;
+    color:var(--ink-soft);
+    width:16px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .particle-body{padding:0 4px 16px;}
+  .gpattern{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:var(--paper-2);
+    border:1px dashed var(--line);
+    padding:8px 10px;
+    margin-bottom:10px;
+    color:var(--indigo-2);
+  }
+
+  footer{text-align:center; margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:.05em;}
+
+  @media (max-width:480px){
+    h1{font-size:26px;}
+    .qprompt{font-size:19px;}
+    .statgrid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Minna no Nihongo I &middot; Daily Practice</div>
+      <h1>日々の学習<span style="font-size:14px; font-weight:500; color:var(--ink-soft); margin-left:6px;">（ひびのがくしゅう）</span><small>NIHONGO DAILY</small></h1>
+    </div>
+    <div class="streak-badge">STREAK<b id="streakNum">0</b>days</div>
+  </header>
+
+  <div id="authBar"></div>
+
+  <nav class="tabs">
+    <button data-tab="today" class="active">Today</button>
+    <button data-tab="lessons">Lessons</button>
+    <button data-tab="grammar">Grammar</button>
+    <button data-tab="stats">Stats</button>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer id="storageFooter">ONE PAGE, YOUR STORY 訳 &middot; CHECKING STORAGE&hellip;</footer>
+</div>
+
+<script>
+/* ============================================================
+   SAFETY NET — if anything anywhere throws an uncaught error before
+   the app finishes loading, show a visible message instead of a
+   silent blank page.
+   ============================================================ */
+window.addEventListener('error', function(ev){
+  const mainEl = document.getElementById('main');
+  if(mainEl && !mainEl.dataset.loaded){
+    mainEl.innerHTML = `
+      <div style="border:1.5px solid #BF3B30; padding:20px; font-family:sans-serif;">
+        <strong>The app hit an error while loading:</strong>
+        <p style="margin:10px 0; color:#5b544c;">${ev.message || 'Unknown error'}</p>
+        <p style="margin:0; color:#5b544c; font-size:13px;">Open your browser's console (F12 → Console tab) for the full details, or check the FIREBASE_CONFIG values against the setup guide.</p>
+      </div>
+    `;
+  }
+});
+
+/* ============================================================
+   DATA — 25 lessons, each with quiz questions + capstone lines
+   ============================================================ */
+const LESSONS = [
+{n:1,title:"これ・それ・あれ / です",topic:"Identifying things, basic です sentences",
+ q:[
+  {type:"vocab",prompt:"How do you say \"this (thing, near me)\" in Japanese?",choices:["これ","それ","あれ","どれ"],a:0,note:"これ = this (near speaker). それ = that (near listener). あれ = that over there (far from both)."},
+  {type:"vocab",prompt:"「学生（がくせい）」means:",choices:["Teacher","Student","Company employee","Doctor"],a:1,note:"学生（がくせい）= student."},
+  {type:"grammar",prompt:"これ ___ 辞書（じしょ）です。(This is a dictionary.)",choices:["は","を","に","で"],a:0,note:"は marks the topic. 'これは辞書（じしょ）です' = As for this, it is a dictionary."},
+  {type:"structure",prompt:"Choose the correct question form of 'Is that a book?'",choices:["それは 本（ほん）です か。","それは 本（ほん）ですか。","それ 本（ほん）は ですか。","それ は 本（ほん） か です。"],a:1,note:"Add か directly after です, no extra space needed: それは本（ほん）ですか。"}
+ ],
+ cap:[
+  {en:"This is a dictionary.",jp:"これは 辞書（じしょ）です。",note:"これ + は + noun + です for simple identification."},
+  {en:"Is that your umbrella?",jp:"それは あなたの 傘（かさ）ですか。",note:"あなたの = your; の links possessor and noun."}
+ ]},
+{n:2,title:"この／その／あの + N",topic:"Demonstrative adjectives, prices",
+ q:[
+  {type:"vocab",prompt:"「傘（かさ）」means:",choices:["Umbrella","Book","Watch","Bag"],a:0,note:"傘（かさ）= umbrella."},
+  {type:"vocab",prompt:"How do you ask \"How much is it?\"",choices:["これは 何（なに）ですか。","いくらですか。","どこですか。","誰（だれ）のですか。"],a:1,note:"いくら = how much (price)."},
+  {type:"grammar",prompt:"___ 本（ほん）は 私（わたし）のです。(That book [near you] is mine.)",choices:["この","その","あの","どの"],a:1,note:"その + noun = that (near listener). Contrast with それ, which stands alone."},
+  {type:"structure",prompt:"Which is correctly formed: \"Whose bag is this?\"",choices:["これは 誰（だれ）の かばんですか。","これ 誰（だれ）は かばんですか。","誰（だれ）の これは かばんですか。","これは かばん 誰（だれ）のですか。"],a:0,note:"誰（だれ）の (whose) + noun comes right before です."}
+ ],
+ cap:[
+  {en:"This pen is 500 yen.",jp:"この ペンは 500円（えん）です。",note:"この + noun for 'this ___', then price + です."},
+  {en:"Whose dictionary is that (over there)?",jp:"あれは 誰（だれ）の 辞書（じしょ）ですか。",note:"あれ stands alone (no noun follows) since it means 'that thing over there'."}
+ ]},
+{n:3,title:"ここ・そこ・あそこ / どこ",topic:"Places, N1のN2, asking origin",
+ q:[
+  {type:"vocab",prompt:"「デパート」means:",choices:["Station","Department store","Hospital","School"],a:1,note:"デパート = department store (loanword)."},
+  {type:"vocab",prompt:"How do you say \"where\"?",choices:["ここ","そこ","あそこ","どこ"],a:3,note:"どこ = where (question word)."},
+  {type:"grammar",prompt:"お手洗（てあら）いは ___ ですか。(Where is the restroom?)",choices:["どこ","なに","だれ","いつ"],a:0,note:"どこ asks about location."},
+  {type:"structure",prompt:"Choose the correct sentence for \"The department store is over there.\"",choices:["デパートは あそこです。","あそこは デパートです。","デパート あそこ です。","そこは デパートが です。"],a:0,note:"Topic (デパート) + は + location + です."}
+ ],
+ cap:[
+  {en:"Where is the telephone?",jp:"電話（でんわ）は どこですか。",note:"N + は + どこ + ですか is the standard 'where is N' pattern."},
+  {en:"This is a book about computers.",jp:"これは コンピューターの 本（ほん）です。",note:"N1のN2 here means 'a book about/on computers', not possession."}
+ ]},
+{n:4,title:"時間（じかん） / Vます",topic:"Telling time, present-tense verbs",
+ q:[
+  {type:"vocab",prompt:"「起（お）きます」means:",choices:["To sleep","To wake up","To work","To rest"],a:1,note:"起（お）きます = to get up / wake up."},
+  {type:"vocab",prompt:"「働（はたら）きます」means:",choices:["To eat","To study","To work","To drink"],a:2,note:"働（はたら）きます = to work."},
+  {type:"grammar",prompt:"毎日（まいにち） 7時（じ） ___ 起（お）きます。(I get up at 7 every day.)",choices:["は","に","を","へ"],a:1,note:"に marks a specific point in time with clock times, days, etc."},
+  {type:"structure",prompt:"Which correctly says \"I work from 9 to 5\"?",choices:["9時（じ）から5時（じ）まで 働（はたら）きます。","9時（じ） 5時（じ）まで 働（はたら）きます。","9時（じ）までから5時（じ） 働（はたら）きます。","働（はたら）きます 9時（じ）から5時（じ）まで は。"],a:0,note:"から (from) ... まで (until) brackets the time range, verb comes last."}
+ ],
+ cap:[
+  {en:"I get up at six every morning.",jp:"毎朝（まいあさ） 6時（じ）に 起（お）きます。",note:"時（じ） + に for a specific clock time; 毎朝（まいあさ） = every morning, no particle needed before it."},
+  {en:"I work from Monday to Friday.",jp:"月曜日（げつようび）から 金曜日（きんようび）まで 働（はたら）きます。",note:"から〜まで brackets a range of time, here days of the week."}
+ ]},
+{n:5,title:"へ・で・と + 行（い）きます",topic:"Movement verbs, direction, means, companion",
+ q:[
+  {type:"vocab",prompt:"「駅（えき）」means:",choices:["Airport","Station","Bridge","Park"],a:1,note:"駅（えき）= station."},
+  {type:"vocab",prompt:"How do you say \"alone / by oneself\"?",choices:["一人（ひとり）で","二人（ふたり）で","みんなで","一緒（いっしょ）に"],a:0,note:"一人（ひとり）で = alone, by oneself."},
+  {type:"grammar",prompt:"電車（でんしゃ） ___ 行（い）きます。(I go by train.)",choices:["へ","と","で","を"],a:2,note:"で marks the means of transportation."},
+  {type:"structure",prompt:"Choose the correct sentence: \"I'll go to Kyoto with my family.\"",choices:["家族（かぞく）と 京都（きょうと）へ 行（い）きます。","家族（かぞく）へ 京都（きょうと）と 行（い）きます。","京都（きょうと）で 家族（かぞく）と 行（い）きます。","家族（かぞく）を 京都（きょうと）へ 行（い）きます。"],a:0,note:"Companion + と, destination + へ, then the verb."}
+ ],
+ cap:[
+  {en:"I will go to the station by taxi.",jp:"タクシーで 駅（えき）へ 行（い）きます。",note:"で = means of transport, へ = destination direction."},
+  {en:"I don't go anywhere on Sundays.",jp:"日曜日（にちようび）は どこ[へ]も 行（い）きません。",note:"どこへも + negative verb = 'don't go anywhere'; へ is often dropped before も."}
+ ]},
+{n:6,title:"を + 食（た）べます／します",topic:"Object particle, invitations",
+ q:[
+  {type:"vocab",prompt:"「新聞（しんぶん）」means:",choices:["Newspaper","Magazine","Letter","Notebook"],a:0,note:"新聞（しんぶん）= newspaper."},
+  {type:"vocab",prompt:"How do you invite someone: \"Won't you eat?\"",choices:["食（た）べます。","食（た）べません。","食（た）べませんか。","食（た）べましょう。"],a:2,note:"Vませんか = a polite invitation, 'won't you...?'"},
+  {type:"grammar",prompt:"朝（あさ）ごはん ___ 食（た）べます。(I eat breakfast.)",choices:["が","を","に","へ"],a:1,note:"を marks the direct object of a transitive verb."},
+  {type:"structure",prompt:"Which correctly proposes \"Let's go together\"?",choices:["一緒（いっしょ）に 行（い）きましょう。","一緒（いっしょ） 行（い）きに ましょう。","行（い）きましょう 一緒（いっしょ）に。","一緒（いっしょ）に を 行（い）きましょう。"],a:0,note:"一緒（いっしょ）に (together) + verb in the ましょう (let's) form."}
+ ],
+ cap:[
+  {en:"Shall we drink coffee together?",jp:"一緒（いっしょ）に コーヒーを 飲（の）みませんか。",note:"Object + を + Vませんか is a natural, polite invitation."},
+  {en:"I buy a newspaper every morning.",jp:"毎朝（まいあさ） 新聞（しんぶん）を 買（か）います。",note:"を marks 新聞（しんぶん） as the thing being bought."}
+ ]},
+{n:7,title:"あげます・もらいます",topic:"Giving/receiving, もう・まだ",
+ q:[
+  {type:"vocab",prompt:"「あげます」means:",choices:["To receive","To give","To borrow","To lend"],a:1,note:"あげます = to give (to someone else)."},
+  {type:"vocab",prompt:"「もう」+ past tense means:",choices:["Not yet","Already","Still","Never"],a:1,note:"もう + Vました = already did something."},
+  {type:"grammar",prompt:"田中（たなか）さんに 花（はな） ___ もらいました。(I received flowers from Mr. Tanaka.)",choices:["を","に","が","で"],a:0,note:"The thing received takes を; に marks the giver."},
+  {type:"structure",prompt:"Which correctly says \"I haven't eaten lunch yet\"?",choices:["まだ 昼（ひる）ごはんを 食（た）べていません。","もう 昼（ひる）ごはんを 食（た）べました。","まだ 昼（ひる）ごはんを 食（た）べました。","昼（ひる）ごはんを もう 食（た）べていません。"],a:0,note:"まだ + negative = 'not yet'."}
+ ],
+ cap:[
+  {en:"I gave a present to Yamada-san.",jp:"山田（やまだ）さんに プレゼントを あげました。",note:"Recipient + に, item + を, then あげました (gave)."},
+  {en:"Have you already called the office?",jp:"もう 会社（かいしゃ）に 電話（でんわ）を かけましたか。",note:"もう + past tense question = 'have you already...?'"}
+ ]},
+{n:8,title:"い形容詞（けいようし）・な形容詞（けいようし）",topic:"Adjectives, とても／あまり",
+ q:[
+  {type:"vocab",prompt:"「静（しず）か」means:",choices:["Noisy","Quiet","Busy","Kind"],a:1,note:"静（しず）かな = quiet (な-adjective)."},
+  {type:"vocab",prompt:"「おいしい」means:",choices:["Delicious","Expensive","Difficult","Interesting"],a:0,note:"おいしい = delicious (い-adjective)."},
+  {type:"grammar",prompt:"この 町（まち）は あまり ___ ありません。(This town isn't very lively.)",choices:["にぎやかで","にぎやかだ","にぎやかいで","にぎやかくて"],a:0,note:"な-adjective negative: 〜で + ありません (or じゃありません)."},
+  {type:"structure",prompt:"Which correctly says \"This book is very interesting\"?",choices:["この 本（ほん）は とても 面白（おもしろ）いです。","この 本（ほん）は とても 面白（おもしろ）いくです。","とても この 本（ほん）は 面白（おもしろ）いだ です。","この 本（ほん） とても 面白（おもしろ）いです は。"],a:0,note:"とても + い-adjective + です, straightforward word order."}
+ ],
+ cap:[
+  {en:"This restaurant is very quiet and clean.",jp:"この レストランは とても 静（しず）かで きれいです。",note:"な-adjectives connect with で when linking two descriptions."},
+  {en:"That test wasn't very difficult.",jp:"あの テストは あまり 難（むずか）しくなかったです。",note:"い-adjective past negative: 〜くなかったです (or 〜くありませんでした)."}
+ ]},
+{n:9,title:"好（す）き・上手（じょうず）・わかります",topic:"Likes, skill, understanding",
+ q:[
+  {type:"vocab",prompt:"「上手（じょうず）」means:",choices:["Skilled / good at","Bad at","Difficult","Famous"],a:0,note:"上手（じょうず）な = skilled, good at."},
+  {type:"vocab",prompt:"「わかります」means:",choices:["To see","To understand","To hear","To speak"],a:1,note:"わかります = to understand / comprehend."},
+  {type:"grammar",prompt:"私（わたし）は 音楽（おんがく） ___ 好（す）きです。(I like music.)",choices:["を","に","が","へ"],a:2,note:"With 好（す）き/嫌（きら）い/上手（じょうず）/下手（へた）/わかります, the object takes が, not を."},
+  {type:"structure",prompt:"Which correctly says \"I don't understand Japanese very well\"?",choices:["日本語（にほんご）が あまり わかりません。","日本語（にほんご）を あまり わかりません。","日本語（にほんご）は あまり わかりますせん。","あまり 日本語（にほんご） わかりません が。"],a:0,note:"わかります pairs with が for the thing understood."}
+ ],
+ cap:[
+  {en:"I like Japanese food, but I'm not good at cooking.",jp:"日本料理（にほんりょうり）が 好（す）きですが、料理（りょうり）は 上手（じょうず）じゃありません。",note:"が marks each liked/skilled-at item; が as a connector here means 'but'."},
+  {en:"Do you understand this sentence?",jp:"この 文（ぶん）が わかりますか。",note:"文（ぶん）= sentence; わかります takes が."}
+ ]},
+{n:10,title:"あります・います",topic:"Existence, location words",
+ q:[
+  {type:"vocab",prompt:"Which verb is used for living things (people/animals)?",choices:["あります","います","です","します"],a:1,note:"います = there is/are, for animate things (people, animals)."},
+  {type:"vocab",prompt:"「隣（となり）」means:",choices:["Inside","Next to","Under","Behind"],a:1,note:"隣（となり）= next to, adjacent."},
+  {type:"grammar",prompt:"机（つくえ）の 上（うえ） ___ 本（ほん）が あります。(There is a book on the desk.)",choices:["に","を","へ","と"],a:0,note:"に marks the location where something exists."},
+  {type:"structure",prompt:"Which correctly says \"There is a cat under the chair\"?",choices:["椅子（いす）の 下（した）に 猫（ねこ）が います。","椅子（いす）の 下（した）は 猫（ねこ）が あります。","猫（ねこ）が 椅子（いす）の 下（した） います。","椅子（いす） 下（した）の に 猫（ねこ）が います。"],a:0,note:"Location + の + 上（うえ）/下（した）/etc + に, then subject + が + います (animate)."}
+ ],
+ cap:[
+  {en:"There is a park in front of the station.",jp:"駅（えき）の 前（まえ）に 公園（こうえん）が あります。",note:"公園（こうえん） (park) is inanimate, so あります is correct, not います."},
+  {en:"My older brother is in the living room.",jp:"兄（あに）は 居間（いま）に います。",note:"兄（あに） (older brother) is animate → います; 居間（いま） = living room."}
+ ]},
+{n:11,title:"数量（すうりょう） / だけ",topic:"Counters and quantity",
+ q:[
+  {type:"vocab",prompt:"「卵（たまご）」means:",choices:["Apple","Egg","Bread","Milk"],a:1,note:"卵（たまご）= egg."},
+  {type:"vocab",prompt:"「だけ」means:",choices:["Also","Only","Still","Already"],a:1,note:"だけ = only, just."},
+  {type:"grammar",prompt:"りんごを 三（さん） ___ 買（か）いました。(I bought three apples.)",choices:["つ","人（ひと）","枚（まい）","匹（びき）"],a:0,note:"つ is the general counter for small round/miscellaneous objects like apples."},
+  {type:"structure",prompt:"Which correctly says \"I only have 500 yen\"?",choices:["500円（えん）だけ あります。","500円（えん） あります だけ。","だけ 500円（えん） あります。","500円（えん）は だけ あります。"],a:0,note:"Quantity + だけ + verb."}
+ ],
+ cap:[
+  {en:"I bought two tickets and one bag.",jp:"切符（きっぷ）を 二枚（にまい）と かばんを 一（いち）つ 買（か）いました。",note:"枚（まい） counts flat objects (tickets); つ is the general counter for the bag."},
+  {en:"There are only three students in this class.",jp:"この クラスに 学生（がくせい）が 三人（さんにん）だけ います。",note:"人（ひと） counts people; だけ follows the counted quantity."}
+ ]},
+{n:12,title:"比較（ひかく） / 形容詞（けいようし）の過去（かこ）",topic:"Comparison, adjective past tense",
+ q:[
+  {type:"vocab",prompt:"「一番（いちばん）」means:",choices:["Number one / the most","Half","Second","Only"],a:0,note:"一番（いちばん）= the most, number one (superlative marker)."},
+  {type:"vocab",prompt:"「季節（きせつ）」means:",choices:["Weather","Season","Month","Weekend"],a:1,note:"季節（きせつ）= season."},
+  {type:"grammar",prompt:"夏（なつ）と 冬（ふゆ）と、___ 好（す）きですか。(Summer or winter, which do you like?)",choices:["どちらが","どちらを","どこが","どれに"],a:0,note:"N1とN2と、どちらが〜 is the standard comparison question pattern."},
+  {type:"structure",prompt:"Which correctly says \"Of all seasons, I like spring the most\"?",choices:["季節（きせつ）の 中（なか）で 春（はる）が 一番（いちばん） 好（す）きです。","春（はる）の 中（なか）で 季節（きせつ）が 一番（いちばん） 好（す）きです。","一番（いちばん） 季節（きせつ）は 春（はる）が 好（す）きです。","季節（きせつ）が 春（はる）の 中（なか）で 一番（いちばん）です。"],a:0,note:"Nの中（なか）で + subject + が + 一番（いちばん） + adjective/verb."}
+ ],
+ cap:[
+  {en:"Between coffee and tea, which do you like better?",jp:"コーヒーと 紅茶（こうちゃ）と、どちらが 好（す）きですか。",note:"N1とN2と、どちらが好（す）きですか asks for a preference between two options."},
+  {en:"Last year's winter was colder than this year.",jp:"去年（きょねん）の 冬（ふゆ）は 今年（ことし）より 寒（さむ）かったです。",note:"より marks the point of comparison; 寒（さむ）かった is the past form of 寒（さむ）い."}
+ ]},
+{n:13,title:"Vたい / 目的（もくてき）",topic:"Wanting to do, purpose with に行（い）きます",
+ q:[
+  {type:"vocab",prompt:"「旅行（りょこう）」means:",choices:["Work","Travel","Study","Shopping"],a:1,note:"旅行（りょこう）= travel, trip."},
+  {type:"vocab",prompt:"How do you say \"nothing\" (with negative verb)?",choices:["何（なに）か","何（なに）も","何（なに）が","何（なに）を"],a:1,note:"何（なに）も + negative verb = nothing."},
+  {type:"grammar",prompt:"日本（にほん）へ 旅行（りょこう）に 行（い）き ___ です。(I want to go to Japan on a trip.)",choices:["ます","たい","ました","ません"],a:1,note:"Vます-stem + たい = want to do."},
+  {type:"structure",prompt:"Which correctly says \"I'm going to the library to borrow a book\"?",choices:["本（ほん）を 借（か）りに 図書館（としょかん）へ 行（い）きます。","本（ほん）を 借（か）ります 図書館（としょかん）に 行（い）きます。","図書館（としょかん）へ 本（ほん）を 借（か）りたい 行（い）きます。","本（ほん）が 借（か）りに 図書館（としょかん） 行（い）きます。"],a:0,note:"Vます-stem + に + 行（い）きます expresses purpose of movement."}
+ ],
+ cap:[
+  {en:"I want to eat sushi someday.",jp:"いつか 寿司（すし）が 食（た）べたいです。",note:"With Vたい, the object commonly takes が instead of を."},
+  {en:"I'm going to the station to meet a friend.",jp:"友達（ともだち）に 会（あ）いに 駅（えき）へ 行（い）きます。",note:"会（あ）います takes に for 'meet with someone'; 会（あ）い + に + 行（い）きます = go to meet."}
+ ]},
+{n:14,title:"て形（けい） / ています",topic:"Te-form requests and ongoing states",
+ q:[
+  {type:"vocab",prompt:"「手伝（てつだ）います」means:",choices:["To wait","To help","To turn off","To submit"],a:1,note:"手伝（てつだ）います= to help."},
+  {type:"vocab",prompt:"「消（け）します」means:",choices:["To turn on","To turn off/erase","To open","To close"],a:1,note:"消（け）します = to turn off (a light) or erase."},
+  {type:"grammar",prompt:"ちょっと 待（ま）っ ___ ください。(Please wait a moment.)",choices:["て","た","たり","ない"],a:0,note:"Te-form + ください = a polite request."},
+  {type:"structure",prompt:"Which correctly says \"I am reading a book now\" (ongoing action)?",choices:["今（いま） 本（ほん）を 読（よ）んでいます。","今（いま） 本（ほん）を 読（よ）みています。","今（いま） 本（ほん）を 読（よ）みますいる。","本（ほん）を 今（いま） 読（よ）んでいました。"],a:0,note:"Te-form + います shows an action in progress."}
+ ],
+ cap:[
+  {en:"Please turn off the light and wait here.",jp:"電気（でんき）を 消（け）して、ここで 待（ま）ってください。",note:"Two te-forms chained together, the second ending in ください for the request."},
+  {en:"My father is working in Osaka now.",jp:"父（ちち）は 今（いま） 大阪（おおさか）で 働（はたら）いています。",note:"働（はたら）いています = ongoing state 'is working', not a one-time action."}
+ ]},
+{n:15,title:"てもいいです／てはいけません",topic:"Permission and prohibition",
+ q:[
+  {type:"vocab",prompt:"「使（つか）います」means:",choices:["To use","To buy","To sell","To fix"],a:0,note:"使（つか）います= to use."},
+  {type:"vocab",prompt:"「写真（しゃしん）」means:",choices:["Photo","Painting","Movie","Letter"],a:0,note:"写真（しゃしん）= photograph."},
+  {type:"grammar",prompt:"ここで 写真（しゃしん）を 撮（と）っ ___ いいですか。(Is it okay to take photos here?)",choices:["ても","ては","たら","ながら"],a:0,note:"Te-form + もいいですか asks for permission."},
+  {type:"structure",prompt:"Which correctly says \"You must not smoke here\"?",choices:["ここで たばこを 吸（す）っては いけません。","ここで たばこを 吸（す）っても いいです。","たばこを 吸（す）わないで いいです。","ここで たばこは 吸（す）いません いけません。"],a:0,note:"Te-form + はいけません = prohibition, 'must not.'"}
+ ],
+ cap:[
+  {en:"May I use this telephone?",jp:"この 電話（でんわ）を 使（つか）っても いいですか。",note:"てもいいですか is the standard 'may I...?' request for permission."},
+  {en:"You mustn't enter this room.",jp:"この 部屋（へや）に 入（はい）っては いけません。",note:"入（はい）ります → て-form 入（はい）って + はいけません."}
+ ]},
+{n:16,title:"なければなりません",topic:"Obligation and non-obligation",
+ q:[
+  {type:"vocab",prompt:"「予約（よやく）」means:",choices:["Reservation","Payment","Appointment card","Ticket"],a:0,note:"予約（よやく）= reservation, booking."},
+  {type:"vocab",prompt:"「出（だ）します」means:",choices:["To take out / submit","To put in","To carry","To throw away"],a:0,note:"出（だ）します = to take out, submit, mail."},
+  {type:"grammar",prompt:"レポートを 明日（あした）までに 出（だ）さ ___ なりません。(I must submit the report by tomorrow.)",choices:["なければ","ないと","なくても","ないでは"],a:0,note:"Vない-form (dropping い) + ければなりません = must do."},
+  {type:"structure",prompt:"Which correctly says \"You don't have to make a reservation\"?",choices:["予約（よやく）を しなくても いいです。","予約（よやく）を しなければ なりません。","予約（よやく）を してはいけません。","予約（よやく）を しないと いいです。"],a:0,note:"Vない-form + くてもいいです = don't have to."}
+ ],
+ cap:[
+  {en:"I have to go to the hospital today.",jp:"今日（きょう） 病院（びょういん）へ 行（い）かなければ なりません。",note:"行（い）きます → ない-form 行（い）かない → 行（い）かなければなりません."},
+  {en:"You don't have to bring an umbrella; it won't rain.",jp:"雨（あめ）は 降（ふ）りませんから、傘（かさ）を 持（も）ってこなくても いいです。",note:"から gives the reason; なくてもいいです = no obligation."}
+ ]},
+{n:17,title:"辞書形（じしょけい） / ことができます",topic:"Dictionary form, ability, hobbies",
+ q:[
+  {type:"vocab",prompt:"「趣味（しゅみ）」means:",choices:["Job","Hobby","Habit","Talent"],a:1,note:"趣味（しゅみ）= hobby."},
+  {type:"vocab",prompt:"「泳（およ）ぐ」(dictionary form) means:",choices:["To run","To swim","To climb","To fly"],a:1,note:"泳（およ）ぐ= to swim."},
+  {type:"grammar",prompt:"私（わたし）は ギターを 弾（ひ）く ___ できます。(I can play the guitar.)",choices:["こと が","もの が","の を","ため に"],a:0,note:"Dictionary form + ことができます = to be able to do."},
+  {type:"structure",prompt:"Which correctly says \"Before eating, I wash my hands\"?",choices:["食（た）べる 前（まえ）に、手（て）を 洗（あら）います。","食（た）べた 前（まえ）に、手（て）を 洗（あら）います。","食（た）べる 後（あと）で、手（て）を 洗（あら）います。","手（て）を 洗（あら）う 前（まえ）に、食（た）べます。"],a:0,note:"Dictionary form + 前（まえ）に = 'before doing'."}
+ ],
+ cap:[
+  {en:"My hobby is playing the piano; I can also swim well.",jp:"私（わたし）の 趣味（しゅみ）は ピアノを 弾（ひ）くことです。泳（およ）ぐことも 上手（じょうず）です。",note:"Dictionary form + こと turns a verb into a noun, usable as a topic or with 上手（じょうず）/好（す）き."},
+  {en:"After finishing work, I study Japanese.",jp:"仕事（しごと）が 終（お）わった 後（あと）で、日本語（にほんご）を 勉強（べんきょう）します。",note:"Vた-form + 後（あと）で = 'after doing'."}
+ ]},
+{n:18,title:"たり〜たりします",topic:"Listing example actions",
+ q:[
+  {type:"vocab",prompt:"「掃除（そうじ）します」means:",choices:["To clean","To cook","To wash clothes","To shop"],a:0,note:"掃除（そうじ）します= to clean."},
+  {type:"vocab",prompt:"「洗濯（せんたく）します」means:",choices:["To wash dishes","To do laundry","To take a bath","To iron"],a:1,note:"洗濯（せんたく）します= to do laundry."},
+  {type:"grammar",prompt:"週末（しゅうまつ）は 掃除（そうじ）を ___ 洗濯（せんたく）を したり します。(On weekends I do things like cleaning and laundry.)",choices:["し","した","して","したり"],a:3,note:"Both verbs take the たり form when listing example actions: 〜たり〜たりします."},
+  {type:"structure",prompt:"Which correctly says \"On holidays I read books or watch movies\"?",choices:["休（やす）みの日（ひ）は 本（ほん）を 読（よ）んだり 映画（えいが）を 見（み）たり します。","休（やす）みの日（ひ）は 本（ほん）を 読（よ）む 映画（えいが）を 見（み）る します。","休（やす）みの日（ひ）は 本（ほん）を 読（よ）んでから 映画（えいが）を 見（み）ます。","休（やす）みの日（ひ） 本（ほん）を 読（よ）んだり します 映画（えいが）を。"],a:0,note:"〜たり〜たりします lists a few representative activities, not an exhaustive list."}
+ ],
+ cap:[
+  {en:"On Sundays I clean, do laundry, and sometimes go shopping.",jp:"日曜日（にちようび）は 掃除（そうじ）したり 洗濯（せんたく）したり、時（じ）々 買（か）い物（もの）に 行（い）ったり します。",note:"Chain several たり clauses, ending in します once."},
+  {en:"During the trip we took photos and ate delicious food.",jp:"旅行中（りょこうちゅう）に 写真（しゃしん）を 撮（と）ったり おいしい 物（もの）を 食（た）べたり しました。",note:"Past tense: 〜たり〜たりしました."}
+ ]},
+{n:19,title:"予定（よてい） / 〜と思（おも）っています",topic:"Plans and ongoing intentions",
+ q:[
+  {type:"vocab",prompt:"「予定（よてい）」means:",choices:["Plan / schedule","Memory","Promise","Reservation"],a:0,note:"予定（よてい）= plan, schedule."},
+  {type:"vocab",prompt:"「帰国（きこく）します」means:",choices:["To travel abroad","To return to one's home country","To move house","To graduate"],a:1,note:"帰国（きこく）します= to return to one's country."},
+  {type:"grammar",prompt:"来年（らいねん） 日本（にほん）へ 行（い）こう ___ 思（おも）っています。(I'm planning to go to Japan next year.)",choices:["と","を","が","に"],a:0,note:"Volitional form + と思（おも）っています expresses an ongoing intention/plan."},
+  {type:"structure",prompt:"Which correctly says \"I plan to study abroad next year\"?",choices:["来年（らいねん） 留学（りゅうがく）する 予定（よてい）です。","来年（らいねん） 留学（りゅうがく） 予定（よてい）する です。","予定（よてい）は 来年（らいねん） 留学（りゅうがく）します。","留学（りゅうがく）する 来年（らいねん） 予定（よてい）です。"],a:0,note:"Dictionary form + 予定（よてい）です states a plan."}
+ ],
+ cap:[
+  {en:"I'm thinking of returning to my country next month.",jp:"来月（らいげつ） 帰国（きこく）しようと 思（おも）っています。",note:"Volitional (帰国（きこく）しよう) + と思（おも）っています = an intention held over time."},
+  {en:"This weekend I plan to clean my room and do laundry.",jp:"今週末（こんしゅうまつ）は 部屋（へや）を 掃除（そうじ）したり 洗濯（せんたく）したり する 予定（よてい）です。",note:"Combine たり listing with 予定（よてい）です for a planned itinerary."}
+ ]},
+{n:20,title:"すぎます / ほうがいいです",topic:"Excess, giving advice",
+ q:[
+  {type:"vocab",prompt:"「疲（つか）れます」means:",choices:["To relax","To get tired","To get sick","To sleep"],a:1,note:"疲（つか）れます= to become tired."},
+  {type:"vocab",prompt:"「込（こ）みます」means:",choices:["To become crowded","To become empty","To become quiet","To become expensive"],a:0,note:"込（こ）みます= to get crowded."},
+  {type:"grammar",prompt:"昨日（きのう）は 働（はたら）き ___ 疲（つか）れました。(I worked too much yesterday and got tired.)",choices:["すぎて","すぎます","すぎた","すぎるので"],a:0,note:"Vます-stem + すぎて = 'because of doing too much', linking to the result."},
+  {type:"structure",prompt:"Which correctly gives advice: \"You'd better see a doctor\"?",choices:["医者（いしゃ）に 行（い）った ほうが いいです。","医者（いしゃ）に 行（い）く ほうが いいです。","医者（いしゃ）に 行（い）きます ほうが いいです。","医者（いしゃ）は 行（い）った ほうが いいです。"],a:0,note:"Vた-form + ほうがいいです is the standard way to give advice."}
+ ],
+ cap:[
+  {en:"You ate too much, so you should rest a bit.",jp:"食（た）べすぎましたから、少（すこ）し 休（やす）んだ ほうが いいです。",note:"すぎました states the excess; ほうがいいです gives the recommendation."},
+  {en:"Trains are crowded in the morning, so it's better to leave early.",jp:"朝（あさ）は 電車（でんしゃ）が 込（こ）みますから、早（はや）く 出（だ）た ほうが いいです。",note:"から gives the reason for the advice that follows."}
+ ]},
+{n:21,title:"と思（おも）います／でしょう",topic:"Opinions, hearsay, probability",
+ q:[
+  {type:"vocab",prompt:"「台風（たいふう）」means:",choices:["Typhoon","Earthquake","Rain","Snow"],a:0,note:"台風（たいふう）= typhoon."},
+  {type:"vocab",prompt:"「天気（てんき）」means:",choices:["Season","Weather","Temperature","Sky"],a:1,note:"天気（てんき）= weather."},
+  {type:"grammar",prompt:"明日（あした）は 雨（あめ）が 降（ふ）る ___ 思（おも）います。(I think it will rain tomorrow.)",choices:["と","を","が","に"],a:0,note:"Plain form + と思（おも）います = 'I think that...'"},
+  {type:"structure",prompt:"Which correctly says \"It will probably be sunny tomorrow\"?",choices:["明日（あした）は 晴（は）れるでしょう。","明日（あした）は 晴（は）れますでしょう。","明日（あした）は 晴（は）れると でしょう。","明日（あした）は 晴（は）れでしょうる。"],a:0,note:"Plain form + でしょう expresses probability, said with falling intonation for a guess."}
+ ],
+ cap:[
+  {en:"I think this typhoon is quite big.",jp:"この 台風（たいふう）は かなり 大（おお）きいと 思（おも）います。",note:"い-adjective plain form + と思（おも）います, no だ needed after い-adjectives."},
+  {en:"Tanaka-san said the meeting is tomorrow.",jp:"田中（たなか）さんは 会議（かいぎ）は 明日（あした）だと 言（い）いました。",note:"Noun + だ + と言（い）いました reports what someone said (plain copula だ before と in casual quotes)."}
+ ]},
+{n:22,title:"名詞修飾（めいししゅうしょく）",topic:"Modifying nouns with verb/adjective clauses",
+ q:[
+  {type:"vocab",prompt:"「眼鏡（めがね）」means:",choices:["Glasses","Hat","Watch","Necklace"],a:0,note:"眼鏡（めがね）= eyeglasses."},
+  {type:"vocab",prompt:"「人形（にんぎょう）」means:",choices:["Doll","Toy car","Puzzle","Photo frame"],a:0,note:"人形（にんぎょう）= doll."},
+  {type:"grammar",prompt:"これは 私（わたし）が 撮（と）っ ___ 写真（しゃしん）です。(This is the photo that I took.)",choices:["た","て","ている","たり"],a:0,note:"Plain past form directly modifies the following noun: 撮（と）った写真（しゃしん） = 'the photo [that I] took'."},
+  {type:"structure",prompt:"Which correctly says \"The woman wearing glasses is my mother\"?",choices:["眼鏡（めがね）を かけている 人（ひと）は 母（はは）です。","眼鏡（めがね）が かけて いる人（ひと）は 母（はは）です。","眼鏡（めがね）を かけました 人（ひと）は 母（はは）です。","母（はは）は 眼鏡（めがね）を かけている です人（ひと）。"],a:0,note:"A clause ending in ている can modify a noun directly, just like an adjective."}
+ ],
+ cap:[
+  {en:"The doll that Tanaka-san gave me is very cute.",jp:"田中（たなか）さんが くれた 人形（にんぎょう）は とても かわいいです。",note:"くれた (gave to me) modifies 人形（にんぎょう） directly, placed right before the noun."},
+  {en:"The person standing over there is my teacher.",jp:"あそこに 立（た）っている 人（ひと）は 私（わたし）の 先生（せんせい）です。",note:"立（た）っている (standing) modifies 人（ひと） (person) as a noun-modifying clause."}
+ ]},
+{n:23,title:"とき / 移動動詞（いどうどうし）",topic:"Time clauses, movement across a place",
+ q:[
+  {type:"vocab",prompt:"「曲（ま）がります」means:",choices:["To turn","To stop","To cross","To fall"],a:0,note:"曲（ま）がります= to turn."},
+  {type:"vocab",prompt:"「まっすぐ」means:",choices:["Slowly","Straight ahead","Quickly","Carefully"],a:1,note:"まっすぐ = straight, straight ahead."},
+  {type:"grammar",prompt:"日本（にほん）へ 行（い）く ___ 、パスポートが 要（い）ります。(When [you] go to Japan, you need a passport.)",choices:["とき","たら","ながら","のに"],a:0,note:"Dictionary form + とき describes 'when [an event happens/will happen]'."},
+  {type:"structure",prompt:"Which correctly says \"I walk across the park every morning\"?",choices:["毎朝（まいあさ） 公園（こうえん）を 歩（ある）きます。","毎朝（まいあさ） 公園（こうえん）に 歩（ある）きます。","毎朝（まいあさ） 公園（こうえん）で 歩（ある）きます。","毎朝（まいあさ） 公園（こうえん）が 歩（ある）きます。"],a:0,note:"を marks the space traversed with verbs of movement like 歩（ある）きます, 渡（わた）ります, 通（とお）ります."}
+ ],
+ cap:[
+  {en:"When I was a child, I lived in Osaka.",jp:"子供（こども）の とき、大阪（おおさか）に 住（す）んでいました。",note:"Noun + の + とき for 'when [I was] N'."},
+  {en:"Turn right at that corner, then go straight.",jp:"あの 角（かど）を 右（みぎ）に 曲（ま）がって、まっすぐ 行（い）ってください。",note:"を marks the corner as the point of turning; 曲（ま）がって chains into the next instruction."}
+ ]},
+{n:24,title:"受身形（うけみけい）",topic:"Passive voice",
+ q:[
+  {type:"vocab",prompt:"「褒（ほ）めます」means:",choices:["To scold","To praise","To ignore","To thank"],a:1,note:"褒（ほ）めます= to praise."},
+  {type:"vocab",prompt:"「叱（しか）ります」means:",choices:["To scold","To laugh","To cry","To help"],a:0,note:"叱（しか）ります= to scold."},
+  {type:"grammar",prompt:"私（わたし）は 先生（せんせい）に ___ 。(I was praised by my teacher.)",choices:["褒（ほ）めました","褒（ほ）められました","褒（ほ）めさせました","褒（ほ）めています"],a:1,note:"Passive form: 褒（ほ）める → 褒（ほ）められる → past 褒（ほ）められました."},
+  {type:"structure",prompt:"Which correctly says \"This building was built 100 years ago\"?",choices:["この 建物（たてもの）は 100年前（ねんまえ）に 建（た）てられました。","この 建物（たてもの）は 100年前（ねんまえ）に 建（た）てました。","この 建物（たてもの）が 100年前（ねんまえ）に 建（た）てられます。","100年前（ねんまえ） この 建物（たてもの）は 建（た）てられる でした。"],a:0,note:"Passive form 建（た）てられました is natural when the agent (who built it) is unspecified or unimportant."}
+ ],
+ cap:[
+  {en:"I was scolded by my mother yesterday.",jp:"昨日（きのう） 母（はは）に 叱（しか）られました。",note:"The person doing the action takes に in passive sentences: 母（はは）に叱（しか）られる = 'be scolded by mother'."},
+  {en:"This song is loved by many people.",jp:"この 歌（うた）は 多（おお）くの 人（ひと）に 愛（あい）されています。",note:"愛（あい）する → 愛（あい）される (passive) → 愛（あい）されています for an ongoing state."}
+ ]},
+{n:25,title:"使役形（しえきけい）",topic:"Causative form",
+ q:[
+  {type:"vocab",prompt:"「泣（な）きます」means:",choices:["To laugh","To cry","To shout","To smile"],a:1,note:"泣（な）きます= to cry."},
+  {type:"vocab",prompt:"「休（やす）ませます」is the causative of which verb?",choices:["働（はたら）きます","休（やす）みます","泣（な）きます","待（ま）ちます"],a:1,note:"休（やす）みます (to rest) → 休（やす）ませます (to make/let someone rest)."},
+  {type:"grammar",prompt:"母（はは）は 子供（こども） ___ 野菜（やさい）を 食（た）べさせました。(Mother made the child eat vegetables.)",choices:["を","に","が","で"],a:1,note:"With causative verbs, the person made to act usually takes に (especially with verbs that can take an object)."},
+  {type:"structure",prompt:"Which correctly makes a humble request: \"Please let me rest today\"?",choices:["今日（きょう） 休（やす）ませて ください。","今日（きょう） 休（やす）みさせて ください。","今日（きょう） 休（やす）んで もらって ください。","今日（きょう） 休（やす）ませます ください。"],a:0,note:"Causative te-form + ください = 'please let/make me do...', a common polite request pattern."}
+ ],
+ cap:[
+  {en:"My boss let me go home early today.",jp:"今日（きょう） 上司（じょうし）は 私（わたし）を 早（はや）く 帰（かえ）らせて くれました。",note:"Causative 帰（かえ）らせて + くれました = 'let me go home' as a favor granted by the boss."},
+  {en:"Could you please let me use this computer?",jp:"この コンピューターを 使（つか）わせて いただけませんか。",note:"Causative + ていただけませんか is a very polite way to request permission."}
+ ]}
+];
+
+/* ============================================================
+   GRAMMAR REFERENCE — Sentence structure & particle guide
+   Sourced from Minna no Nihongo I (Lessons 1–25) plus standard
+   JLPT N4 particle usage.
+   ============================================================ */
+const SENTENCE_STRUCTURE = [
+  {
+    title:"Basic word order: SOV",
+    body:"Japanese sentences end with the verb (or adjective/です). Subject and object can move around fairly freely because particles — not position — show each word's role, but the verb always comes last.",
+    example:{jp:"私（わたし）は 毎朝（まいあさ） 公園（こうえん）で コーヒーを 飲（の）みます。",en:"I drink coffee at the park every morning.",note:"Topic → time → place → object → verb-last. Reordering time/place/object is usually fine; the verb stays at the end."}
+  },
+  {
+    title:"Topic vs. subject: は and が",
+    body:"は marks what the sentence is about (the topic); が marks the grammatical subject, often introducing new information or answering a 'who/what' question. A sentence can have a は-topic and a が-subject at the same time.",
+    example:{jp:"この 町（まち）は 冬（ふゆ）が 寒（さむ）いです。",en:"As for this town, [its] winters are cold.",note:"町 is the topic (は); 冬 is the subject of 寒い (が)."}
+  },
+  {
+    title:"Noun modification comes before the noun",
+    body:"Unlike English, any word or clause describing a noun — adjectives, possessives, and even entire verb clauses — is placed directly in front of that noun, never after it.",
+    example:{jp:"昨日（きのう） 買（か）った 本（ほん）",en:"the book [that I] bought yesterday",note:"The whole clause 昨日買った (plain past tense) sits before 本, acting like a long adjective."}
+  },
+  {
+    title:"Particles attach directly to the word they mark",
+    body:"A particle always comes immediately after the noun (or noun phrase) it's marking, with no space or gap in meaning — this is how you can tell a word's grammatical job in a sentence regardless of where it appears.",
+    example:{jp:"友達（ともだち）に 京都（きょうと）で 会（あ）いました。",en:"I met [my] friend in Kyoto.",note:"に marks the person met; で marks where the meeting happened — order between them is flexible."}
+  }
+];
+
+const PARTICLES = [
+  {p:"は", role:"Topic marker", level:"N5",
+   explain:"Marks what the sentence is about — \"as for N...\". Attaches to the topic, which often (but not always) overlaps with the subject.",
+   pattern:"N + は + comment",
+   examples:[
+     {jp:"私（わたし）は 学生（がくせい）です。", en:"I am a student."},
+     {jp:"この 本（ほん）は 面白（おもしろ）いです。", en:"This book is interesting."}
+   ],
+   confuse:"は vs が — は presents known/topic information or draws a contrast; が marks new information or specifically identifies the subject. 「私（わたし）は 田中（たなか）です」 answers \"who are you?\"; 「私（わたし）が 田中（たなか）です」 answers \"which one of you is Tanaka?\""},
+  {p:"が", role:"Subject marker (new info)", level:"N5",
+   explain:"Marks the grammatical subject, especially when introducing new information, after question words (誰（だれ）が, 何（なに）が), and is required with 好（す）き, 嫌（きら）い, 上手（じょうず）, 下手（へた）, わかります, あります, います, ほしい, and the object of Vたい.",
+   pattern:"N + が + predicate",
+   examples:[
+     {jp:"誰（だれ）が 来（き）ますか。", en:"Who is coming?"},
+     {jp:"私（わたし）は 音楽（おんがく）が 好（す）きです。", en:"I like music."}
+   ]},
+  {p:"を", role:"Direct object / path", level:"N5",
+   explain:"Marks the direct object of an action verb. With verbs of movement (歩（ある）きます, 渡（わた）ります, 通（とお）ります), it instead marks the space or route being crossed.",
+   pattern:"N + を + transitive verb",
+   examples:[
+     {jp:"本（ほん）を 読（よ）みます。", en:"I read a book."},
+     {jp:"公園（こうえん）を 歩（ある）きます。", en:"I walk through the park."}
+   ]},
+  {p:"に", role:"Time / location / goal / recipient", level:"N5",
+   explain:"One of the most versatile particles: (1) a specific point in time (7時（じ）に), (2) the place something exists with あります/います, (3) the destination of movement, (4) the recipient of an action (あげます/もらいます/会います), and (5) purpose before 行きます (Vます-stem + に行きます).",
+   pattern:"N(time/place/person) + に + verb",
+   examples:[
+     {jp:"7時（じ）に 起（お）きます。", en:"I get up at 7."},
+     {jp:"机（つくえ）の 上（うえ）に 本（ほん）が あります。", en:"There's a book on the desk."},
+     {jp:"友達（ともだち）に 手紙（てがみ）を 書（か）きます。", en:"I write a letter to my friend."}
+   ],
+   confuse:"に vs で for location — に marks where something exists (static, with あります/います); で marks where an action takes place (with action verbs)."},
+  {p:"で", role:"Place of action / means / cause", level:"N5",
+   explain:"(1) Marks the place where an action happens, (2) marks the means, tool, or method used (道具（どうぐ）で, 電車（でんしゃ）で), and (3) marks a cause or reason.",
+   pattern:"N(place/tool) + で + verb",
+   examples:[
+     {jp:"図書館（としょかん）で 勉強（べんきょう）します。", en:"I study at the library."},
+     {jp:"バスで 行（い）きます。", en:"I go by bus."}
+   ]},
+  {p:"へ", role:"Direction", level:"N5",
+   explain:"Marks the direction of movement — pronounced \"e\", not \"he\". Often interchangeable with に for a destination, but へ puts more emphasis on the direction/route than the exact arrival point.",
+   pattern:"N(place) + へ + 行きます／来ます／帰ります",
+   examples:[
+     {jp:"京都（きょうと）へ 行（い）きます。", en:"I'll go to (toward) Kyoto."}
+   ]},
+  {p:"と", role:"And / with / quotation", level:"N5",
+   explain:"(1) Connects nouns as an exhaustive \"A and B, nothing else\", (2) marks a companion, \"together with\", (3) marks a quotation or thought before 言（い）います/思（おも）います, and (4) forms a conditional \"when/if\" with a dictionary-form verb.",
+   pattern:"N + と + N　／　plain form + と思います／と言います",
+   examples:[
+     {jp:"コーヒーと 紅茶（こうちゃ）が あります。", en:"There's coffee and tea."},
+     {jp:"明日（あした）は 晴（は）れると 思（おも）います。", en:"I think it will be sunny tomorrow."}
+   ]},
+  {p:"も", role:"Also / neither / nowhere (with negative)", level:"N5",
+   explain:"Replaces は/が/を to mean \"also, too\". Paired with a question word and a negative verb (何（なに）も, どこ［へ］も, 誰（だれ）も), it means \"nothing / nowhere / no one\".",
+   pattern:"N + も + verb",
+   examples:[
+     {jp:"私（わたし）も 学生（がくせい）です。", en:"I am also a student."},
+     {jp:"何（なに）も 食（た）べませんでした。", en:"I didn't eat anything."}
+   ]},
+  {p:"の", role:"Possessive / modifier / nominalizer", level:"N5",
+   explain:"Connects two nouns where the first describes or owns the second (N1のN2). Can also stand in for an omitted noun (\"~の\" = \"the one belonging to ~\"), and turns a verb phrase into a noun-like phrase before certain predicates (泳（およ）ぐのが好（す）きです).",
+   pattern:"N1 + の + N2",
+   examples:[
+     {jp:"私（わたし）の 本（ほん）です。", en:"It's my book."},
+     {jp:"これは 田中（たなか）さんのです。", en:"This one is Tanaka's."}
+   ]},
+  {p:"から", role:"From / because", level:"N5",
+   explain:"Marks a starting point in time or place (\"from\"). Attached to the end of a full clause, it instead marks a reason (\"because\").",
+   pattern:"N + から　／　plain form + から",
+   examples:[
+     {jp:"9時（じ）から 働（はたら）きます。", en:"I work from 9."},
+     {jp:"雨（あめ）ですから、行（い）きません。", en:"Since it's raining, I won't go."}
+   ]},
+  {p:"まで", role:"Until / up to", level:"N5",
+   explain:"Marks an ending point in time or place, very commonly paired with から to bracket a range.",
+   pattern:"N(time/place) + まで",
+   examples:[
+     {jp:"5時（じ）まで 働（はたら）きます。", en:"I work until 5."}
+   ]},
+  {p:"や", role:"And (non-exhaustive list)", level:"N5",
+   explain:"Connects a few example nouns from a larger, unstated set — often paired with など (\"and so on\"). Contrast と, which lists everything with nothing left out.",
+   pattern:"N1 + や + N2（＋など）",
+   examples:[
+     {jp:"机（つくえ）の 上（うえ）に 本（ほん）や ノートが あります。", en:"There are things like books and notebooks on the desk (among other things)."}
+   ]},
+  {p:"か", role:"Question marker / or", level:"N5",
+   explain:"Added to the end of a sentence to form a question. Between two nouns, it means \"or\".",
+   pattern:"Sentence + か　／　N1 + か + N2",
+   examples:[
+     {jp:"これは 辞書（じしょ）ですか。", en:"Is this a dictionary?"},
+     {jp:"コーヒーか 紅茶（こうちゃ）が いいです。", en:"Coffee or tea would be good."}
+   ]},
+  {p:"ね", role:"Seeking agreement", level:"N5",
+   explain:"Added at the end of a sentence, similar to \"isn't it?\" or \"right?\" — invites agreement or shares an observation with the listener.",
+   pattern:"Sentence + ね",
+   examples:[
+     {jp:"今日（きょう）は 暑（あつ）いですね。", en:"It's hot today, isn't it?"}
+   ]},
+  {p:"よ", role:"Asserting new information", level:"N5",
+   explain:"Added at the end of a sentence to emphasize information the listener may not already know — similar to \"I tell you\" or \"you know\".",
+   pattern:"Sentence + よ",
+   examples:[
+     {jp:"もう 12時（じ）ですよ。", en:"It's already 12, you know."}
+   ]},
+  {p:"だけ", role:"Only, just", level:"N5",
+   explain:"Attaches directly to a noun or quantity to mean \"only, just\" — a neutral, simple limiter.",
+   pattern:"N（＋quantity）+ だけ",
+   examples:[
+     {jp:"三人（さんにん）だけ います。", en:"There are only three people."}
+   ]},
+  {p:"しか〜ない", role:"Only (emphatic, negative)", level:"N4",
+   explain:"Stronger than だけ, and always paired with a negative verb — often carries a nuance of \"that's not enough\".",
+   pattern:"N + しか + negative verb",
+   examples:[
+     {jp:"500円（えん）しか ありません。", en:"I only have 500 yen (and that's a problem)."}
+   ]},
+  {p:"ばかり", role:"Only / nothing but / just did", level:"N4",
+   explain:"(1) After a noun or quantity: \"nothing but\". (2) After a た-form verb: \"just did (and nothing else lately)\", often with a mildly critical nuance.",
+   pattern:"N + ばかり　／　Vた-form + ばかり",
+   examples:[
+     {jp:"甘（あま）い物（もの）ばかり 食（た）べています。", en:"All I eat is sweet things."},
+     {jp:"今（いま） 起（お）きたばかりです。", en:"I just woke up."}
+   ]},
+  {p:"でも", role:"Even / but", level:"N4",
+   explain:"After a noun, means \"even\" (子供（こども）でもわかります = even a child would understand). At the start of a sentence, it means \"but, however\".",
+   pattern:"N + でも　／　でも、Sentence",
+   examples:[
+     {jp:"忙（いそが）しい時（とき）でも、朝（あさ）ごはんを 食（た）べます。", en:"Even when I'm busy, I eat breakfast."}
+   ]},
+  {p:"けど／けれど", role:"But (casual contrast)", level:"N4",
+   explain:"Connects two clauses in contrast — a softer, more conversational version of が used as \"but\".",
+   pattern:"Clause1 + けど、Clause2",
+   examples:[
+     {jp:"高（たか）いけど、買（か）います。", en:"It's expensive, but I'll buy it."}
+   ]},
+  {p:"し", role:"Listing parallel reasons", level:"N4",
+   explain:"Lists two or more reasons or facts side by side, often implying \"and what's more...\" leading to a conclusion.",
+   pattern:"Clause1（plain）+ し、Clause2（plain）+ し、…",
+   examples:[
+     {jp:"この 部屋（へや）は 静（しず）かだし、広（ひろ）いし、気（き）に 入（い）っています。", en:"This room is quiet, and it's spacious too — I really like it."}
+   ]},
+  {p:"ので", role:"Because (softer, more objective)", level:"N4",
+   explain:"Similar to から, but presents the reason as a more objective fact rather than a personal opinion — common in polite requests and formal explanations.",
+   pattern:"plain form + ので、Clause2",
+   examples:[
+     {jp:"雨（あめ）が 降（ふ）っているので、傘（かさ）を 持（も）って行（い）ってください。", en:"Since it's raining, please take an umbrella."}
+   ]},
+  {p:"のに", role:"Although / even though", level:"N4",
+   explain:"Expresses contrast between two clauses where the result is unexpected or disappointing — often carries a nuance of surprise, frustration, or regret.",
+   pattern:"plain form + のに、Clause2",
+   examples:[
+     {jp:"一生懸命（いっしょうけんめい） 勉強（べんきょう）したのに、テストが できませんでした。", en:"Even though I studied hard, I couldn't do well on the test."}
+   ]}
+];
+
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+const STORE_KEY = "nihongo-daily-progress";
+let PROGRESS = null;
+
+/* ------------------------------------------------------------
+   FIREBASE (optional) — enables email/password login and syncs
+   progress across any device/browser you log into.
+
+   TO ENABLE: create a free Firebase project (see the setup guide),
+   then paste your project's config values below, replacing the
+   placeholders. Leave it as-is and the app works exactly as before
+   (Claude.ai storage or this-browser-only storage) — nothing breaks
+   if you skip this.
+   ------------------------------------------------------------ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDnty7QwjaljeNfYJW-Y2xAi6sKPQtyA9Y",
+  authDomain: "nihongojouzu-65aee.firebaseapp.com",
+  projectId: "nihongojouzu-65aee",
+  storageBucket: "nihongojouzu-65aee.firebasestorage.app",
+  messagingSenderId: "1071331888412",
+  appId: "1:1071331888412:web:0b0eee603953e7cea1bed9",
+  measurementId: "G-M5CG8V9GQ4"
+};
+
+const FIREBASE_ENABLED = typeof firebase !== 'undefined'
+  && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
+
+// FIREBASE_READY reflects whether initialization actually succeeded (not just
+// whether config values look filled in). If anything about the config is
+// wrong, or an SDK script failed to load, we fall back gracefully to
+// browser-only storage instead of the whole app failing to load.
+let fbAuth = null, fbDb = null, fbUser = null, FIREBASE_READY = false, FIREBASE_INIT_ERROR = null;
+if(FIREBASE_ENABLED){
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    FIREBASE_READY = true;
+  }catch(e){
+    console.error('Firebase failed to initialize — check FIREBASE_CONFIG values.', e);
+    FIREBASE_INIT_ERROR = e;
+    FIREBASE_READY = false;
+  }
+}
+
+// Two possible save destinations depending on where this file is running:
+//  - "cloud": Claude.ai's built-in artifact storage (window.storage) — works when
+//             this file is opened/rendered inside a Claude.ai conversation.
+//  - "local": the browser's own localStorage — works when this .html file is
+//             downloaded and opened directly (double-clicked, file://, or hosted).
+// We detect which is available at load time and use that one consistently.
+let STORAGE_MODE = 'none';
+
+function detectStorageMode(){
+  if(FIREBASE_READY && fbUser){
+    return 'firebase';
+  }
+  if(typeof window!=='undefined' && window.storage && typeof window.storage.get==='function'){
+    return 'cloud';
+  }
+  try{
+    const testKey = '__nihongo_test__';
+    window.localStorage.setItem(testKey, '1');
+    window.localStorage.removeItem(testKey);
+    return 'local';
+  }catch(e){
+    return 'none';
+  }
+}
+
+function defaultProgress(){
+  return {
+    currentLesson: 1,
+    seen: {},              // qKey -> {count, correct}
+    dailyLog: {},           // date -> {qids:[], completed:bool}
+    capstoneStatus: {},     // lessonNum -> 'locked'|'available'|'done'
+    capstoneResults: {},    // lessonNum -> {sentenceIdx: 'good'|'retry'}
+    streak: 0,
+    lastCompletedDate: null,
+    totalStamps: 0,
+    stampDates: []
+  };
+}
+
+async function loadProgress(){
+  STORAGE_MODE = detectStorageMode();
+  let loaded = null;
+  try{
+    if(STORAGE_MODE === 'firebase'){
+      const snap = await fbDb.collection('progress').doc(fbUser.uid).get();
+      loaded = (snap.exists && snap.data().payload) ? JSON.parse(snap.data().payload) : null;
+    } else if(STORAGE_MODE === 'cloud'){
+      const res = await window.storage.get(STORE_KEY, false);
+      loaded = (res && res.value) ? JSON.parse(res.value) : null;
+    } else if(STORAGE_MODE === 'local'){
+      const raw = window.localStorage.getItem(STORE_KEY);
+      loaded = raw ? JSON.parse(raw) : null;
+    }
+  }catch(e){
+    // Read failed — fall back to a local safety-net copy if one exists,
+    // so a backend hiccup doesn't look like lost progress.
+    try{
+      const raw = window.localStorage.getItem(STORE_KEY + '-safetynet');
+      loaded = raw ? JSON.parse(raw) : null;
+    }catch(e2){ /* no safety net available either */ }
+  }
+  PROGRESS = loaded || defaultProgress();
+  if(!PROGRESS.capstoneStatus[1]) PROGRESS.capstoneStatus[1] = 'locked';
+}
+
+let SAVE_STATUS = 'ok'; // 'ok' | 'retrying' | 'fallback'
+
+function wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+async function saveProgress(){
+  const payload = JSON.stringify(PROGRESS);
+
+  // Always keep a silent local safety-net copy, regardless of primary storage
+  // mode, so a transient server error never risks losing a session's progress.
+  try{ window.localStorage.setItem(STORE_KEY + '-safetynet', payload); }catch(e){ /* ignore */ }
+
+  if(STORAGE_MODE === 'firebase'){
+    for(let attempt=1; attempt<=2; attempt++){
+      try{
+        await fbDb.collection('progress').doc(fbUser.uid).set({payload, updatedAt: Date.now()});
+        SAVE_STATUS = 'ok';
+        updateSaveStatusUI();
+        return;
+      }catch(e){
+        if(attempt===1){
+          await wait(600);
+        } else {
+          console.warn('Sync temporarily unavailable, kept locally instead', e);
+          SAVE_STATUS = 'fallback';
+          updateSaveStatusUI();
+        }
+      }
+    }
+    return;
+  }
+
+  if(STORAGE_MODE === 'local'){
+    try{
+      window.localStorage.setItem(STORE_KEY, payload);
+      SAVE_STATUS = 'ok';
+    }catch(e){
+      console.warn('Local save failed', e);
+      SAVE_STATUS = 'fallback';
+    }
+    updateSaveStatusUI();
+    return;
+  }
+
+  if(STORAGE_MODE === 'cloud'){
+    for(let attempt=1; attempt<=2; attempt++){
+      try{
+        await window.storage.set(STORE_KEY, payload, false);
+        SAVE_STATUS = 'ok';
+        updateSaveStatusUI();
+        return;
+      }catch(e){
+        if(attempt===1){
+          await wait(600);
+        } else {
+          // Both attempts failed — likely a transient backend issue. Progress is
+          // still safe in the local safety-net copy above; just let the person
+          // know saving is temporarily delayed rather than showing a raw error.
+          console.warn('Cloud save temporarily unavailable, kept locally instead', e);
+          SAVE_STATUS = 'fallback';
+          updateSaveStatusUI();
+        }
+      }
+    }
+    return;
+  }
+  // STORAGE_MODE 'none' — nothing persistent available; already safety-netted above if possible.
+}
+
+function updateSaveStatusUI(){
+  const footer = document.getElementById('storageFooter');
+  if(!footer) return;
+  if(SAVE_STATUS === 'fallback'){
+    footer.innerHTML = `ONE PAGE, YOUR STORY 訳 &middot; SYNC DELAYED &mdash; KEPT SAFE LOCALLY, WILL RETRY`;
+  } else {
+    const msg = STORAGE_MODE==='firebase' ? `SYNCED TO YOUR ACCOUNT (${fbUser.email})`
+      : STORAGE_MODE==='cloud' ? 'PROGRESS SAVES TO YOUR CLAUDE.AI ACCOUNT'
+      : STORAGE_MODE==='local' ? 'PROGRESS SAVES TO THIS BROWSER ONLY'
+      : 'STORAGE UNAVAILABLE &mdash; PROGRESS WON\u2019T PERSIST';
+    footer.innerHTML = `ONE PAGE, YOUR STORY 訳 &middot; ${msg}`;
+  }
+}
+
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(PROGRESS, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nihongo-daily-backup-${todayStr()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(typeof parsed !== 'object' || parsed===null) throw new Error('Invalid file');
+      PROGRESS = Object.assign(defaultProgress(), parsed);
+      await saveProgress();
+      render();
+      alert('Progress restored from backup.');
+    }catch(err){
+      alert("Couldn't read that file — make sure it's a Nihongo Daily backup .json.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+}
+function dateSeed(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+  return h;
+}
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = (t + Math.imul(t ^ t >>> 7, 61 | t)) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+function shuffle(arr, rand){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(rand()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function allQuestionsUpTo(lessonNum){
+  const out = [];
+  LESSONS.filter(l=>l.n<=lessonNum).forEach(l=>{
+    l.q.forEach((q,i)=> out.push({...q, lesson:l.n, qid:l.n+"-"+i}));
+  });
+  return out;
+}
+function lessonQuestionIds(lessonNum){
+  const l = LESSONS.find(x=>x.n===lessonNum);
+  return l.q.map((q,i)=> l.n+"-"+i);
+}
+function lessonFullySeen(lessonNum){
+  return lessonQuestionIds(lessonNum).every(qid => PROGRESS.seen[qid] && PROGRESS.seen[qid].count>0);
+}
+function getTodaysSet(){
+  const date = todayStr();
+  if(PROGRESS.dailyLog[date]) return PROGRESS.dailyLog[date];
+  const pool = allQuestionsUpTo(PROGRESS.currentLesson);
+  const rand = mulberry32(dateSeed(date));
+  const shuffled = shuffle(pool, rand);
+  const count = Math.min(12, shuffled.length);
+  const picked = shuffled.slice(0,count).map(q=>q.qid);
+  PROGRESS.dailyLog[date] = { qids: picked, answers:{}, completed:false };
+  saveProgress();
+  return PROGRESS.dailyLog[date];
+}
+function qByQid(qid){
+  const [lessonNum, idx] = qid.split("-").map(Number);
+  const l = LESSONS.find(x=>x.n===lessonNum);
+  return {...l.q[idx], lesson:lessonNum, qid};
+}
+
+// Builds an on-demand practice round for the current lesson, with no daily limit.
+// Prioritizes questions from the current lesson not yet seen (so capstones unlock
+// fast); once everything in the lesson has been seen at least once, it recycles
+// the same lesson's questions for extra reinforcement rounds.
+function buildPracticeSet(){
+  const cur = PROGRESS.currentLesson;
+  const ids = lessonQuestionIds(cur);
+  const unseen = ids.filter(qid => !PROGRESS.seen[qid] || PROGRESS.seen[qid].count===0);
+  const pool = unseen.length>0 ? unseen : ids;
+  return pool.slice().sort(()=>Math.random()-0.5);
+}
+function updateStreakOnComplete(){
+  const date = todayStr();
+  if(PROGRESS.lastCompletedDate === date) return;
+  const yest = new Date(); yest.setDate(yest.getDate()-1);
+  const yestStr = yest.getFullYear()+"-"+String(yest.getMonth()+1).padStart(2,'0')+"-"+String(yest.getDate()).padStart(2,'0');
+  if(PROGRESS.lastCompletedDate === yestStr){
+    PROGRESS.streak += 1;
+  } else {
+    PROGRESS.streak = 1;
+  }
+  PROGRESS.lastCompletedDate = date;
+  if(!PROGRESS.stampDates.includes(date)){
+    PROGRESS.stampDates.push(date);
+    PROGRESS.totalStamps += 1;
+  }
+}
+function checkLessonUnlocks(){
+  const cur = PROGRESS.currentLesson;
+  if(lessonFullySeen(cur) && (!PROGRESS.capstoneStatus[cur] || PROGRESS.capstoneStatus[cur]==='locked')){
+    PROGRESS.capstoneStatus[cur] = 'available';
+  }
+}
+function isCapstoneDone(lessonNum){
+  return PROGRESS.capstoneStatus[lessonNum] === 'done';
+}
+function completeCapstone(lessonNum){
+  PROGRESS.capstoneStatus[lessonNum] = 'done';
+  if(lessonNum === PROGRESS.currentLesson && lessonNum < 25){
+    PROGRESS.currentLesson = lessonNum + 1;
+    if(!PROGRESS.capstoneStatus[lessonNum+1]) PROGRESS.capstoneStatus[lessonNum+1] = 'locked';
+  }
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+let activeTab = 'today';
+let quizState = null; // {qids, idx, mode:'daily'|'practice', answers}
+let capstoneState = null; // {lessonNum, idx, showAnswer}
+
+const main = document.getElementById('main');
+
+function setTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('nav.tabs button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===tab);
+  });
+  quizState = null;
+  capstoneState = null;
+  render();
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>{
+  b.addEventListener('click', ()=> setTab(b.dataset.tab));
+});
+
+function render(){
+  document.getElementById('streakNum').textContent = PROGRESS.streak;
+  updateSaveStatusUI();
+  if(activeTab==='today') renderToday();
+  else if(activeTab==='lessons') renderLessons();
+  else if(activeTab==='grammar') renderGrammar();
+  else if(activeTab==='stats') renderStats();
+}
+
+function renderToday(){
+  checkLessonUnlocks();
+  const date = todayStr();
+  const set = getTodaysSet();
+  const curLesson = LESSONS.find(l=>l.n===PROGRESS.currentLesson);
+
+  if(quizState){
+    renderQuizQuestion();
+    return;
+  }
+
+  let stampsHtml = '';
+  const last14 = [];
+  for(let i=13;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const ds = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+    last14.push(ds);
+  }
+  last14.forEach(ds=>{
+    const filled = PROGRESS.stampDates.includes(ds);
+    const day = Number(ds.split('-')[2]);
+    stampsHtml += `<div class="stamp ${filled?'filled':'empty'}">${filled?'済':day}</div>`;
+  });
+
+  const answeredCount = Object.keys(set.answers||{}).length;
+  let dotsHtml = '';
+  set.qids.forEach(qid=>{
+    const ans = set.answers ? set.answers[qid] : null;
+    let cls = 'dot';
+    if(ans!==undefined && ans!==null){ cls += ans.correct ? ' done' : ' wrong'; }
+    dotsHtml += `<div class="${cls}"></div>`;
+  });
+
+  const capstoneAvailable = PROGRESS.capstoneStatus[PROGRESS.currentLesson] === 'available';
+  const allDone = set.completed;
+  const lessonRemaining = lessonQuestionIds(PROGRESS.currentLesson).filter(qid => !PROGRESS.seen[qid] || PROGRESS.seen[qid].count===0).length;
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Today &mdash; ${date}</div>
+      <p class="muted">Lesson ${PROGRESS.currentLesson} in rotation &middot; ${curLesson.title}</p>
+      <div class="dots">${dotsHtml}</div>
+      ${ allDone
+        ? `<p class="muted" style="margin-top:14px;">You've completed today's ${set.qids.length} questions${capstoneAvailable ? ' &mdash; nice work. Take on the lesson capstone below whenever you\'re ready.' : '.'}</p>`
+        : `<button class="primary" id="startQuizBtn" style="margin-top:8px;">${answeredCount>0 ? 'Continue Quiz' : "Start Today's Quiz"}</button>`
+      }
+      <div class="stampcard">${stampsHtml}</div>
+      <p class="muted" style="font-size:11px;">Stamp trail &middot; last 14 days</p>
+    </div></div>
+
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:17px;">Keep Going</div>
+      <p class="muted">Not limited to once a day &mdash; drill Lesson ${PROGRESS.currentLesson} whenever you like to unlock its capstone and move on to the next lesson.</p>
+      <button class="ghost" id="practiceBtn" style="margin-top:10px;">${lessonRemaining>0 ? `Practice Lesson ${PROGRESS.currentLesson} (${lessonRemaining} new)` : `Review Lesson ${PROGRESS.currentLesson} Again`}</button>
+    </div></div>
+
+    ${capstoneAvailable ? `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Lesson ${PROGRESS.currentLesson} Capstone Unlocked</div>
+      <p class="muted">${curLesson.title} &middot; Translate short English sentences into Japanese using this lesson's grammar and vocabulary.</p>
+      <button class="primary" id="startCapstoneBtn" style="margin-top:10px;">Begin Capstone</button>
+    </div></div>` : '' }
+
+    ${ (PROGRESS.currentLesson>1 || Object.values(PROGRESS.capstoneStatus).some(s=>s==='done')) ? `
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:16px;">Progress</div>
+      <p class="muted">Lessons completed: ${Object.values(PROGRESS.capstoneStatus).filter(s=>s==='done').length} / 25 &middot; Currently on Lesson ${PROGRESS.currentLesson}</p>
+    </div></div>` : ''}
+  `;
+
+  const startBtn = document.getElementById('startQuizBtn');
+  if(startBtn) startBtn.addEventListener('click', ()=>{
+    quizState = { qids: set.qids, idx: answeredCount, mode:'daily', answers:{} };
+    renderQuizQuestion();
+  });
+  const practiceBtn = document.getElementById('practiceBtn');
+  if(practiceBtn) practiceBtn.addEventListener('click', ()=>{
+    quizState = { qids: buildPracticeSet(), idx: 0, mode:'practice', answers:{} };
+    renderQuizQuestion();
+  });
+  const capBtn = document.getElementById('startCapstoneBtn');
+  if(capBtn) capBtn.addEventListener('click', ()=>{
+    capstoneState = { lessonNum: PROGRESS.currentLesson, idx:0, showAnswer:false };
+    renderCapstone();
+  });
+}
+
+function renderQuizQuestion(){
+  const isDaily = quizState.mode === 'daily';
+  const dailySet = isDaily ? PROGRESS.dailyLog[todayStr()] : null;
+
+  if(quizState.idx >= quizState.qids.length){
+    if(isDaily){
+      dailySet.completed = true;
+      updateStreakOnComplete();
+    }
+    checkLessonUnlocks();
+    saveProgress();
+    quizState = null;
+    renderToday();
+    return;
+  }
+  const qid = quizState.qids[quizState.idx];
+  const q = qByQid(qid);
+  const alreadyAnswered = quizState.answers[qid];
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="qmeta">Lesson ${q.lesson} &middot; ${q.type} &middot; ${isDaily ? 'Today\u2019s Quiz' : 'Practice Round'} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}</div>
+      <p class="qprompt">${q.prompt}</p>
+      <div class="choices" id="choicesWrap"></div>
+      <div id="feedbackArea"></div>
+      <div class="nextbar" id="nextBar" style="display:none;">
+        <button class="primary" id="nextBtn">Next &rarr;</button>
+      </div>
+    </div></div>
+  `;
+  const wrap = document.getElementById('choicesWrap');
+  q.choices.forEach((choiceText, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', ()=> selectAnswer(qid, q, i));
+    wrap.appendChild(btn);
+  });
+
+  if(alreadyAnswered){
+    lockChoices(q, alreadyAnswered.picked);
+  }
+}
+
+function selectAnswer(qid, q, pickedIdx){
+  const isDaily = quizState.mode === 'daily';
+  const correct = pickedIdx === q.a;
+  quizState.answers[qid] = { picked: pickedIdx, correct };
+
+  if(isDaily){
+    const dailySet = PROGRESS.dailyLog[todayStr()];
+    if(!dailySet.answers) dailySet.answers = {};
+    dailySet.answers[qid] = { picked: pickedIdx, correct };
+  }
+
+  if(!PROGRESS.seen[qid]) PROGRESS.seen[qid] = {count:0, correct:0};
+  PROGRESS.seen[qid].count += 1;
+  if(correct) PROGRESS.seen[qid].correct += 1;
+
+  saveProgress();
+  lockChoices(q, pickedIdx);
+}
+
+function lockChoices(q, pickedIdx){
+  const wrap = document.getElementById('choicesWrap');
+  Array.from(wrap.children).forEach((btn, i)=>{
+    btn.disabled = true;
+    if(i===q.a) btn.classList.add('correct');
+    else if(i===pickedIdx) btn.classList.add('incorrect');
+  });
+  document.getElementById('feedbackArea').innerHTML = `<div class="feedback-note">${q.note}</div>`;
+  document.getElementById('nextBar').style.display = 'flex';
+  document.getElementById('nextBtn').onclick = ()=>{
+    quizState.idx += 1;
+    renderQuizQuestion();
+  };
+}
+
+function renderCapstone(){
+  const lesson = LESSONS.find(l=>l.n===capstoneState.lessonNum);
+  const sentence = lesson.cap[capstoneState.idx];
+  const isLast = capstoneState.idx === lesson.cap.length - 1;
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="qmeta">Lesson ${lesson.n} Capstone &middot; ${capstoneState.idx+1} of ${lesson.cap.length}</div>
+      <p class="en-sentence">&ldquo;${sentence.en}&rdquo;</p>
+      <textarea id="capInput" placeholder="Type your Japanese translation here..."></textarea>
+      <div style="margin-top:14px;" id="capActionArea">
+        <button class="primary" id="revealBtn">Show Model Answer</button>
+      </div>
+      <div id="capAnswerArea"></div>
+    </div></div>
+  `;
+
+  document.getElementById('revealBtn').addEventListener('click', ()=>{
+    document.getElementById('capAnswerArea').innerHTML = `
+      <div class="model-answer">
+        <div class="jp">${sentence.jp}</div>
+        <div class="note">${sentence.note}</div>
+      </div>
+      <div class="selfgrade">
+        <button class="ghost" id="gotItBtn">✓ Got it right</button>
+        <button class="ghost" id="retryBtn">Needs more work</button>
+      </div>
+    `;
+    document.getElementById('capActionArea').innerHTML = '';
+    document.getElementById('gotItBtn').addEventListener('click', ()=> gradeCapstone(true));
+    document.getElementById('retryBtn').addEventListener('click', ()=> gradeCapstone(false));
+  });
+
+  function gradeCapstone(good){
+    if(!PROGRESS.capstoneResults[lesson.n]) PROGRESS.capstoneResults[lesson.n] = {};
+    PROGRESS.capstoneResults[lesson.n][capstoneState.idx] = good ? 'good' : 'retry';
+    saveProgress();
+    if(isLast){
+      completeCapstone(lesson.n);
+      saveProgress();
+      capstoneState = null;
+      setTab('today');
+    } else {
+      capstoneState.idx += 1;
+      renderCapstone();
+    }
+  }
+}
+
+function renderLessons(){
+  let rows = '';
+  LESSONS.forEach(l=>{
+    const status = PROGRESS.capstoneStatus[l.n] || (l.n < PROGRESS.currentLesson ? 'done' : (l.n===PROGRESS.currentLesson ? 'locked' : 'locked'));
+    let label = 'Locked', cls = '';
+    if(status==='done'){ label='Complete'; cls='done'; }
+    else if(status==='available'){ label='Capstone Ready'; cls='avail'; }
+    else if(l.n===PROGRESS.currentLesson){ label='In Progress'; cls='avail'; }
+    const rowCls = status==='done' ? 'done' : (l.n<=PROGRESS.currentLesson ? 'unlocked' : '');
+    rows += `
+      <div class="lesson-row ${rowCls}" data-lesson="${l.n}">
+        <div class="lesson-num">${String(l.n).padStart(2,'0')}</div>
+        <div class="lesson-title"><b>${l.title}</b><span>${l.topic}</span></div>
+        <div class="lesson-status ${cls}">${label}</div>
+      </div>
+    `;
+  });
+  main.innerHTML = `<div class="card"><div class="card-inner">
+    <div class="section-title">25 Lessons</div>
+    <p class="muted">Tap an unlocked lesson to review its capstone.</p>
+    ${rows}
+  </div></div>`;
+
+  document.querySelectorAll('.lesson-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const n = Number(row.dataset.lesson);
+      const status = PROGRESS.capstoneStatus[n];
+      if(status==='available'){
+        capstoneState = { lessonNum:n, idx:0, showAnswer:false };
+        activeTab = 'today';
+        document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab==='today'));
+        renderCapstone();
+      } else if(status==='done'){
+        capstoneState = { lessonNum:n, idx:0, showAnswer:false };
+        activeTab = 'today';
+        document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab==='today'));
+        renderCapstone();
+      }
+    });
+  });
+}
+
+let openParticle = null; // currently expanded particle in the accordion
+
+function renderGrammar(){
+  let structureHtml = SENTENCE_STRUCTURE.map(s => `
+    <div class="gstruct">
+      <div class="gstruct-title">${s.title}</div>
+      <p class="muted" style="margin:6px 0 10px;">${s.body}</p>
+      <div class="gexample">
+        <div class="gexample-jp">${s.example.jp}</div>
+        <div class="gexample-en">${s.example.en}</div>
+        <div class="gexample-note">${s.example.note}</div>
+      </div>
+    </div>
+  `).join('');
+
+  let particleRows = PARTICLES.map((pt, i) => {
+    const open = openParticle === i;
+    const examplesHtml = pt.examples.map(ex => `
+      <div class="gexample">
+        <div class="gexample-jp">${ex.jp}</div>
+        <div class="gexample-en">${ex.en}</div>
+      </div>
+    `).join('');
+    return `
+      <div class="particle-row">
+        <button class="particle-head" data-idx="${i}">
+          <span class="particle-char">${pt.p}</span>
+          <span class="particle-role">${pt.role}</span>
+          <span class="particle-level">${pt.level}</span>
+          <span class="particle-caret">${open ? '\u2212' : '+'}</span>
+        </button>
+        <div class="particle-body" style="display:${open?'block':'none'};">
+          <p class="muted" style="margin:10px 0;">${pt.explain}</p>
+          <div class="gpattern">${pt.pattern}</div>
+          ${examplesHtml}
+          ${pt.confuse ? `<div class="feedback-note" style="margin-top:12px;">${pt.confuse}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Sentence Structure Basics</div>
+      <p class="muted">The core shape of a Japanese sentence, before diving into individual particles.</p>
+      ${structureHtml}
+    </div></div>
+
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Particle Reference</div>
+      <p class="muted">Tap a particle to see how it's used, with example sentences. Covers Minna no Nihongo I (Lessons 1&ndash;25) plus standard JLPT N4 particles.</p>
+      <div class="particle-list">${particleRows}</div>
+    </div></div>
+  `;
+
+  document.querySelectorAll('.particle-head').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = Number(btn.dataset.idx);
+      openParticle = (openParticle === idx) ? null : idx;
+      renderGrammar();
+    });
+  });
+}
+
+function renderStats(){
+  const seenIds = Object.keys(PROGRESS.seen);
+  let totalAttempts=0, totalCorrect=0;
+  seenIds.forEach(id=>{
+    totalAttempts += PROGRESS.seen[id].count;
+    totalCorrect += PROGRESS.seen[id].correct;
+  });
+  const acc = totalAttempts>0 ? Math.round(100*totalCorrect/totalAttempts) : 0;
+  const lessonsDone = Object.values(PROGRESS.capstoneStatus).filter(s=>s==='done').length;
+
+  let barsHtml = '';
+  LESSONS.filter(l=>l.n<=PROGRESS.currentLesson).forEach(l=>{
+    const ids = lessonQuestionIds(l.n);
+    let att=0, cor=0;
+    ids.forEach(id=>{
+      if(PROGRESS.seen[id]){ att+=PROGRESS.seen[id].count; cor+=PROGRESS.seen[id].correct; }
+    });
+    const pct = att>0 ? Math.round(100*cor/att) : 0;
+    barsHtml += `
+      <div class="barrow">
+        <div class="lname">L${l.n}</div>
+        <div class="barwrap"><div class="barfill" style="width:${pct}%"></div></div>
+        <div style="width:34px; text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px;">${pct}%</div>
+      </div>
+    `;
+  });
+
+  main.innerHTML = `
+    <div class="statgrid">
+      <div class="statbox"><div class="num">${PROGRESS.streak}</div><div class="lbl">Day Streak</div></div>
+      <div class="statbox"><div class="num">${acc}%</div><div class="lbl">Overall Accuracy</div></div>
+      <div class="statbox"><div class="num">${lessonsDone}/25</div><div class="lbl">Lessons Complete</div></div>
+      <div class="statbox"><div class="num">${PROGRESS.totalStamps}</div><div class="lbl">Total Stamps</div></div>
+    </div>
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:17px;">Mastery by Lesson</div>
+      <p class="muted">Accuracy across all attempts so far, current lesson and earlier.</p>
+      <div style="margin-top:16px;">${barsHtml || '<p class="muted">Answer some questions to see lesson breakdowns here.</p>'}</div>
+    </div></div>
+
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:17px;">Backup &amp; Restore</div>
+      <p class="muted">
+        ${STORAGE_MODE==='local'
+          ? "Progress currently saves to this browser's storage. Clearing your browser data will erase it, so download a backup now and then to be safe."
+          : STORAGE_MODE==='cloud'
+            ? "Progress saves to your Claude.ai account automatically. A backup file is still handy if you want to move your progress to a locally-opened copy of this file."
+            : "This browser doesn't support saved storage right now, so progress will reset when you close the page. Download a backup before closing so you can restore it next time."}
+      </p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+        <button class="ghost" id="exportBtn">Download Backup (.json)</button>
+        <label class="ghost" for="importFile" style="display:inline-block; cursor:pointer;">Restore From Backup</label>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+      </div>
+    </div></div>
+  `;
+
+  document.getElementById('exportBtn').addEventListener('click', exportBackup);
+  document.getElementById('importFile').addEventListener('change', (e)=>{
+    if(e.target.files && e.target.files[0]) importBackup(e.target.files[0]);
+  });
+}
+
+/* ============================================================
+   ACCOUNT / SYNC BAR (Firebase email+password login)
+   ============================================================ */
+let showAuthForm = false;
+let authFormMode = 'login'; // 'login' | 'signup'
+let authError = '';
+let authBusy = false;
+
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(!bar) return;
+
+  if(!FIREBASE_ENABLED){
+    bar.innerHTML = '';
+    return;
+  }
+
+  if(FIREBASE_ENABLED && !FIREBASE_READY){
+    bar.innerHTML = `
+      <div class="authbar" style="border-color:var(--vermillion); color:var(--vermillion);">
+        <span>Sync setup error — check your FIREBASE_CONFIG values in the file (see setup guide).${FIREBASE_INIT_ERROR ? ' Details: ' + (FIREBASE_INIT_ERROR.message || FIREBASE_INIT_ERROR) : ''}</span>
+      </div>
+    `;
+    return;
+  }
+
+  if(fbUser){
+    bar.innerHTML = `
+      <div class="authbar">
+        <span>Signed in as <b>${fbUser.email}</b> &middot; syncing across devices</span>
+        <button class="linklike" id="signOutBtn">Sign out</button>
+      </div>
+    `;
+    document.getElementById('signOutBtn').addEventListener('click', ()=> fbAuth.signOut());
+    return;
+  }
+
+  if(!showAuthForm){
+    bar.innerHTML = `
+      <div class="authbar">
+        <span>Not signed in &mdash; progress is only saved on this device</span>
+        <button class="linklike" id="openAuthBtn">Sign in to sync</button>
+      </div>
+    `;
+    document.getElementById('openAuthBtn').addEventListener('click', ()=>{ showAuthForm = true; renderAuthBar(); });
+    return;
+  }
+
+  bar.innerHTML = `
+    <div class="card authcard"><div class="card-inner">
+      <div class="authtabs">
+        <button data-mode="login" class="${authFormMode==='login'?'active':''}">Log In</button>
+        <button data-mode="signup" class="${authFormMode==='signup'?'active':''}">Create Account</button>
+      </div>
+      <div class="authfield">
+        <label>Email</label>
+        <input type="email" id="authEmail" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="authfield">
+        <label>Password</label>
+        <input type="password" id="authPassword" autocomplete="${authFormMode==='signup'?'new-password':'current-password'}" placeholder="At least 6 characters">
+      </div>
+      ${authError ? `<p class="autherror">${authError}</p>` : ''}
+      <div style="display:flex; gap:10px; margin-top:6px;">
+        <button class="primary" id="authSubmitBtn">${authBusy ? 'Please wait…' : (authFormMode==='login' ? 'Log In' : 'Create Account')}</button>
+        <button class="ghost" id="authCancelBtn">Cancel</button>
+      </div>
+      <p class="authnote">Your account only unlocks sync for this quiz app &mdash; use any email and password you'll remember. There's no password recovery yet, so keep it somewhere safe.</p>
+    </div></div>
+  `;
+  document.querySelectorAll('.authtabs button').forEach(b=>{
+    b.addEventListener('click', ()=>{ authFormMode = b.dataset.mode; authError=''; renderAuthBar(); });
+  });
+  document.getElementById('authCancelBtn').addEventListener('click', ()=>{ showAuthForm=false; authError=''; renderAuthBar(); });
+  document.getElementById('authSubmitBtn').addEventListener('click', submitAuthForm);
+}
+
+async function submitAuthForm(){
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  authError = '';
+  if(!email || !password){
+    authError = 'Please fill in both fields.';
+    renderAuthBar();
+    return;
+  }
+  authBusy = true;
+  renderAuthBar();
+  try{
+    if(authFormMode === 'signup'){
+      await fbAuth.createUserWithEmailAndPassword(email, password);
+    } else {
+      await fbAuth.signInWithEmailAndPassword(email, password);
+    }
+    showAuthForm = false;
+    authError = '';
+    // onAuthStateChanged below picks up the new session, reloads progress, and re-renders.
+  }catch(e){
+    authError = friendlyAuthError(e);
+  }
+  authBusy = false;
+  renderAuthBar();
+}
+
+function friendlyAuthError(e){
+  const code = e && e.code ? e.code : '';
+  if(code.includes('email-already-in-use')) return 'That email already has an account — try Log In instead.';
+  if(code.includes('wrong-password') || code.includes('user-not-found') || code.includes('invalid-credential')) return 'Email or password not recognized.';
+  if(code.includes('weak-password')) return 'Password should be at least 6 characters.';
+  if(code.includes('invalid-email')) return 'That email address doesn\u2019t look right.';
+  return 'Something went wrong — please try again.';
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function bootProgress(){
+  await loadProgress();
+  render();
+  renderAuthBar();
+  main.dataset.loaded = 'true';
+}
+
+function showFatalError(e){
+  console.error('Nihongo Daily failed to load:', e);
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Couldn't load the app</div>
+      <p class="muted" style="margin-top:8px;">${(e && e.message) ? e.message : 'An unexpected error occurred.'}</p>
+      <p class="muted" style="margin-top:10px;">Try reloading the page. If this keeps happening, open your browser's developer console (F12 or right-click → Inspect → Console) for the full error, or double-check the FIREBASE_CONFIG values in the file against the setup guide.</p>
+    </div></div>
+  `;
+}
+
+async function init(){
+  main.innerHTML = `<div class="empty-state"><div class="glyph">読</div>Loading your progress&hellip;</div>`;
+  renderAuthBar();
+  if(FIREBASE_READY){
+    fbAuth.onAuthStateChanged(async (user)=>{
+      try{
+        fbUser = user;
+        await bootProgress();
+      }catch(e){
+        showFatalError(e);
+      }
+    });
+  } else {
+    try{
+      await bootProgress();
+    }catch(e){
+      showFatalError(e);
+    }
+  }
+}
+init();
+</script>
+</body>
+</html>
