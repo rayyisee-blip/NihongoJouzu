@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>日々の学習 — Nihongo Daily</title>
+<link rel="icon" type="image/png" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#223A5E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nihongo Daily">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -432,12 +439,72 @@
     color:var(--indigo-2);
   }
 
+  /* ---------- N5 Textbook tab ---------- */
+  .tb-lesson{border-bottom:1px solid var(--line);}
+  .tb-lesson:last-child{border-bottom:none;}
+  .tb-lesson-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:none;
+    border:none;
+    padding:14px 4px;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+  }
+  .tb-lesson-num{
+    font-family:'Shippori Mincho',serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--indigo);
+    width:34px;
+    flex-shrink:0;
+  }
+  .tb-lesson-title-wrap{flex:1;}
+  .tb-lesson-title-wrap b{display:block; font-size:15px;}
+  .tb-lesson-title-wrap span{font-size:12px; color:var(--ink-soft);}
+  .tb-lesson-body{padding:4px 4px 20px;}
+  .tb-section-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--vermillion);
+    border-bottom:1px solid var(--vermillion-soft);
+    padding-bottom:6px;
+    margin-bottom:10px;
+  }
+  .tb-vocab-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 18px;
+  }
+  .tb-vocab-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px dotted var(--line);
+    font-size:14px;
+  }
+  .tb-vocab-jp{font-weight:600; flex-shrink:0;}
+  .tb-vocab-en{color:var(--ink-soft); text-align:right; font-size:13px;}
+  .tb-pattern{margin-bottom:16px;}
+  .tb-pattern-title{
+    font-family:'Shippori Mincho',serif;
+    font-weight:700;
+    font-size:16px;
+  }
+
   footer{text-align:center; margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:.05em;}
 
   @media (max-width:480px){
     h1{font-size:26px;}
     .qprompt{font-size:19px;}
     .statgrid{grid-template-columns:1fr;}
+    .tb-vocab-list{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -457,6 +524,7 @@
     <button data-tab="today" class="active">Today</button>
     <button data-tab="lessons">Lessons</button>
     <button data-tab="grammar">Grammar</button>
+    <button data-tab="textbook">N5 Textbook</button>
     <button data-tab="stats">Stats</button>
   </nav>
 
@@ -948,6 +1016,371 @@ const PARTICLES = [
    ]}
 ];
 
+/* ============================================================
+   N5 TEXTBOOK — extensive vocabulary + sentence patterns per lesson
+   Sourced from the Minna no Nihongo I curriculum (Lessons 1–25),
+   written to be read start-to-finish as a study reference.
+   ============================================================ */
+const TEXTBOOK = [
+{n:1,
+ vocab:[
+   {jp:"これ",en:"this (thing, near me)"},{jp:"それ",en:"that (thing, near you)"},{jp:"あれ",en:"that (thing, over there)"},
+   {jp:"私（わたし）",en:"I, me"},{jp:"あなた",en:"you"},{jp:"あの人（ひと）",en:"that person"},
+   {jp:"先生（せんせい）",en:"teacher"},{jp:"学生（がくせい）",en:"student"},{jp:"会社員（かいしゃいん）",en:"company employee"},
+   {jp:"医者（いしゃ）",en:"doctor"},{jp:"〜さん",en:"Mr./Ms. ~ (polite title)"},{jp:"何（なん・なに）",en:"what"},
+   {jp:"辞書（じしょ）",en:"dictionary"},{jp:"本（ほん）",en:"book"},{jp:"雑誌（ざっし）",en:"magazine"}
+ ],
+ patterns:[
+   {title:"N1は N2です",explain:"The basic identifying sentence: 'As for N1, it is N2.' は marks the topic, です politely states what it is.",
+    examples:[{jp:"私（わたし）は 学生（がくせい）です。",en:"I am a student."},{jp:"あの人（ひと）は 田中（たなか）さんです。",en:"That person is Mr. Tanaka."}]},
+   {title:"これ／それ／あれ",explain:"Demonstrative pronouns that stand alone as the subject — no noun follows them directly. これ = near the speaker, それ = near the listener, あれ = far from both.",
+    examples:[{jp:"これは 辞書（じしょ）です。",en:"This is a dictionary."},{jp:"あれは 私（わたし）の 本（ほん）です。",en:"That (over there) is my book."}]},
+   {title:"〜か（question）",explain:"Add か to the end of a です/ます sentence to turn it into a yes/no question. Answer with はい、そうです (yes) or いいえ、違（ちが）います (no).",
+    examples:[{jp:"これは 辞書（じしょ）ですか。",en:"Is this a dictionary?"},{jp:"はい、そうです。／いいえ、違（ちが）います。",en:"Yes, it is. / No, it isn't."}]},
+   {title:"〜も（also）",explain:"Replaces は when the same thing applies to another topic too — 'also, too'.",
+    examples:[{jp:"私（わたし）も 学生（がくせい）です。",en:"I am also a student."}]},
+   {title:"N1の N2",explain:"Connects two nouns: N1 describes or possesses N2. Very flexible — can mean possession, subject matter, or category.",
+    examples:[{jp:"これは 私（わたし）の 本（ほん）です。",en:"This is my book."},{jp:"それは 英語（えいご）の 雑誌（ざっし）です。",en:"That is an English-language magazine."}]}
+ ]},
+{n:2,
+ vocab:[
+   {jp:"この／その／あの",en:"this/that/that (+ noun)"},{jp:"万年筆（まんねんひつ）",en:"fountain pen"},{jp:"傘（かさ）",en:"umbrella"},
+   {jp:"かばん",en:"bag"},{jp:"靴（くつ）",en:"shoes"},{jp:"時計（とけい）",en:"watch, clock"},
+   {jp:"車（くるま）",en:"car"},{jp:"いくら",en:"how much (price)"},{jp:"〜円（えん）",en:"~ yen"},
+   {jp:"誰（だれ）",en:"who"},{jp:"違（ちが）います",en:"to be different / wrong"},{jp:"そうです",en:"that's right"}
+ ],
+ patterns:[
+   {title:"この／その／あの + N",explain:"Unlike これ/それ/あれ, these always attach directly to a following noun — 'this N', 'that N'.",
+    examples:[{jp:"この かばんは 私（わたし）のです。",en:"This bag is mine."},{jp:"その 時計（とけい）は 高（たか）いです。",en:"That watch (near you) is expensive."}]},
+   {title:"いくらですか",explain:"The standard way to ask a price.",
+    examples:[{jp:"この 万年筆（まんねんひつ）は いくらですか。",en:"How much is this fountain pen?"},{jp:"3,000円（えん）です。",en:"It's 3,000 yen."}]},
+   {title:"誰の〜ですか",explain:"誰の (whose) + noun asks who something belongs to.",
+    examples:[{jp:"これは 誰（だれ）の 傘（かさ）ですか。",en:"Whose umbrella is this?"}]},
+   {title:"N1（材料・国）の N2",explain:"N1のN2 can describe what something is made of or where it's from.",
+    examples:[{jp:"これは ドイツの 車（くるま）です。",en:"This is a German car."}]}
+ ]},
+{n:3,
+ vocab:[
+   {jp:"ここ／そこ／あそこ",en:"here / there / over there"},{jp:"どちら・こちら・そちら・あちら",en:"which way (polite) / this way / that way / that way over there"},
+   {jp:"教室（きょうしつ）",en:"classroom"},{jp:"事務所（じむしょ）",en:"office"},{jp:"電話（でんわ）",en:"telephone"},
+   {jp:"お手洗（てあら）い",en:"restroom"},{jp:"受付（うけつけ）",en:"reception desk"},{jp:"会議室（かいぎしつ）",en:"meeting room"},
+   {jp:"エレベーター",en:"elevator"},{jp:"階段（かいだん）",en:"stairs"},{jp:"国（くに）",en:"country"},{jp:"お国（くに）",en:"your country (polite)"}
+ ],
+ patterns:[
+   {title:"N（場所）は どこですか",explain:"Ask where something/someone is located.",
+    examples:[{jp:"お手洗（てあら）いは どこですか。",en:"Where is the restroom?"}]},
+   {title:"ここ／そこ／あそこ + です",explain:"Answer a location question with these place words.",
+    examples:[{jp:"事務所（じむしょ）は あそこです。",en:"The office is over there."}]},
+   {title:"N1は N2（場所）です",explain:"Straightforward 'N1 is at/in N2' sentence.",
+    examples:[{jp:"会議室（かいぎしつ）は 2階（かい）です。",en:"The meeting room is on the 2nd floor."}]},
+   {title:"どちら（polite どこ）",explain:"A more polite way to ask 'where' — often used with people's origins.",
+    examples:[{jp:"お国（くに）は どちらですか。",en:"Where are you from? (polite)"}]}
+ ]},
+{n:4,
+ vocab:[
+   {jp:"起（お）きます",en:"to wake up"},{jp:"寝（ね）ます",en:"to sleep"},{jp:"働（はたら）きます",en:"to work"},
+   {jp:"休（やす）みます",en:"to rest, take a day off"},{jp:"勉強（べんきょう）します",en:"to study"},{jp:"終（お）わります",en:"to end"},
+   {jp:"始（はじ）まります",en:"to begin"},{jp:"今（いま）",en:"now"},{jp:"〜時（じ）",en:"~ o'clock"},
+   {jp:"〜分（ふん・ぷん）",en:"~ minute(s)"},{jp:"午前（ごぜん）",en:"a.m."},{jp:"午後（ごご）",en:"p.m."},
+   {jp:"毎日（まいにち）",en:"every day"},{jp:"今日（きょう）",en:"today"},{jp:"明日（あした）",en:"tomorrow"},{jp:"昨日（きのう）",en:"yesterday"}
+ ],
+ patterns:[
+   {title:"今 何時ですか",explain:"Ask the current time.",
+    examples:[{jp:"今（いま） 何時（なんじ）ですか。",en:"What time is it now?"},{jp:"9時（じ）10分（ぷん）です。",en:"It's 9:10."}]},
+   {title:"Vます（現在・習慣・未来）",explain:"The polite non-past form covers habitual actions and future plans, not just 'right now'.",
+    examples:[{jp:"毎日（まいにち） 6時（じ）に 起（お）きます。",en:"I get up at 6 every day."}]},
+   {title:"N（時間）から N（時間）まで",explain:"Brackets a time range: 'from ~ to ~'.",
+    examples:[{jp:"9時（じ）から 5時（じ）まで 働（はたら）きます。",en:"I work from 9 to 5."}]},
+   {title:"N1と N2",explain:"A simple 'and' connecting two nouns.",
+    examples:[{jp:"土曜日（どようび）と 日曜日（にちようび）は 休（やす）みです。",en:"Saturday and Sunday are days off."}]},
+   {title:"Sね",explain:"Added at the end of a sentence to seek agreement or share an observation — 'isn't it?'",
+    examples:[{jp:"今日（きょう）は 暑（あつ）いですね。",en:"It's hot today, isn't it?"}]}
+ ]},
+{n:5,
+ vocab:[
+   {jp:"行（い）きます",en:"to go"},{jp:"来（き）ます",en:"to come"},{jp:"帰（かえ）ります",en:"to go home / return"},
+   {jp:"駅（えき）",en:"station"},{jp:"電車（でんしゃ）",en:"train"},{jp:"バス",en:"bus"},
+   {jp:"飛行機（ひこうき）",en:"airplane"},{jp:"自転車（じてんしゃ）",en:"bicycle"},{jp:"歩（ある）いて",en:"on foot, walking"},
+   {jp:"いつ",en:"when"},{jp:"先週（せんしゅう）",en:"last week"},{jp:"来週（らいしゅう）",en:"next week"},{jp:"一人（ひとり）で",en:"alone"}
+ ],
+ patterns:[
+   {title:"N（場所）へ 行きます／来ます／帰ります",explain:"へ marks the direction/destination of movement verbs.",
+    examples:[{jp:"来週（らいしゅう） 国（くに）へ 帰（かえ）ります。",en:"I'll return to my country next week."}]},
+   {title:"どこ［へ］も + negative",explain:"'Nowhere' — a question word + も + negative verb means a total negation.",
+    examples:[{jp:"週末（しゅうまつ）は どこ［へ］も 行（い）きませんでした。",en:"I didn't go anywhere over the weekend."}]},
+   {title:"N（乗り物）で",explain:"で marks the means of transportation.",
+    examples:[{jp:"新幹線（しんかんせん）で 行（い）きます。",en:"I'll go by bullet train."}]},
+   {title:"N（人）と",explain:"と marks a companion — 'together with'.",
+    examples:[{jp:"家族（かぞく）と 旅行（りょこう）します。",en:"I'm traveling with my family."}]},
+   {title:"いつ",explain:"Asks 'when', taking no particle before です/verbs.",
+    examples:[{jp:"いつ 日本（にほん）へ 来（き）ましたか。",en:"When did you come to Japan?"}]}
+ ]},
+{n:6,
+ vocab:[
+   {jp:"食（た）べます",en:"to eat"},{jp:"飲（の）みます",en:"to drink"},{jp:"吸（す）います",en:"to smoke"},
+   {jp:"見（み）ます",en:"to see, watch"},{jp:"聞（き）きます",en:"to listen, hear, ask"},{jp:"読（よ）みます",en:"to read"},
+   {jp:"書（か）きます",en:"to write"},{jp:"買（か）います",en:"to buy"},{jp:"撮（と）ります",en:"to take (a photo)"},
+   {jp:"します",en:"to do"},{jp:"何（なに）を",en:"what (object)"},{jp:"一緒（いっしょ）に",en:"together"}
+ ],
+ patterns:[
+   {title:"Nを Vます",explain:"を marks the direct object of an action verb.",
+    examples:[{jp:"朝（あさ）ごはんを 食（た）べます。",en:"I eat breakfast."}]},
+   {title:"Vませんか",explain:"A polite invitation — 'won't you...?'",
+    examples:[{jp:"映画（えいが）を 見（み）ませんか。",en:"Won't you watch a movie (with me)?"}]},
+   {title:"Vましょう",explain:"'Let's...' — proposing an action together.",
+    examples:[{jp:"一緒（いっしょ）に 行（い）きましょう。",en:"Let's go together."}]},
+   {title:"何をしますか",explain:"A general-purpose way to ask what someone is doing/will do.",
+    examples:[{jp:"週末（しゅうまつ） 何（なに）を しますか。",en:"What will you do on the weekend?"}]}
+ ]},
+{n:7,
+ vocab:[
+   {jp:"かけます",en:"to make (a phone call)"},{jp:"話（はな）します",en:"to speak"},{jp:"消（け）します",en:"to turn off, erase"},
+   {jp:"あげます",en:"to give (to someone else)"},{jp:"もらいます",en:"to receive"},{jp:"くれます",en:"to give (to me)"},
+   {jp:"手紙（てがみ）",en:"letter"},{jp:"プレゼント",en:"present, gift"},{jp:"花（はな）",en:"flower"},
+   {jp:"何語（なにご）",en:"what language"},{jp:"もう",en:"already"},{jp:"まだ",en:"not yet, still"}
+ ],
+ patterns:[
+   {title:"N（道具）で",explain:"で also marks the tool or method used to do something.",
+    examples:[{jp:"はしで 食（た）べます。",en:"I eat with chopsticks."}]},
+   {title:"何語で〜ですか",explain:"Ask what something is called in a particular language.",
+    examples:[{jp:"これは 何語（なにご）で 何（なん）と 言（い）いますか。",en:"What is this called, in what language?"}]},
+   {title:"あげます／もらいます",explain:"あげます = give (away from speaker); もらいます = receive. The giver/recipient is marked with に.",
+    examples:[{jp:"誕生日（たんじょうび）に プレゼントを あげました。",en:"I gave a present for their birthday."}]},
+   {title:"もう＋Vました／まだ＋negative",explain:"もう + past = 'already did'; まだ + negative = 'not yet'.",
+    examples:[{jp:"もう 晩（ばん）ごはんを 食（た）べましたか。",en:"Have you already eaten dinner?"},{jp:"いいえ、まだです。",en:"No, not yet."}]}
+ ]},
+{n:8,
+ vocab:[
+   {jp:"大（おお）きい／小（ちい）さい",en:"big / small"},{jp:"新（あたら）しい／古（ふる）い",en:"new / old"},
+   {jp:"いい／悪（わる）い",en:"good / bad"},{jp:"熱（あつ）い／寒（さむ）い",en:"hot / cold"},
+   {jp:"難（むずか）しい／易（やさ）しい",en:"difficult / easy"},{jp:"高（たか）い／安（やす）い",en:"expensive (or tall) / cheap"},
+   {jp:"きれい（な）",en:"pretty, clean (な-adj)"},{jp:"静（しず）か（な）",en:"quiet (な-adj)"},
+   {jp:"便利（べんり）（な）",en:"convenient (な-adj)"},{jp:"元気（げんき）（な）",en:"healthy, energetic (な-adj)"}
+ ],
+ patterns:[
+   {title:"Nは adjです",explain:"Simple description sentence, works for both い-adjectives and な-adjectives (な-adjectives drop な before です).",
+    examples:[{jp:"この 町（まち）は 静（しず）かです。",en:"This town is quiet."}]},
+   {title:"とても／あまり",explain:"とても = very (positive); あまり + negative = not very.",
+    examples:[{jp:"あまり 難（むずか）しくないです。",en:"It's not very difficult."}]},
+   {title:"adj-く なります",explain:"い-adjective stem + く + なります = 'became/gets [adj]'. な-adjectives use に instead of く.",
+    examples:[{jp:"涼（すず）しく なりました。",en:"It got cool."}]},
+   {title:"N1は N2が adj",explain:"Describes a specific aspect of N1 using N2 as the subject of the description.",
+    examples:[{jp:"東京（とうきょう）は 物価（ぶっか）が 高（たか）いです。",en:"Tokyo has a high cost of living."}]}
+ ]},
+{n:9,
+ vocab:[
+   {jp:"好（す）き／嫌（きら）い",en:"like / dislike (な-adj)"},{jp:"上手（じょうず）／下手（へた）",en:"skilled at / bad at (な-adj)"},
+   {jp:"わかります",en:"to understand"},{jp:"ほしい",en:"want (a thing)"},{jp:"音楽（おんがく）",en:"music"},
+   {jp:"スポーツ",en:"sports"},{jp:"料理（りょうり）",en:"cooking, cuisine"},{jp:"ダンス",en:"dance"},{jp:"歌（うた）",en:"song"}
+ ],
+ patterns:[
+   {title:"Nが 好（す）きです",explain:"With 好き/嫌い/上手/下手/わかります/ほしい, the object takes が instead of を.",
+    examples:[{jp:"私（わたし）は すしが 好（す）きです。",en:"I like sushi."}]},
+   {title:"Nが 上手（じょうず）です",explain:"Describes skill at something.",
+    examples:[{jp:"山田（やまだ）さんは 歌（うた）が 上手（じょうず）です。",en:"Yamada-san is good at singing."}]},
+   {title:"Nが わかります",explain:"Describes comprehension/understanding.",
+    examples:[{jp:"日本語（にほんご）が 少（すこ）し わかります。",en:"I understand a little Japanese."}]},
+   {title:"Nが ほしいです",explain:"Expresses wanting a thing (not an action — for that, use Vたい, covered in Lesson 13).",
+    examples:[{jp:"新（あたら）しい 車（くるま）が ほしいです。",en:"I want a new car."}]}
+ ]},
+{n:10,
+ vocab:[
+   {jp:"あります",en:"there is (inanimate)"},{jp:"います",en:"there is (animate)"},{jp:"上（うえ）／下（した）",en:"above / below"},
+   {jp:"前（まえ）／後（うし）ろ",en:"front / behind"},{jp:"中（なか）／外（そと）",en:"inside / outside"},
+   {jp:"隣（となり）",en:"next to"},{jp:"近（ちか）く",en:"nearby"},{jp:"間（あいだ）",en:"between"},
+   {jp:"机（つくえ）",en:"desk"},{jp:"椅子（いす）",en:"chair"},{jp:"冷蔵庫（れいぞうこ）",en:"refrigerator"}
+ ],
+ patterns:[
+   {title:"Nが あります",explain:"Existence of inanimate things (objects, plants, events).",
+    examples:[{jp:"部屋（へや）に テレビが あります。",en:"There is a TV in the room."}]},
+   {title:"Nが います",explain:"Existence of animate things (people, animals).",
+    examples:[{jp:"庭（にわ）に 犬（いぬ）が います。",en:"There is a dog in the yard."}]},
+   {title:"場所の位置に",explain:"Location word + の + position noun + に pinpoints exactly where.",
+    examples:[{jp:"机（つくえ）の 下（した）に かばんが あります。",en:"There's a bag under the desk."}]},
+   {title:"何がありますか",explain:"Ask what exists somewhere.",
+    examples:[{jp:"冷蔵庫（れいぞうこ）に 何（なに）が ありますか。",en:"What's in the fridge?"}]}
+ ]},
+{n:11,
+ vocab:[
+   {jp:"〜つ",en:"~ (general counter)"},{jp:"〜人（にん）",en:"~ people"},{jp:"〜枚（まい）",en:"~ (flat objects)"},
+   {jp:"〜本（ほん）",en:"~ (long objects)"},{jp:"〜匹（ひき）",en:"~ (small animals)"},{jp:"〜台（だい）",en:"~ (machines, vehicles)"},
+   {jp:"〜杯（はい）",en:"~ (cupfuls)"},{jp:"だけ",en:"only"},{jp:"全部（ぜんぶ）で",en:"in total"},
+   {jp:"どのくらい",en:"about how much/many"},{jp:"りんご",en:"apple"},{jp:"みかん",en:"mandarin orange"},{jp:"卵（たまご）",en:"egg"}
+ ],
+ patterns:[
+   {title:"数量＋動詞",explain:"Quantity phrases (number+counter) typically come right before the verb, without a particle.",
+    examples:[{jp:"りんごを 4（よん）つ 買（か）いました。",en:"I bought four apples."}]},
+   {title:"だけ",explain:"Attaches to a quantity/noun to mean 'only, just'.",
+    examples:[{jp:"一（ひと）つだけ 食（た）べました。",en:"I ate only one."}]},
+   {title:"どのくらい",explain:"Asks for an approximate quantity.",
+    examples:[{jp:"卵（たまご）は どのくらい ありますか。",en:"About how many eggs are there?"}]},
+   {title:"とりに 行（い）きます",explain:"Vます-stem + に + 行きます expresses going somewhere to fetch/do something.",
+    examples:[{jp:"忘（わす）れ物（もの）を とりに 行（い）きます。",en:"I'll go get the thing I forgot."}]}
+ ]},
+{n:12,
+ vocab:[
+   {jp:"どちら",en:"which (of two)"},{jp:"もっと",en:"more"},{jp:"一番（いちばん）",en:"the most, number one"},
+   {jp:"〜より",en:"than ~"},{jp:"季節（きせつ）",en:"season"},{jp:"春（はる）／夏（なつ）／秋（あき）／冬（ふゆ）",en:"spring / summer / autumn / winter"},{jp:"〜の中（なか）で",en:"among ~"}
+ ],
+ patterns:[
+   {title:"N1とN2と、どちらが〜ですか",explain:"Ask which of two options is more X.",
+    examples:[{jp:"電車（でんしゃ）と バスと、どちらが 速（はや）いですか。",en:"Which is faster, the train or the bus?"}]},
+   {title:"N1は N2より〜",explain:"Compares N1 against N2 using より (than).",
+    examples:[{jp:"日本（にほん）は 台湾（たいわん）より 寒（さむ）いです。",en:"Japan is colder than Taiwan."}]},
+   {title:"Nの中で 一番〜",explain:"Superlative: 'the most X among N'.",
+    examples:[{jp:"果物（くだもの）の 中（なか）で 何（なに）が 一番（いちばん） 好（す）きですか。",en:"What fruit do you like the most?"}]},
+   {title:"adjかったです（過去）",explain:"い-adjective past tense: drop い, add かった. な-adjectives use だった/でした.",
+    examples:[{jp:"昨日（きのう）は 忙（いそが）しかったです。",en:"I was busy yesterday."}]}
+ ]},
+{n:13,
+ vocab:[
+   {jp:"〜たい",en:"want to (do)"},{jp:"どこも／何（なに）も／誰（だれ）も",en:"nowhere / nothing / no one (+negative)"},
+   {jp:"旅行（りょこう）",en:"travel"},{jp:"温泉（おんせん）",en:"hot spring"},{jp:"買（か）い物（もの）",en:"shopping"},{jp:"遊（あそ）びに",en:"(to go) for fun/to play"}
+ ],
+ patterns:[
+   {title:"Vたいです",explain:"Vます-stem + たい expresses the speaker's own desire to do something. The object often takes が instead of を.",
+    examples:[{jp:"沖縄（おきなわ）へ 行（い）きたいです。",en:"I want to go to Okinawa."}]},
+   {title:"Vに 行（い）きます（目的）",explain:"Vます-stem + に + 行きます/来ます/帰ります expresses the purpose of the movement.",
+    examples:[{jp:"海（うみ）へ 泳（およ）ぎに 行（い）きます。",en:"I'll go to the sea to swim."}]},
+   {title:"何もしたくないです",explain:"何も + Vたくない (negative desire) — 'don't want to do anything'.",
+    examples:[{jp:"疲（つか）れて 何（なに）も したくないです。",en:"I'm tired and don't want to do anything."}]}
+ ]},
+{n:14,
+ vocab:[
+   {jp:"待（ま）ちます",en:"to wait"},{jp:"手伝（てつだ）います",en:"to help"},{jp:"急（いそ）ぎます",en:"to hurry"},
+   {jp:"座（すわ）ります",en:"to sit"},{jp:"立（た）ちます",en:"to stand"},{jp:"コピーします",en:"to photocopy"},
+   {jp:"結婚（けっこん）しています",en:"to be married"},{jp:"住（す）んでいます",en:"to live (somewhere)"},{jp:"知（し）っています",en:"to know"}
+ ],
+ patterns:[
+   {title:"Vてください",explain:"Te-form + ください is a polite request/instruction.",
+    examples:[{jp:"ここに 名前（なまえ）を 書（か）いてください。",en:"Please write your name here."}]},
+   {title:"Vています（進行）",explain:"Te-form + います describes an action currently in progress.",
+    examples:[{jp:"今（いま）、雨（あめ）が 降（ふ）っています。",en:"It's raining right now."}]},
+   {title:"Vています（状態・職業）",explain:"Also used for ongoing states or habitual facts like jobs, marital status, residence.",
+    examples:[{jp:"銀行（ぎんこう）に 勤（つと）めています。",en:"I work at a bank."}]}
+ ]},
+{n:15,
+ vocab:[
+   {jp:"使（つか）います",en:"to use"},{jp:"座（すわ）ります",en:"to sit"},{jp:"入（はい）ります",en:"to enter"},
+   {jp:"吸（す）います",en:"to smoke"},{jp:"エアコン",en:"air conditioner"},{jp:"窓（まど）",en:"window"},{jp:"だめ",en:"not allowed, no good"}
+ ],
+ patterns:[
+   {title:"Vてもいいですか",explain:"Te-form + もいいですか asks for permission — 'may I...?'",
+    examples:[{jp:"エアコンを つけても いいですか。",en:"May I turn on the air conditioner?"}]},
+   {title:"Vてはいけません",explain:"Te-form + はいけません states a prohibition — 'must not'.",
+    examples:[{jp:"ここに 車（くるま）を 止（と）めては いけません。",en:"You mustn't park a car here."}]}
+ ]},
+{n:16,
+ vocab:[
+   {jp:"提出（ていしゅつ）します",en:"to submit"},{jp:"準備（じゅんび）します",en:"to prepare"},{jp:"並（なら）びます",en:"to line up"},
+   {jp:"ビザ",en:"visa"},{jp:"パスポート",en:"passport"},{jp:"サイン",en:"signature"}
+ ],
+ patterns:[
+   {title:"Vなければなりません",explain:"Vない-form (drop い) + ければなりません = 'must do'.",
+    examples:[{jp:"パスポートを 見（み）せなければ なりません。",en:"I must show my passport."}]},
+   {title:"Vなくてもいいです",explain:"Vない-form + くてもいいです = 'don't have to do'.",
+    examples:[{jp:"急（いそ）がなくても いいです。",en:"You don't have to hurry."}]}
+ ]},
+{n:17,
+ vocab:[
+   {jp:"弾（ひ）きます",en:"to play (an instrument)"},{jp:"泳（およ）ぎます",en:"to swim"},{jp:"運転（うんてん）します",en:"to drive"},
+   {jp:"特技（とくぎ）",en:"special skill"},{jp:"趣味（しゅみ）",en:"hobby"},{jp:"経験（けいけん）",en:"experience"}
+ ],
+ patterns:[
+   {title:"辞書形（dictionary form）",explain:"The plain, non-past form of a verb — the form you'd look up in a dictionary. Needed as the base for many N4-level patterns.",
+    examples:[{jp:"食（た）べます → 食（た）べる",en:"'eat' (polite) → 'eat' (dictionary form)"}]},
+   {title:"Vることができます",explain:"Dictionary form + ことができます expresses ability.",
+    examples:[{jp:"漢字（かんじ）を 書（か）くことが できます。",en:"I can write kanji."}]},
+   {title:"Vる前（まえ）に／Vた後（あと）で",explain:"Dictionary form + 前に = 'before doing'; Vた-form + 後で = 'after doing'.",
+    examples:[{jp:"寝（ね）る前（まえ）に 歯（は）を 磨（みが）きます。",en:"I brush my teeth before sleeping."}]}
+ ]},
+{n:18,
+ vocab:[
+   {jp:"掃除（そうじ）します",en:"to clean"},{jp:"洗濯（せんたく）します",en:"to do laundry"},{jp:"散歩（さんぽ）します",en:"to go for a walk"},{jp:"のんびり",en:"leisurely, relaxed"}
+ ],
+ patterns:[
+   {title:"〜たり〜たりします",explain:"Lists a few representative example actions, not an exhaustive list — 'things like A and B'.",
+    examples:[{jp:"週末（しゅうまつ）は 本（ほん）を 読（よ）んだり テレビを 見（み）たり します。",en:"On weekends I do things like read books and watch TV."}]}
+ ]},
+{n:19,
+ vocab:[
+   {jp:"予定（よてい）",en:"plan, schedule"},{jp:"帰国（きこく）します",en:"to return to one's country"},
+   {jp:"卒業（そつぎょう）します",en:"to graduate"},{jp:"引（ひ）っ越（こ）します",en:"to move house"},{jp:"転勤（てんきん）",en:"job transfer"}
+ ],
+ patterns:[
+   {title:"辞書形＋予定です",explain:"States a plan using the dictionary form of the verb.",
+    examples:[{jp:"来月（らいげつ） 引（ひ）っ越（こ）す 予定（よてい）です。",en:"I plan to move next month."}]},
+   {title:"意向形＋と思っています",explain:"Volitional form ('let's...' form used reflexively) + と思っています expresses an intention held over time, not a spur-of-the-moment idea.",
+    examples:[{jp:"留学（りゅうがく）しようと 思（おも）っています。",en:"I'm thinking of studying abroad."}]}
+ ]},
+{n:20,
+ vocab:[
+   {jp:"疲（つか）れます",en:"to get tired"},{jp:"太（ふと）ります",en:"to gain weight"},{jp:"やせます",en:"to lose weight"},
+   {jp:"込（こ）みます",en:"to get crowded"},{jp:"無理（むり）",en:"unreasonable, too much"}
+ ],
+ patterns:[
+   {title:"Vすぎます",explain:"Vます-stem + すぎます = 'do too much of'.",
+    examples:[{jp:"食（た）べすぎて、おなかが 痛（いた）いです。",en:"I ate too much and my stomach hurts."}]},
+   {title:"Vた方（ほう）がいいです／Vない方がいいです",explain:"Giving advice: 'you'd better do' / 'you'd better not do'.",
+    examples:[{jp:"たばこは やめた 方（ほう）が いいです。",en:"You'd better quit smoking."}]}
+ ]},
+{n:21,
+ vocab:[
+   {jp:"台風（たいふう）",en:"typhoon"},{jp:"地震（じしん）",en:"earthquake"},{jp:"天気予報（てんきよほう）",en:"weather forecast"},{jp:"意見（いけん）",en:"opinion"}
+ ],
+ patterns:[
+   {title:"普通形＋と思います",explain:"Plain form + と思います = 'I think that...' States an opinion.",
+    examples:[{jp:"彼（かれ）は 来（こ）ないと 思（おも）います。",en:"I don't think he's coming."}]},
+   {title:"でしょう",explain:"Plain form + でしょう expresses probability, often with a guessing/falling intonation.",
+    examples:[{jp:"明日（あした）は 雪（ゆき）でしょう。",en:"It will probably snow tomorrow."}]},
+   {title:"N（行事）が あります",explain:"あります can also describe scheduled events, not just physical objects.",
+    examples:[{jp:"来週（らいしゅう） テストが あります。",en:"There's a test next week."}]}
+ ]},
+{n:22,
+ vocab:[
+   {jp:"くれます",en:"to give (to me/my in-group)"},{jp:"かけます（眼鏡）",en:"to wear (glasses)"},{jp:"立（た）ちます",en:"to stand"}
+ ],
+ patterns:[
+   {title:"Vる／Vた ＋ N",explain:"A verb clause in plain form can modify a noun directly, placed right before it — like a long adjective.",
+    examples:[{jp:"これは 私（わたし）が 撮（と）った 写真（しゃしん）です。",en:"This is the photo that I took."}]},
+   {title:"Vている ＋ N",explain:"An ongoing-state clause can modify a noun the same way.",
+    examples:[{jp:"眼鏡（めがね）を かけている 人（ひと）は 私（わたし）の 母（はは）です。",en:"The person wearing glasses is my mother."}]}
+ ]},
+{n:23,
+ vocab:[
+   {jp:"要（い）ります",en:"to be necessary, needed"},{jp:"曲（ま）がります",en:"to turn"},{jp:"渡（わた）ります",en:"to cross"},
+   {jp:"通（とお）ります",en:"to pass through"},{jp:"まっすぐ",en:"straight ahead"}
+ ],
+ patterns:[
+   {title:"Vるとき／Vたとき",explain:"'When [an event happens/happened]'. Dictionary form = at/before the moment; た-form = after it's already happened.",
+    examples:[{jp:"家（いえ）を 出（で）るとき、電気（でんき）を 消（け）します。",en:"When I leave the house, I turn off the lights."}]},
+   {title:"Nを ＋ 移動動詞",explain:"を marks the space or path being traversed with verbs like 渡ります, 曲がります, 通ります, 歩きます.",
+    examples:[{jp:"橋（はし）を 渡（わた）ります。",en:"I cross the bridge."}]}
+ ]},
+{n:24,
+ vocab:[
+   {jp:"褒（ほ）めます",en:"to praise"},{jp:"叱（しか）ります",en:"to scold"},{jp:"建（た）てます",en:"to build"},
+   {jp:"招待（しょうたい）します",en:"to invite"},{jp:"発見（はっけん）します",en:"to discover"}
+ ],
+ patterns:[
+   {title:"受身形の作り方",explain:"The passive form: for group 1 verbs, change the final う-sound to あ-sound + れる (褒める→褒められる already ends in る so it follows group 2 rules: drop る, add られる).",
+    examples:[{jp:"褒（ほ）める → 褒（ほ）められる",en:"'to praise' → 'to be praised'"}]},
+   {title:"〜に ＋ 受身形",explain:"The person doing the action to you takes に in a passive sentence.",
+    examples:[{jp:"先生（せんせい）に 褒（ほ）められました。",en:"I was praised by my teacher."}]}
+ ]},
+{n:25,
+ vocab:[
+   {jp:"休（やす）ませます",en:"to let/make (someone) rest"},{jp:"手伝（てつだ）わせます",en:"to make (someone) help"},
+   {jp:"行（い）かせます",en:"to make/let (someone) go"},{jp:"泣（な）かせます",en:"to make (someone) cry"}
+ ],
+ patterns:[
+   {title:"使役形の作り方",explain:"The causative form: group 1 verbs change the final う-sound to あ-sound + せる; group 2 verbs drop る and add させる.",
+    examples:[{jp:"休（やす）む → 休（やす）ませる",en:"'to rest' → 'to make/let (someone) rest'"}]},
+   {title:"〜（さ）せてください",explain:"Causative te-form + ください is a humble way to ask permission to do something yourself — 'please let me...'",
+    examples:[{jp:"説明（せつめい）させてください。",en:"Please let me explain."}]}
+ ]}
+];
+
 
 /* ============================================================
    STORAGE
@@ -1304,6 +1737,7 @@ function render(){
   if(activeTab==='today') renderToday();
   else if(activeTab==='lessons') renderLessons();
   else if(activeTab==='grammar') renderGrammar();
+  else if(activeTab==='textbook') renderTextbook();
   else if(activeTab==='stats') renderStats();
 }
 
@@ -1623,6 +2057,69 @@ function renderGrammar(){
       const idx = Number(btn.dataset.idx);
       openParticle = (openParticle === idx) ? null : idx;
       renderGrammar();
+    });
+  });
+}
+
+let openTextbookLesson = null; // currently expanded lesson in the N5 Textbook accordion
+
+function renderTextbook(){
+  const rows = TEXTBOOK.map(l => {
+    const lessonMeta = LESSONS.find(x=>x.n===l.n);
+    const open = openTextbookLesson === l.n;
+
+    const vocabHtml = l.vocab.map(v => `
+      <div class="tb-vocab-row"><span class="tb-vocab-jp">${v.jp}</span><span class="tb-vocab-en">${v.en}</span></div>
+    `).join('');
+
+    const patternsHtml = l.patterns.map(p => `
+      <div class="tb-pattern">
+        <div class="tb-pattern-title">${p.title}</div>
+        <p class="muted" style="margin:6px 0 10px;">${p.explain}</p>
+        ${p.examples.map(ex => `
+          <div class="gexample">
+            <div class="gexample-jp">${ex.jp}</div>
+            <div class="gexample-en">${ex.en}</div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    return `
+      <div class="tb-lesson">
+        <button class="tb-lesson-head" data-lesson="${l.n}">
+          <span class="tb-lesson-num">${String(l.n).padStart(2,'0')}</span>
+          <span class="tb-lesson-title-wrap"><b>${lessonMeta.title}</b><span>${lessonMeta.topic}</span></span>
+          <span class="particle-caret">${open ? '\u2212' : '+'}</span>
+        </button>
+        <div class="tb-lesson-body" style="display:${open?'block':'none'};">
+          <div class="tb-section-label">I. Vocabulary</div>
+          <div class="tb-vocab-list">${vocabHtml}</div>
+          <div class="tb-section-label" style="margin-top:18px;">II. Sentence Patterns</div>
+          ${patternsHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">N5 Textbook</div>
+      <p class="muted">A full vocabulary and grammar reference for all 25 lessons of Minna no Nihongo I, covering JLPT N5 (and into N4). Tap a lesson to open it.</p>
+    </div></div>
+    <div class="card"><div class="card-inner">
+      <div class="tb-lesson-list">${rows}</div>
+    </div></div>
+  `;
+
+  document.querySelectorAll('.tb-lesson-head').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const n = Number(btn.dataset.lesson);
+      openTextbookLesson = (openTextbookLesson === n) ? null : n;
+      renderTextbook();
+      if(openTextbookLesson === n){
+        btn.scrollIntoView({behavior:'smooth', block:'start'});
+      }
     });
   });
 }
