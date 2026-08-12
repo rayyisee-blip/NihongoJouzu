@@ -1633,33 +1633,165 @@ function shuffle(arr, rand){
   }
   return a;
 }
+/* ============================================================
+   QUESTION GENERATION — turns the N5 Textbook's vocab and sentence
+   patterns into many more quiz question *variants* than the 4 hand-
+   written questions per lesson alone. Each generated question has a
+   stable id (for spaced-repetition tracking), but its multiple-choice
+   options are freshly sampled each time it's displayed, so the same
+   underlying question doesn't look identical on repeat exposure.
+   ============================================================ */
+function allVocabUpTo(lessonNum){
+  const out = [];
+  TEXTBOOK.filter(t=>t.n<=lessonNum).forEach(t=> out.push(...t.vocab));
+  return out;
+}
+function allExamplesUpTo(lessonNum){
+  const out = [];
+  TEXTBOOK.filter(t=>t.n<=lessonNum).forEach(t=> t.patterns.forEach(p=> p.examples.forEach(ex=> out.push({...ex, patternTitle:p.title}))));
+  return out;
+}
+function allPatternTitlesUpTo(lessonNum, excludeTitle){
+  const out = [];
+  TEXTBOOK.filter(t=>t.n<=lessonNum).forEach(t=> t.patterns.forEach(p=>{ if(p.title!==excludeTitle) out.push(p.title); }));
+  return out;
+}
+function sampleN(arr, n){
+  return shuffle(arr, Math.random).slice(0, n);
+}
+
+// One lightweight record per generated question: just enough to look the
+// content back up later. Built once at load for all 25 lessons.
+function buildGeneratedPool(lessonNum){
+  const tb = TEXTBOOK.find(t=>t.n===lessonNum);
+  const items = [];
+  if(!tb) return items;
+  tb.vocab.forEach((v,i)=>{
+    items.push({ qid:`gen-venjp-${lessonNum}-${i}`, lesson:lessonNum, kind:'vocab_en_jp', vocabIdx:i });
+    items.push({ qid:`gen-vjpen-${lessonNum}-${i}`, lesson:lessonNum, kind:'vocab_jp_en', vocabIdx:i });
+  });
+  tb.patterns.forEach((p,pi)=>{
+    p.examples.forEach((ex,ei)=>{
+      items.push({ qid:`gen-senjp-${lessonNum}-${pi}-${ei}`, lesson:lessonNum, kind:'sentence_en_jp', patternIdx:pi, exampleIdx:ei });
+    });
+    items.push({ qid:`gen-precog-${lessonNum}-${pi}`, lesson:lessonNum, kind:'pattern_recognize', patternIdx:pi });
+  });
+  return items;
+}
+
+const GENERATED_POOL_BY_LESSON = {};
+const GENERATED_INDEX = {};
+LESSONS.forEach(l=>{
+  const items = buildGeneratedPool(l.n);
+  GENERATED_POOL_BY_LESSON[l.n] = items;
+  items.forEach(it=> GENERATED_INDEX[it.qid] = it);
+});
+
+// Resolves a lightweight generated-question record into the same
+// {prompt, choices, a, note, type, lesson, qid} shape the renderer already
+// expects for static questions, sampling fresh distractors each call.
+function resolveGeneratedQuestion(item){
+  const tb = TEXTBOOK.find(t=>t.n===item.lesson);
+
+  if(item.kind === 'vocab_en_jp'){
+    const v = tb.vocab[item.vocabIdx];
+    const pool = allVocabUpTo(item.lesson).filter(x=>x.jp!==v.jp);
+    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.jp);
+    const choices = shuffle([v.jp, ...distractors], Math.random);
+    return { qid:item.qid, lesson:item.lesson, type:'vocab', prompt:`Which word means "${v.en}"?`, choices, a:choices.indexOf(v.jp), note:`${v.jp} = ${v.en}` };
+  }
+  if(item.kind === 'vocab_jp_en'){
+    const v = tb.vocab[item.vocabIdx];
+    const pool = allVocabUpTo(item.lesson).filter(x=>x.en!==v.en);
+    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.en);
+    const choices = shuffle([v.en, ...distractors], Math.random);
+    return { qid:item.qid, lesson:item.lesson, type:'vocab', prompt:`「${v.jp}」means:`, choices, a:choices.indexOf(v.en), note:`${v.jp} = ${v.en}` };
+  }
+  if(item.kind === 'sentence_en_jp'){
+    const p = tb.patterns[item.patternIdx];
+    const ex = p.examples[item.exampleIdx];
+    const pool = allExamplesUpTo(item.lesson).filter(x=>x.jp!==ex.jp);
+    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.jp);
+    const choices = shuffle([ex.jp, ...distractors], Math.random);
+    return { qid:item.qid, lesson:item.lesson, type:'structure', prompt:`Which sentence means: "${ex.en}"?`, choices, a:choices.indexOf(ex.jp), note:`${p.title} \u2014 ${p.explain}` };
+  }
+  if(item.kind === 'pattern_recognize'){
+    const p = tb.patterns[item.patternIdx];
+    const ex = p.examples[0];
+    let distractorPool = tb.patterns.filter((_,idx)=>idx!==item.patternIdx).map(x=>x.title);
+    if(distractorPool.length < 3){
+      distractorPool = allPatternTitlesUpTo(item.lesson, p.title);
+    }
+    const distractors = sampleN(distractorPool, Math.min(3,distractorPool.length));
+    const choices = shuffle([p.title, ...distractors], Math.random);
+    return { qid:item.qid, lesson:item.lesson, type:'grammar', prompt:`Which grammar point does this sentence use?\n${ex.jp}`, choices, a:choices.indexOf(p.title), note:p.explain };
+  }
+  return null;
+}
+
+// Spaced repetition (Leitner-style): each question tracks a "box" 1-5.
+// Wrong answer -> back to box 1 (resurfaces soon). Right answer -> box up
+// to 5 (resurfaces less often). Selection weight favors low boxes and
+// brand-new questions, without ever fully excluding mastered ones.
+function boxWeight(qid){
+  const rec = PROGRESS.seen[qid];
+  if(!rec || rec.count===0) return 6;
+  const box = rec.box || 1;
+  return Math.max(1, 6-box);
+}
+function weightedSample(items, weightFn, count){
+  const pool = items.slice();
+  const picked = [];
+  const n = Math.min(count, pool.length);
+  for(let i=0;i<n;i++){
+    const weights = pool.map(weightFn);
+    const total = weights.reduce((a,b)=>a+b,0);
+    let r = Math.random()*total;
+    let idx = 0;
+    for(; idx<weights.length-1; idx++){
+      r -= weights[idx];
+      if(r<=0) break;
+    }
+    picked.push(pool[idx]);
+    pool.splice(idx,1);
+  }
+  return picked;
+}
+
 function allQuestionsUpTo(lessonNum){
   const out = [];
-  LESSONS.filter(l=>l.n<=lessonNum).forEach(l=>{
-    l.q.forEach((q,i)=> out.push({...q, lesson:l.n, qid:l.n+"-"+i}));
-  });
+  for(let n=1;n<=lessonNum;n++){
+    out.push(...lessonQuestionIds(n));
+  }
   return out;
 }
 function lessonQuestionIds(lessonNum){
   const l = LESSONS.find(x=>x.n===lessonNum);
-  return l.q.map((q,i)=> l.n+"-"+i);
+  const staticIds = l.q.map((q,i)=> l.n+"-"+i);
+  const genIds = (GENERATED_POOL_BY_LESSON[lessonNum]||[]).map(it=>it.qid);
+  return [...staticIds, ...genIds];
 }
+// Capstone unlock stays gated on the 4 original hand-written questions only
+// (not the full generated pool) so lesson pacing doesn't change - the
+// generated questions add practice depth without slowing progression.
 function lessonFullySeen(lessonNum){
-  return lessonQuestionIds(lessonNum).every(qid => PROGRESS.seen[qid] && PROGRESS.seen[qid].count>0);
+  const l = LESSONS.find(x=>x.n===lessonNum);
+  const staticIds = l.q.map((q,i)=> l.n+"-"+i);
+  return staticIds.every(qid => PROGRESS.seen[qid] && PROGRESS.seen[qid].count>0);
 }
 function getTodaysSet(){
   const date = todayStr();
   if(PROGRESS.dailyLog[date]) return PROGRESS.dailyLog[date];
   const pool = allQuestionsUpTo(PROGRESS.currentLesson);
-  const rand = mulberry32(dateSeed(date));
-  const shuffled = shuffle(pool, rand);
-  const count = Math.min(12, shuffled.length);
-  const picked = shuffled.slice(0,count).map(q=>q.qid);
+  const picked = weightedSample(pool, boxWeight, Math.min(12, pool.length));
   PROGRESS.dailyLog[date] = { qids: picked, answers:{}, completed:false };
   saveProgress();
   return PROGRESS.dailyLog[date];
 }
 function qByQid(qid){
+  if(qid.indexOf('gen-') === 0){
+    return resolveGeneratedQuestion(GENERATED_INDEX[qid]);
+  }
   const [lessonNum, idx] = qid.split("-").map(Number);
   const l = LESSONS.find(x=>x.n===lessonNum);
   return {...l.q[idx], lesson:lessonNum, qid};
@@ -1667,14 +1799,15 @@ function qByQid(qid){
 
 // Builds an on-demand practice round for the current lesson, with no daily limit.
 // Prioritizes questions from the current lesson not yet seen (so capstones unlock
-// fast); once everything in the lesson has been seen at least once, it recycles
-// the same lesson's questions for extra reinforcement rounds.
+// fast); once everything in the lesson has been seen at least once, it falls back
+// to spaced-repetition weighting across the lesson's full pool (static + generated)
+// so struggling questions resurface more than mastered ones.
 function buildPracticeSet(){
   const cur = PROGRESS.currentLesson;
   const ids = lessonQuestionIds(cur);
   const unseen = ids.filter(qid => !PROGRESS.seen[qid] || PROGRESS.seen[qid].count===0);
   const pool = unseen.length>0 ? unseen : ids;
-  return pool.slice().sort(()=>Math.random()-0.5);
+  return weightedSample(pool, boxWeight, pool.length);
 }
 function updateStreakOnComplete(){
   const date = todayStr();
@@ -1883,9 +2016,15 @@ function selectAnswer(qid, q, pickedIdx){
     dailySet.answers[qid] = { picked: pickedIdx, correct };
   }
 
-  if(!PROGRESS.seen[qid]) PROGRESS.seen[qid] = {count:0, correct:0};
-  PROGRESS.seen[qid].count += 1;
-  if(correct) PROGRESS.seen[qid].correct += 1;
+  if(!PROGRESS.seen[qid]) PROGRESS.seen[qid] = {count:0, correct:0, box:1};
+  const rec = PROGRESS.seen[qid];
+  rec.count += 1;
+  if(correct){
+    rec.correct += 1;
+    rec.box = Math.min(5, (rec.box||1) + 1);
+  } else {
+    rec.box = 1;
+  }
 
   saveProgress();
   lockChoices(q, pickedIdx);
