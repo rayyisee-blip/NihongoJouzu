@@ -524,6 +524,7 @@
     <button data-tab="today" class="active">Today</button>
     <button data-tab="lessons">Lessons</button>
     <button data-tab="grammar">Grammar</button>
+    <button data-tab="conjugate">Conjugate</button>
     <button data-tab="textbook">N5 Textbook</button>
     <button data-tab="stats">Stats</button>
   </nav>
@@ -565,7 +566,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"This is a dictionary.",jp:"これは 辞書（じしょ）です。",note:"これ + は + noun + です for simple identification."},
-  {en:"Is that your umbrella?",jp:"それは あなたの 傘（かさ）ですか。",note:"あなたの = your; の links possessor and noun."}
+  {en:"Is that your umbrella?",jp:"それは あなたの 傘（かさ）ですか。",note:"あなたの = your; の links possessor and noun."},
+  {en:"That is a magazine.",jp:"それは 雑誌（ざっし）です。",note:"Same これ／それ／あれ + です pattern as the other sentences here, just with a different demonstrative and noun."}
  ]},
 {n:2,title:"この／その／あの + N",topic:"Demonstrative adjectives, prices",
  q:[
@@ -576,7 +578,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"This pen is 500 yen.",jp:"この ペンは 500円（えん）です。",note:"この + noun for 'this ___', then price + です."},
-  {en:"Whose dictionary is that (over there)?",jp:"あれは 誰（だれ）の 辞書（じしょ）ですか。",note:"あれ stands alone (no noun follows) since it means 'that thing over there'."}
+  {en:"Whose dictionary is that (over there)?",jp:"あれは 誰（だれ）の 辞書（じしょ）ですか。",note:"あれ stands alone (no noun follows) since it means 'that thing over there'."},
+  {en:"This car isn't mine.",jp:"この 車（くるま）は 私（わたし）のじゃありません。",note:"Negative of です for nouns: 〜じゃありません (casual, same weight as 〜ではありません)."}
  ]},
 {n:3,title:"ここ・そこ・あそこ / どこ",topic:"Places, N1のN2, asking origin",
  q:[
@@ -587,7 +590,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"Where is the telephone?",jp:"電話（でんわ）は どこですか。",note:"N + は + どこ + ですか is the standard 'where is N' pattern."},
-  {en:"This is a book about computers.",jp:"これは コンピューターの 本（ほん）です。",note:"N1のN2 here means 'a book about/on computers', not possession."}
+  {en:"This is a book about computers.",jp:"これは コンピューターの 本（ほん）です。",note:"N1のN2 here means 'a book about/on computers', not possession."},
+  {en:"Where is your dictionary?",jp:"あなたの 辞書（じしょ）は どこですか。",note:"Combines the N1のN2 possessive from Lessons 1-2 (あなたの) with this lesson's どこですか location question."}
  ]},
 {n:4,title:"時間（じかん） / Vます",topic:"Telling time, present-tense verbs",
  q:[
@@ -598,7 +602,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I get up at six every morning.",jp:"毎朝（まいあさ） 6時（じ）に 起（お）きます。",note:"時（じ） + に for a specific clock time; 毎朝（まいあさ） = every morning, no particle needed before it."},
-  {en:"I work from Monday to Friday.",jp:"月曜日（げつようび）から 金曜日（きんようび）まで 働（はたら）きます。",note:"から〜まで brackets a range of time, here days of the week."}
+  {en:"I work from Monday to Friday.",jp:"月曜日（げつようび）から 金曜日（きんようび）まで 働（はたら）きます。",note:"から〜まで brackets a range of time, here days of the week."},
+  {en:"I go to bed at eleven every night.",jp:"毎晩（まいばん） 11時（じ）に 寝（ね）ます。",note:"Same 時（じ） + に pattern as the model answer above, just with 寝ます (to sleep) instead of 起きます."}
  ]},
 {n:5,title:"へ・で・と + 行（い）きます",topic:"Movement verbs, direction, means, companion",
  q:[
@@ -609,7 +614,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I will go to the station by taxi.",jp:"タクシーで 駅（えき）へ 行（い）きます。",note:"で = means of transport, へ = destination direction."},
-  {en:"I don't go anywhere on Sundays.",jp:"日曜日（にちようび）は どこ[へ]も 行（い）きません。",note:"どこへも + negative verb = 'don't go anywhere'; へ is often dropped before も."}
+  {en:"I don't go anywhere on Sundays.",jp:"日曜日（にちようび）は どこ[へ]も 行（い）きません。",note:"どこへも + negative verb = 'don't go anywhere'; へ is often dropped before も."},
+  {en:"I'll go home alone, by bicycle.",jp:"自転車（じてんしゃ）で 一人（ひとり）で 帰（かえ）ります。",note:"で appears twice doing two different jobs: 自転車で marks the means of transport, 一人で marks 'alone' — the same particle, different roles."}
  ]},
 {n:6,title:"を + 食（た）べます／します",topic:"Object particle, invitations",
  q:[
@@ -620,7 +626,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"Shall we drink coffee together?",jp:"一緒（いっしょ）に コーヒーを 飲（の）みませんか。",note:"Object + を + Vませんか is a natural, polite invitation."},
-  {en:"I buy a newspaper every morning.",jp:"毎朝（まいあさ） 新聞（しんぶん）を 買（か）います。",note:"を marks 新聞（しんぶん） as the thing being bought."}
+  {en:"I buy a newspaper every morning.",jp:"毎朝（まいあさ） 新聞（しんぶん）を 買（か）います。",note:"を marks 新聞（しんぶん） as the thing being bought."},
+  {en:"I read a magazine every day.",jp:"毎日（まいにち） 雑誌（ざっし）を 読（よ）みます。",note:"を marks 雑誌（ざっし） as the object of 読みます, same structure as the newspaper sentence above."}
  ]},
 {n:7,title:"あげます・もらいます",topic:"Giving/receiving, もう・まだ",
  q:[
@@ -631,7 +638,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I gave a present to Yamada-san.",jp:"山田（やまだ）さんに プレゼントを あげました。",note:"Recipient + に, item + を, then あげました (gave)."},
-  {en:"Have you already called the office?",jp:"もう 会社（かいしゃ）に 電話（でんわ）を かけましたか。",note:"もう + past tense question = 'have you already...?'"}
+  {en:"Have you already called the office?",jp:"もう 会社（かいしゃ）に 電話（でんわ）を かけましたか。",note:"もう + past tense question = 'have you already...?'"},
+  {en:"I received a letter from my friend.",jp:"友達（ともだち）に 手紙（てがみ）を もらいました。",note:"に marks the giver with もらいます (receive) — the mirror image of あげます, where に marks the recipient instead."}
  ]},
 {n:8,title:"い形容詞（けいようし）・な形容詞（けいようし）",topic:"Adjectives, とても／あまり",
  q:[
@@ -642,7 +650,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"This restaurant is very quiet and clean.",jp:"この レストランは とても 静（しず）かで きれいです。",note:"な-adjectives connect with で when linking two descriptions."},
-  {en:"That test wasn't very difficult.",jp:"あの テストは あまり 難（むずか）しくなかったです。",note:"い-adjective past negative: 〜くなかったです (or 〜くありませんでした)."}
+  {en:"That test wasn't very difficult.",jp:"あの テストは あまり 難（むずか）しくなかったです。",note:"い-adjective past negative: 〜くなかったです (or 〜くありませんでした)."},
+  {en:"That department store isn't very convenient.",jp:"あの デパートは あまり 便利（べんり）じゃありません。",note:"な-adjective negative 〜じゃありません, paired with あまり for 'not very'."}
  ]},
 {n:9,title:"好（す）き・上手（じょうず）・わかります",topic:"Likes, skill, understanding",
  q:[
@@ -653,7 +662,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I like Japanese food, but I'm not good at cooking.",jp:"日本料理（にほんりょうり）が 好（す）きですが、料理（りょうり）は 上手（じょうず）じゃありません。",note:"が marks each liked/skilled-at item; が as a connector here means 'but'."},
-  {en:"Do you understand this sentence?",jp:"この 文（ぶん）が わかりますか。",note:"文（ぶん）= sentence; わかります takes が."}
+  {en:"Do you understand this sentence?",jp:"この 文（ぶん）が わかりますか。",note:"文（ぶん）= sentence; わかります takes が."},
+  {en:"Yamada-san is bad at cooking.",jp:"山田（やまだ）さんは 料理（りょうり）が 下手（へた）です。",note:"下手（へた）is the opposite of 上手（じょうず） — both pair with が, never を."}
  ]},
 {n:10,title:"あります・います",topic:"Existence, location words",
  q:[
@@ -664,7 +674,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"There is a park in front of the station.",jp:"駅（えき）の 前（まえ）に 公園（こうえん）が あります。",note:"公園（こうえん） (park) is inanimate, so あります is correct, not います."},
-  {en:"My older brother is in the living room.",jp:"兄（あに）は 居間（いま）に います。",note:"兄（あに） (older brother) is animate → います; 居間（いま） = living room."}
+  {en:"My older brother is in the living room.",jp:"兄（あに）は 居間（いま）に います。",note:"兄（あに） (older brother) is animate → います; 居間（いま） = living room."},
+  {en:"There is a cat in front of the station.",jp:"駅（えき）の 前（まえ）に 猫（ねこ）が います。",note:"猫（ねこ）is animate → います, paired with 駅の前に for the location."}
  ]},
 {n:11,title:"数量（すうりょう） / だけ",topic:"Counters and quantity",
  q:[
@@ -675,7 +686,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I bought two tickets and one bag.",jp:"切符（きっぷ）を 二枚（にまい）と かばんを 一（いち）つ 買（か）いました。",note:"枚（まい） counts flat objects (tickets); つ is the general counter for the bag."},
-  {en:"There are only three students in this class.",jp:"この クラスに 学生（がくせい）が 三人（さんにん）だけ います。",note:"人（ひと） counts people; だけ follows the counted quantity."}
+  {en:"There are only three students in this class.",jp:"この クラスに 学生（がくせい）が 三人（さんにん）だけ います。",note:"人（ひと） counts people; だけ follows the counted quantity."},
+  {en:"I bought five mandarin oranges and two apples.",jp:"みかんを 五（いつ）つ、りんごを 二（ふた）つ 買（か）いました。",note:"Both use the general counter つ, since みかん and りんご are both small round objects."}
  ]},
 {n:12,title:"比較（ひかく） / 形容詞（けいようし）の過去（かこ）",topic:"Comparison, adjective past tense",
  q:[
@@ -686,7 +698,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"Between coffee and tea, which do you like better?",jp:"コーヒーと 紅茶（こうちゃ）と、どちらが 好（す）きですか。",note:"N1とN2と、どちらが好（す）きですか asks for a preference between two options."},
-  {en:"Last year's winter was colder than this year.",jp:"去年（きょねん）の 冬（ふゆ）は 今年（ことし）より 寒（さむ）かったです。",note:"より marks the point of comparison; 寒（さむ）かった is the past form of 寒（さむ）い."}
+  {en:"Last year's winter was colder than this year.",jp:"去年（きょねん）の 冬（ふゆ）は 今年（ことし）より 寒（さむ）かったです。",note:"より marks the point of comparison; 寒（さむ）かった is the past form of 寒（さむ）い."},
+  {en:"This year is hotter than last year.",jp:"今年（ことし）は 去年（きょねん）より 暑（あつ）いです。",note:"より marks the point of comparison, same pattern as the model answer but with 暑い instead of 寒い."}
  ]},
 {n:13,title:"Vたい / 目的（もくてき）",topic:"Wanting to do, purpose with に行（い）きます",
  q:[
@@ -697,7 +710,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I want to eat sushi someday.",jp:"いつか 寿司（すし）が 食（た）べたいです。",note:"With Vたい, the object commonly takes が instead of を."},
-  {en:"I'm going to the station to meet a friend.",jp:"友達（ともだち）に 会（あ）いに 駅（えき）へ 行（い）きます。",note:"会（あ）います takes に for 'meet with someone'; 会（あ）い + に + 行（い）きます = go to meet."}
+  {en:"I'm going to the station to meet a friend.",jp:"友達（ともだち）に 会（あ）いに 駅（えき）へ 行（い）きます。",note:"会（あ）います takes に for 'meet with someone'; 会（あ）い + に + 行（い）きます = go to meet."},
+  {en:"I want to buy a new car someday.",jp:"いつか 新（あたら）しい 車（くるま）を 買（か）いたいです。",note:"Vたい for wanting to do an action (買いたい) — contrast ほしい from Lesson 9, which is for wanting a thing."}
  ]},
 {n:14,title:"て形（けい） / ています",topic:"Te-form requests and ongoing states",
  q:[
@@ -708,7 +722,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"Please turn off the light and wait here.",jp:"電気（でんき）を 消（け）して、ここで 待（ま）ってください。",note:"Two te-forms chained together, the second ending in ください for the request."},
-  {en:"My father is working in Osaka now.",jp:"父（ちち）は 今（いま） 大阪（おおさか）で 働（はたら）いています。",note:"働（はたら）いています = ongoing state 'is working', not a one-time action."}
+  {en:"My father is working in Osaka now.",jp:"父（ちち）は 今（いま） 大阪（おおさか）で 働（はたら）いています。",note:"働（はたら）いています = ongoing state 'is working', not a one-time action."},
+  {en:"Please hurry and sit here.",jp:"急（いそ）いで、ここに 座（すわ）ってください。",note:"急いで (て-form of 急ぎます) chains into 座ってください — the same two-て-forms construction as the model answer, with different verbs."}
  ]},
 {n:15,title:"てもいいです／てはいけません",topic:"Permission and prohibition",
  q:[
@@ -719,7 +734,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"May I use this telephone?",jp:"この 電話（でんわ）を 使（つか）っても いいですか。",note:"てもいいですか is the standard 'may I...?' request for permission."},
-  {en:"You mustn't enter this room.",jp:"この 部屋（へや）に 入（はい）っては いけません。",note:"入（はい）ります → て-form 入（はい）って + はいけません."}
+  {en:"You mustn't enter this room.",jp:"この 部屋（へや）に 入（はい）っては いけません。",note:"入（はい）ります → て-form 入（はい）って + はいけません."},
+  {en:"May I sit here?",jp:"ここに 座（すわ）っても いいですか。",note:"てもいいですか permission pattern applied to 座ります instead of 使います."}
  ]},
 {n:16,title:"なければなりません",topic:"Obligation and non-obligation",
  q:[
@@ -730,7 +746,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I have to go to the hospital today.",jp:"今日（きょう） 病院（びょういん）へ 行（い）かなければ なりません。",note:"行（い）きます → ない-form 行（い）かない → 行（い）かなければなりません."},
-  {en:"You don't have to bring an umbrella; it won't rain.",jp:"雨（あめ）は 降（ふ）りませんから、傘（かさ）を 持（も）ってこなくても いいです。",note:"から gives the reason; なくてもいいです = no obligation."}
+  {en:"You don't have to bring an umbrella; it won't rain.",jp:"雨（あめ）は 降（ふ）りませんから、傘（かさ）を 持（も）ってこなくても いいです。",note:"から gives the reason; なくてもいいです = no obligation."},
+  {en:"You don't have to prepare anything.",jp:"何（なに）も 準備（じゅんび）しなくても いいです。",note:"何も + くてもいいです combines Lesson 13's 'nothing' pattern with this lesson's non-obligation form."}
  ]},
 {n:17,title:"辞書形（じしょけい） / ことができます",topic:"Dictionary form, ability, hobbies",
  q:[
@@ -741,7 +758,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"My hobby is playing the piano; I can also swim well.",jp:"私（わたし）の 趣味（しゅみ）は ピアノを 弾（ひ）くことです。泳（およ）ぐことも 上手（じょうず）です。",note:"Dictionary form + こと turns a verb into a noun, usable as a topic or with 上手（じょうず）/好（す）き."},
-  {en:"After finishing work, I study Japanese.",jp:"仕事（しごと）が 終（お）わった 後（あと）で、日本語（にほんご）を 勉強（べんきょう）します。",note:"Vた-form + 後（あと）で = 'after doing'."}
+  {en:"After finishing work, I study Japanese.",jp:"仕事（しごと）が 終（お）わった 後（あと）で、日本語（にほんご）を 勉強（べんきょう）します。",note:"Vた-form + 後（あと）で = 'after doing'."},
+  {en:"I can speak a little Japanese.",jp:"日本語（にほんご）を 少（すこ）し 話（はな）すことが できます。",note:"を marks 日本語 as 話す's own object; が marks ことができます as the ability clause itself — two particles doing two different jobs in one sentence."}
  ]},
 {n:18,title:"たり〜たりします",topic:"Listing example actions",
  q:[
@@ -752,7 +770,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"On Sundays I clean, do laundry, and sometimes go shopping.",jp:"日曜日（にちようび）は 掃除（そうじ）したり 洗濯（せんたく）したり、時（じ）々 買（か）い物（もの）に 行（い）ったり します。",note:"Chain several たり clauses, ending in します once."},
-  {en:"During the trip we took photos and ate delicious food.",jp:"旅行中（りょこうちゅう）に 写真（しゃしん）を 撮（と）ったり おいしい 物（もの）を 食（た）べたり しました。",note:"Past tense: 〜たり〜たりしました."}
+  {en:"During the trip we took photos and ate delicious food.",jp:"旅行中（りょこうちゅう）に 写真（しゃしん）を 撮（と）ったり おいしい 物（もの）を 食（た）べたり しました。",note:"Past tense: 〜たり〜たりしました."},
+  {en:"On rainy days I read books or clean.",jp:"雨（あめ）の 日（ひ）は 本（ほん）を 読（よ）んだり 掃除（そうじ）したり します。",note:"たり〜たりします lists example activities; 雨の日 ('a rainy day') reuses the noun-modification idea from earlier lessons."}
  ]},
 {n:19,title:"予定（よてい） / 〜と思（おも）っています",topic:"Plans and ongoing intentions",
  q:[
@@ -763,7 +782,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I'm thinking of returning to my country next month.",jp:"来月（らいげつ） 帰国（きこく）しようと 思（おも）っています。",note:"Volitional (帰国（きこく）しよう) + と思（おも）っています = an intention held over time."},
-  {en:"This weekend I plan to clean my room and do laundry.",jp:"今週末（こんしゅうまつ）は 部屋（へや）を 掃除（そうじ）したり 洗濯（せんたく）したり する 予定（よてい）です。",note:"Combine たり listing with 予定（よてい）です for a planned itinerary."}
+  {en:"This weekend I plan to clean my room and do laundry.",jp:"今週末（こんしゅうまつ）は 部屋（へや）を 掃除（そうじ）したり 洗濯（せんたく）したり する 予定（よてい）です。",note:"Combine たり listing with 予定（よてい）です for a planned itinerary."},
+  {en:"I'm thinking of studying Japanese next year too.",jp:"来年（らいねん）も 日本語（にほんご）を 勉強（べんきょう）しようと 思（おも）っています。",note:"も (Lesson 6) replacing は／を, combined with volitional + と思っています for an ongoing intention."}
  ]},
 {n:20,title:"すぎます / ほうがいいです",topic:"Excess, giving advice",
  q:[
@@ -774,7 +794,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"You ate too much, so you should rest a bit.",jp:"食（た）べすぎましたから、少（すこ）し 休（やす）んだ ほうが いいです。",note:"すぎました states the excess; ほうがいいです gives the recommendation."},
-  {en:"Trains are crowded in the morning, so it's better to leave early.",jp:"朝（あさ）は 電車（でんしゃ）が 込（こ）みますから、早（はや）く 出（だ）た ほうが いいです。",note:"から gives the reason for the advice that follows."}
+  {en:"Trains are crowded in the morning, so it's better to leave early.",jp:"朝（あさ）は 電車（でんしゃ）が 込（こ）みますから、早（はや）く 出（だ）た ほうが いいです。",note:"から gives the reason for the advice that follows."},
+  {en:"I worked too much yesterday, so I'm planning to rest today.",jp:"昨日（きのう）は 働（はたら）きすぎましたから、今日（きょう）は 休（やす）もうと 思（おも）っています。",note:"働きすぎました states the excess; volitional 休もう (not 休みます) before と思っています expresses the plan."}
  ]},
 {n:21,title:"と思（おも）います／でしょう",topic:"Opinions, hearsay, probability",
  q:[
@@ -785,7 +806,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I think this typhoon is quite big.",jp:"この 台風（たいふう）は かなり 大（おお）きいと 思（おも）います。",note:"い-adjective plain form + と思（おも）います, no だ needed after い-adjectives."},
-  {en:"Tanaka-san said the meeting is tomorrow.",jp:"田中（たなか）さんは 会議（かいぎ）は 明日（あした）だと 言（い）いました。",note:"Noun + だ + と言（い）いました reports what someone said (plain copula だ before と in casual quotes)."}
+  {en:"Tanaka-san said the meeting is tomorrow.",jp:"田中（たなか）さんは 会議（かいぎ）は 明日（あした）だと 言（い）いました。",note:"Noun + だ + と言（い）いました reports what someone said (plain copula だ before と in casual quotes)."},
+  {en:"This test will probably be difficult.",jp:"この テストは 難（むずか）しいでしょう。",note:"い-adjective + でしょう for a probability guess — でしょう alone carries the same idea と思います does, more casually."}
  ]},
 {n:22,title:"名詞修飾（めいししゅうしょく）",topic:"Modifying nouns with verb/adjective clauses",
  q:[
@@ -796,7 +818,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"The doll that Tanaka-san gave me is very cute.",jp:"田中（たなか）さんが くれた 人形（にんぎょう）は とても かわいいです。",note:"くれた (gave to me) modifies 人形（にんぎょう） directly, placed right before the noun."},
-  {en:"The person standing over there is my teacher.",jp:"あそこに 立（た）っている 人（ひと）は 私（わたし）の 先生（せんせい）です。",note:"立（た）っている (standing) modifies 人（ひと） (person) as a noun-modifying clause."}
+  {en:"The person standing over there is my teacher.",jp:"あそこに 立（た）っている 人（ひと）は 私（わたし）の 先生（せんせい）です。",note:"立（た）っている (standing) modifies 人（ひと） (person) as a noun-modifying clause."},
+  {en:"The book that is on the desk is mine.",jp:"机（つくえ）の 上（うえ）に ある 本（ほん）は 私（わたし）のです。",note:"ある (the plain form of あります) modifies 本 directly — the same noun-modification pattern as ている clauses, just with an existence verb."}
  ]},
 {n:23,title:"とき / 移動動詞（いどうどうし）",topic:"Time clauses, movement across a place",
  q:[
@@ -807,7 +830,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"When I was a child, I lived in Osaka.",jp:"子供（こども）の とき、大阪（おおさか）に 住（す）んでいました。",note:"Noun + の + とき for 'when [I was] N'."},
-  {en:"Turn right at that corner, then go straight.",jp:"あの 角（かど）を 右（みぎ）に 曲（ま）がって、まっすぐ 行（い）ってください。",note:"を marks the corner as the point of turning; 曲（ま）がって chains into the next instruction."}
+  {en:"Turn right at that corner, then go straight.",jp:"あの 角（かど）を 右（みぎ）に 曲（ま）がって、まっすぐ 行（い）ってください。",note:"を marks the corner as the point of turning; 曲（ま）がって chains into the next instruction."},
+  {en:"When it rains, I don't go outside.",jp:"雨（あめ）が 降（ふ）る とき、外（そと）へ 行（い）きません。",note:"Dictionary form + とき for a habitual 'when'; combines weather vocabulary (雨が降る) with this lesson's time-clause pattern."}
  ]},
 {n:24,title:"受身形（うけみけい）",topic:"Passive voice",
  q:[
@@ -818,7 +842,8 @@ const LESSONS = [
  ],
  cap:[
   {en:"I was scolded by my mother yesterday.",jp:"昨日（きのう） 母（はは）に 叱（しか）られました。",note:"The person doing the action takes に in passive sentences: 母（はは）に叱（しか）られる = 'be scolded by mother'."},
-  {en:"This song is loved by many people.",jp:"この 歌（うた）は 多（おお）くの 人（ひと）に 愛（あい）されています。",note:"愛（あい）する → 愛（あい）される (passive) → 愛（あい）されています for an ongoing state."}
+  {en:"This song is loved by many people.",jp:"この 歌（うた）は 多（おお）くの 人（ひと）に 愛（あい）されています。",note:"愛（あい）する → 愛（あい）される (passive) → 愛（あい）されています for an ongoing state."},
+  {en:"I was invited to the party by Tanaka-san.",jp:"田中（たなか）さんに パーティーに 招待（しょうたい）されました。",note:"に marks the person doing the inviting in this passive sentence, the same role as 先生に in the model answer."}
  ]},
 {n:25,title:"使役形（しえきけい）",topic:"Causative form",
  q:[
@@ -829,8 +854,74 @@ const LESSONS = [
  ],
  cap:[
   {en:"My boss let me go home early today.",jp:"今日（きょう） 上司（じょうし）は 私（わたし）を 早（はや）く 帰（かえ）らせて くれました。",note:"Causative 帰（かえ）らせて + くれました = 'let me go home' as a favor granted by the boss."},
-  {en:"Could you please let me use this computer?",jp:"この コンピューターを 使（つか）わせて いただけませんか。",note:"Causative + ていただけませんか is a very polite way to request permission."}
+  {en:"Could you please let me use this computer?",jp:"この コンピューターを 使（つか）わせて いただけませんか。",note:"Causative + ていただけませんか is a very polite way to request permission."},
+  {en:"My mother made me clean my room.",jp:"母（はは）は 私（わたし）に 部屋（へや）を 掃除（そうじ）させました。",note:"Causative させました combined with を for the thing being cleaned — the person made to act takes に, the object of their action still takes を."}
  ]}
+];
+
+/* ============================================================
+   CUMULATIVE REVIEW CAPSTONES — every 5 lessons, a short set that
+   deliberately combines grammar points from across that whole block,
+   so earlier lessons don't quietly rot while you move forward. Each
+   sentence carries a "check" list of the specific elements to
+   self-verify against, instead of just eyeballing the whole sentence.
+   ============================================================ */
+const REVIEW_CAPSTONES = [
+  {block:5, title:"Review — Lessons 1–5", cap:[
+    {en:"That dictionary is mine. How much was it?",jp:"あの 辞書（じしょ）は 私（わたし）のです。いくらですか。",
+     note:"Combines この／その／あの + noun (Lesson 2) with N1のN2 possession (Lesson 1) and いくらですか (Lesson 2).",
+     check:["あの + noun, not あれ alone, since a specific dictionary is named","の for possession (私のです)","いくらですか kept as its own separate question"]},
+    {en:"I'll go to the station by train, alone, at seven.",jp:"7時（じ）に 一人（ひとり）で 電車（でんしゃ）で 駅（えき）へ 行（い）きます。",
+     note:"Combines 時に for clock time (Lesson 4) with 一人で, 電車で, and 駅へ (Lesson 5) — で appears twice doing two different jobs.",
+     check:["7時に for the specific time, not は","電車で for the means of transport","駅へ for the destination direction","一人で for 'alone' — a different use of で than the transport one"]},
+    {en:"Where is that department store? I'll go by bus.",jp:"あの デパートは どこですか。バスで 行（い）きます。",
+     note:"Combines あの + noun (Lesson 2) and どこですか (Lesson 3) with バスで for the means of transport (Lesson 5).",
+     check:["あの + noun since a specific department store is meant","どこですか to ask where it is","バスで for the means of transport, not へ or に"]}
+  ]},
+  {block:10, title:"Review — Lessons 6–10", cap:[
+    {en:"I gave Tanaka-san a book, but he doesn't understand English very well.",jp:"田中（たなか）さんに 本（ほん）を あげましたが、英語（えいご）が あまり わかりません。",
+     note:"Combines あげました + に for the recipient (Lesson 7) with が + わかります and あまり + negative (Lesson 9).",
+     check:["に marks Tanaka-san as the recipient of あげました","を marks 本 as the thing given","が (not を) before わかりません, since わかります always pairs with が","あまり + negative for 'not very'"]},
+    {en:"This town is quiet, and there is a nice park nearby.",jp:"この 町（まち）は 静（しず）かで、近（ちか）くに いい 公園（こうえん）が あります。",
+     note:"Combines the な-adjective で-connector (Lesson 8) with あります + に for location (Lesson 10).",
+     check:["静かで, not 静かの／静かだ, to connect the な-adjective mid-sentence","に marks 近く as the location where the park exists","が あります since 公園 is inanimate"]},
+    {en:"I haven't eaten breakfast yet, but I already understand this kanji.",jp:"まだ 朝（あさ）ごはんを 食（た）べていませんが、この 漢字（かんじ）は もう わかりました。",
+     note:"Combines まだ + negative (Lesson 7) with もう + past tense (also Lesson 7), applied across two different clauses joined by が.",
+     check:["まだ + ていません = 'haven't done yet'","もう + わかりました = 'already understood'","が connects the two clauses as 'but'"]}
+  ]},
+  {block:15, title:"Review — Lessons 11–15", cap:[
+    {en:"I only bought three apples, because they were more expensive than yesterday.",jp:"りんごは 昨日（きのう）より 高（たか）かったですから、三（みっ）つだけ 買（か）いました。",
+     note:"Combines より + adjかった past comparison (Lesson 12) with quantity + だけ (Lesson 11).",
+     check:["adjかったです for the past tense of 高い","より marks 昨日 as the point of comparison","だけ directly after the quantity 三つ"]},
+    {en:"I want to go to Kyoto to take photos, but you mustn't take photos inside the train.",jp:"写真（しゃしん）を 撮（と）りに 京都（きょうと）へ 行（い）きたいですが、電車（でんしゃ）の 中（なか）で 写真（しゃしん）を 撮（と）っては いけません。",
+     note:"Combines purpose に行きたい (Lesson 13) with てはいけません prohibition (Lesson 15).",
+     check:["撮りに 行きたい: purpose に行きます fused with たい on the same verb stem","電車の中で for 'inside the train' — で for where the (prohibited) action happens","撮っては いけません for the prohibition, not てもいいです"]},
+    {en:"You may wait here, but please turn off your phone.",jp:"ここで 待（ま）っても いいですが、電話（でんわ）を 消（け）してください。",
+     note:"Combines てもいいです permission (Lesson 15) with てください request (Lesson 14).",
+     check:["待っても いいです for permission to wait","消してください for the polite request to turn it off","が connecting the two clauses as 'but'"]}
+  ]},
+  {block:20, title:"Review — Lessons 16–20", cap:[
+    {en:"I must submit the report by tomorrow, so I plan to study at the library today.",jp:"レポートを 明日（あした）までに 出（だ）さなければ なりませんから、今日（きょう） 図書館（としょかん）で 勉強（べんきょう）する 予定（よてい）です。",
+     note:"Combines なければなりません obligation (Lesson 16) with 辞書形＋予定です (Lesson 19).",
+     check:["出さなければ なりません for the obligation (drop い from 出さない, add ければなりません)","から linking the reason to the plan","辞書形 (勉強する, not 勉強します) directly before 予定です"]},
+    {en:"On weekends I do things like clean and read books, but I think it's better to do laundry too.",jp:"週末（しゅうまつ）は 掃除（そうじ）したり 本（ほん）を 読（よ）んだり しますが、洗濯（せんたく）も した ほうが いいと 思（おも）います。",
+     note:"Combines たり〜たりします (Lesson 18) with た方がいい advice + と思います opinion (Lessons 20-21 style).",
+     check:["たり〜たりします lists example weekend activities","した ほうがいい for advice, using the た-form, not the dictionary form","と思います frames it as an opinion"]},
+    {en:"I worked too much yesterday, so I think I'll rest today.",jp:"昨日（きのう）は 働（はたら）きすぎましたから、今日（きょう）は 休（やす）もうと 思（おも）っています。",
+     note:"Combines すぎました excess (Lesson 20) with volitional + と思っています (Lesson 19).",
+     check:["働きすぎました for 'worked too much'","から linking cause to the plan that follows","volitional 休もう, not 休みます, before と思っています"]}
+  ]},
+  {block:25, title:"Review — Lessons 21–25", cap:[
+    {en:"The person standing over there will probably be a teacher.",jp:"あそこに 立（た）っている 人（ひと）は たぶん 先生（せんせい）でしょう。",
+     note:"Combines ている noun modification (Lesson 22) with でしょう probability (Lesson 21).",
+     check:["ている clause (立っている) modifying 人 directly, placed right before the noun","でしょう for a probability guess, no と思います needed"]},
+    {en:"When I turned right at that corner, I was scolded by my mother.",jp:"あの 角（かど）を 右（みぎ）に 曲（ま）がった とき、母（はは）に 叱（しか）られました。",
+     note:"Combines を + movement verb and た-form とき (Lesson 23) with に + passive form (Lesson 24).",
+     check:["を marks 角 as the corner being turned at (movement verb)","曲がった (plain past, not 曲がる) since the turn already happened before the scolding","に marks 母 as the one doing the scolding in this passive sentence"]},
+    {en:"My boss made me go to Osaka, so I was very tired.",jp:"上司（じょうし）は 私（わたし）を 大阪（おおさか）へ 行（い）かせましたから、とても 疲（つか）れました。",
+     note:"Combines causative 行かせました (Lesson 25) with から linking to a result clause.",
+     check:["を marks 私 as the person made to go, since 行く is intransitive (compare に for transitive causative verbs)","causative 行かせました, not just 行きました","から linking the cause to the result (とても疲れました)"]}
+  ]}
 ];
 
 /* ============================================================
@@ -1461,6 +1552,8 @@ function defaultProgress(){
     dailyLog: {},           // date -> {qids:[], completed:bool}
     capstoneStatus: {},     // lessonNum -> 'locked'|'available'|'done'
     capstoneResults: {},    // lessonNum -> {sentenceIdx: 'good'|'retry'}
+    reviewCapstoneStatus: {}, // block (5/10/15/20/25) -> 'available'|'done'
+    capstoneRequeue: [],    // sentences marked "needs more work", resurfaced later
     streak: 0,
     lastCompletedDate: null,
     totalStamps: 0,
@@ -1492,6 +1585,8 @@ async function loadProgress(){
   }
   PROGRESS = loaded || defaultProgress();
   if(!PROGRESS.capstoneStatus[1]) PROGRESS.capstoneStatus[1] = 'locked';
+  if(!PROGRESS.reviewCapstoneStatus) PROGRESS.reviewCapstoneStatus = {};
+  if(!PROGRESS.capstoneRequeue) PROGRESS.capstoneRequeue = [];
 }
 
 let SAVE_STATUS = 'ok'; // 'ok' | 'retrying' | 'fallback'
@@ -1687,6 +1782,85 @@ LESSONS.forEach(l=>{
   items.forEach(it=> GENERATED_INDEX[it.qid] = it);
 });
 
+// ----------------------------------------------------------------
+// MUTATION-BASED DISTRACTORS — instead of grabbing random unrelated
+// vocab/sentences (which gives away the answer by script, length, or
+// topic alone), build wrong options that are *close* to the answer:
+// same script + similar length for vocab, same-lesson topic plus a
+// word-order scramble and a particle swap for sentences.
+// ----------------------------------------------------------------
+function scriptOf(str){
+  return (/[゠-ヿ]/.test(str) && !/[一-鿿]/.test(str)) ? 'kata' : 'other';
+}
+function visibleLen(str){
+  return str.replace(/（.*?）/g,'').length;
+}
+function buildVocabDistractors(pool, answer, key){
+  const ansStr = answer[key];
+  const ansScript = scriptOf(ansStr);
+  const ansLen = visibleLen(ansStr);
+  let candidates = pool.filter(x => scriptOf(x[key]) === ansScript);
+  if(candidates.length < 3) candidates = pool.slice();
+  candidates = candidates
+    .map(x => ({x, d: Math.abs(visibleLen(x[key]) - ansLen)}))
+    .sort((a,b) => a.d - b.d)
+    .map(o => o.x);
+  const nearBand = candidates.slice(0, Math.max(6, Math.min(candidates.length, 10)));
+  return shuffle(nearBand, Math.random).slice(0,3).map(x => x[key]);
+}
+const PARTICLE_SWAP_SET = ['は','が','を','に','で','へ','と','も'];
+// Only swaps the kana that ends a space-separated phrase chunk — that's
+// where a particle actually sits in these example sentences. Scanning the
+// raw string for the first matching character instead would happily grab
+// one buried mid-word (e.g. the は inside ごはん) and corrupt the vocabulary
+// instead of testing the particle.
+function particleSwapVariant(jp){
+  const chunks = jp.split(' ');
+  for(let i=0;i<chunks.length;i++){
+    let chunk = chunks[i];
+    let trailingPunct = '';
+    if(/[。、]$/.test(chunk)){ trailingPunct = chunk.slice(-1); chunk = chunk.slice(0,-1); }
+    if(!chunk) continue;
+    const last = chunk.slice(-1);
+    if(PARTICLE_SWAP_SET.includes(last)){
+      const alt = PARTICLE_SWAP_SET.filter(x => x!==last);
+      const swap = alt[Math.floor(Math.random()*alt.length)];
+      const next = chunks.slice();
+      next[i] = chunk.slice(0,-1) + swap + trailingPunct;
+      return next.join(' ');
+    }
+  }
+  return null;
+}
+function scrambleVariant(jp){
+  const chunks = jp.split(' ').filter(Boolean);
+  if(chunks.length < 3) return null;
+  const shuffled = shuffle(chunks, Math.random);
+  const joined = shuffled.join(' ');
+  return joined === jp ? null : joined;
+}
+function buildSentenceDistractors(item, ex, tb){
+  const sameLessonPool = tb.patterns.flatMap(p => p.examples).filter(x => x.jp!==ex.jp).map(x => x.jp);
+  let topicPool = sameLessonPool;
+  if(topicPool.length < 3){
+    const widened = [];
+    for(let ln=Math.max(1,item.lesson-2); ln<=item.lesson; ln++){
+      const t = TEXTBOOK.find(x=>x.n===ln);
+      if(t) t.patterns.forEach(p=> p.examples.forEach(x=>{ if(x.jp!==ex.jp) widened.push(x.jp); }));
+    }
+    topicPool = widened.length >= 3 ? widened : allExamplesUpTo(item.lesson).filter(x=>x.jp!==ex.jp).map(x=>x.jp);
+  }
+  const mutated = [];
+  const scr = scrambleVariant(ex.jp); if(scr) mutated.push(scr);
+  const swap = particleSwapVariant(ex.jp); if(swap && swap!==ex.jp) mutated.push(swap);
+  const shuffledTopicPool = shuffle(topicPool, Math.random);
+  const combined = [];
+  [...mutated, ...shuffledTopicPool].forEach(s => {
+    if(s && s!==ex.jp && !combined.includes(s) && combined.length<3) combined.push(s);
+  });
+  return combined;
+}
+
 // Resolves a lightweight generated-question record into the same
 // {prompt, choices, a, note, type, lesson, qid} shape the renderer already
 // expects for static questions, sampling fresh distractors each call.
@@ -1696,22 +1870,21 @@ function resolveGeneratedQuestion(item){
   if(item.kind === 'vocab_en_jp'){
     const v = tb.vocab[item.vocabIdx];
     const pool = allVocabUpTo(item.lesson).filter(x=>x.jp!==v.jp);
-    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.jp);
+    const distractors = buildVocabDistractors(pool, v, 'jp');
     const choices = shuffle([v.jp, ...distractors], Math.random);
     return { qid:item.qid, lesson:item.lesson, type:'vocab', prompt:`Which word means "${v.en}"?`, choices, a:choices.indexOf(v.jp), note:`${v.jp} = ${v.en}` };
   }
   if(item.kind === 'vocab_jp_en'){
     const v = tb.vocab[item.vocabIdx];
     const pool = allVocabUpTo(item.lesson).filter(x=>x.en!==v.en);
-    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.en);
+    const distractors = buildVocabDistractors(pool, v, 'en');
     const choices = shuffle([v.en, ...distractors], Math.random);
     return { qid:item.qid, lesson:item.lesson, type:'vocab', prompt:`「${v.jp}」means:`, choices, a:choices.indexOf(v.en), note:`${v.jp} = ${v.en}` };
   }
   if(item.kind === 'sentence_en_jp'){
     const p = tb.patterns[item.patternIdx];
     const ex = p.examples[item.exampleIdx];
-    const pool = allExamplesUpTo(item.lesson).filter(x=>x.jp!==ex.jp);
-    const distractors = sampleN(pool, Math.min(3,pool.length)).map(x=>x.jp);
+    const distractors = buildSentenceDistractors(item, ex, tb);
     const choices = shuffle([ex.jp, ...distractors], Math.random);
     return { qid:item.qid, lesson:item.lesson, type:'structure', prompt:`Which sentence means: "${ex.en}"?`, choices, a:choices.indexOf(ex.jp), note:`${p.title} \u2014 ${p.explain}` };
   }
@@ -1727,6 +1900,263 @@ function resolveGeneratedQuestion(item){
     return { qid:item.qid, lesson:item.lesson, type:'grammar', prompt:`Which grammar point does this sentence use?\n${ex.jp}`, choices, a:choices.indexOf(p.title), note:p.explain };
   }
   return null;
+}
+
+/* ============================================================
+   CONJUGATION ENGINE — a real rules engine, not hand-written
+   questions. Japanese verb conjugation is regular once you know
+   the verb's group:
+     Group 1 (godan/う-verbs):  書く, 飲む, 帰る
+     Group 2 (ichidan/る-verbs): 食べる, 見る
+     Group 3 (irregular):       する, 来る (+ noun+する compounds)
+   Every verb below is tagged with its group, and one rule table
+   per group produces every form. Distractors are built the same
+   way real learners get it wrong: wrong verb-group rule, wrong
+   godan branch, or right form/wrong tense-polarity.
+   ============================================================ */
+const VERBS = [
+  // ---- Group 1 (godan) ----
+  {dict:"書（か）く", stem:"書（か）", oku:"く", group:1, meaning:"to write"},
+  {dict:"聞（き）く", stem:"聞（き）", oku:"く", group:1, meaning:"to listen, hear, ask"},
+  {dict:"歩（ある）く", stem:"歩（ある）", oku:"く", group:1, meaning:"to walk"},
+  {dict:"働（はたら）く", stem:"働（はたら）", oku:"く", group:1, meaning:"to work"},
+  {dict:"泳（およ）ぐ", stem:"泳（およ）", oku:"ぐ", group:1, meaning:"to swim"},
+  {dict:"飲（の）む", stem:"飲（の）", oku:"む", group:1, meaning:"to drink"},
+  {dict:"読（よ）む", stem:"読（よ）", oku:"む", group:1, meaning:"to read"},
+  {dict:"住（す）む", stem:"住（す）", oku:"む", group:1, meaning:"to live (somewhere)"},
+  {dict:"死（し）ぬ", stem:"死（し）", oku:"ぬ", group:1, meaning:"to die"},
+  {dict:"遊（あそ）ぶ", stem:"遊（あそ）", oku:"ぶ", group:1, meaning:"to play"},
+  {dict:"話（はな）す", stem:"話（はな）", oku:"す", group:1, meaning:"to speak"},
+  {dict:"消（け）す", stem:"消（け）", oku:"す", group:1, meaning:"to turn off, erase"},
+  {dict:"貸（か）す", stem:"貸（か）", oku:"す", group:1, meaning:"to lend"},
+  {dict:"待（ま）つ", stem:"待（ま）", oku:"つ", group:1, meaning:"to wait"},
+  {dict:"立（た）つ", stem:"立（た）", oku:"つ", group:1, meaning:"to stand"},
+  {dict:"買（か）う", stem:"買（か）", oku:"う", group:1, meaning:"to buy"},
+  {dict:"使（つか）う", stem:"使（つか）", oku:"う", group:1, meaning:"to use"},
+  {dict:"手伝（てつだ）う", stem:"手伝（てつだ）", oku:"う", group:1, meaning:"to help"},
+  {dict:"会（あ）う", stem:"会（あ）", oku:"う", group:1, meaning:"to meet"},
+  {dict:"帰（かえ）る", stem:"帰（かえ）", oku:"る", group:1, meaning:"to go home / return", trap:true},
+  {dict:"入（はい）る", stem:"入（はい）", oku:"る", group:1, meaning:"to enter", trap:true},
+  {dict:"要（い）る", stem:"要（い）", oku:"る", group:1, meaning:"to be necessary", trap:true},
+  {dict:"知（し）る", stem:"知（し）", oku:"る", group:1, meaning:"to know", trap:true},
+  {dict:"走（はし）る", stem:"走（はし）", oku:"る", group:1, meaning:"to run", trap:true},
+  {dict:"作（つく）る", stem:"作（つく）", oku:"る", group:1, meaning:"to make"},
+  {dict:"座（すわ）る", stem:"座（すわ）", oku:"る", group:1, meaning:"to sit"},
+  {dict:"撮（と）る", stem:"撮（と）", oku:"る", group:1, meaning:"to take (a photo)"},
+  {dict:"曲（ま）がる", stem:"曲（ま）", oku:"がる", group:1, meaning:"to turn"},
+  {dict:"渡（わた）る", stem:"渡（わた）", oku:"る", group:1, meaning:"to cross"},
+  {dict:"通（とお）る", stem:"通（とお）", oku:"る", group:1, meaning:"to pass through"},
+  {dict:"分（わ）かる", stem:"分（わ）", oku:"かる", group:1, meaning:"to understand"},
+  {dict:"行（い）く", stem:"行（い）", oku:"く", group:1, meaning:"to go", irregularTe:true},
+  // ---- Group 2 (ichidan) ----
+  {dict:"食（た）べる", stem:"食（た）", oku:"べる", group:2, meaning:"to eat"},
+  {dict:"見（み）る", stem:"見（み）", oku:"る", group:2, meaning:"to see, watch"},
+  {dict:"起（お）きる", stem:"起（お）", oku:"きる", group:2, meaning:"to wake up"},
+  {dict:"寝（ね）る", stem:"寝（ね）", oku:"る", group:2, meaning:"to sleep"},
+  {dict:"出（で）る", stem:"出（で）", oku:"る", group:2, meaning:"to leave, go out"},
+  {dict:"見（み）せる", stem:"見（み）", oku:"せる", group:2, meaning:"to show"},
+  {dict:"教（おし）える", stem:"教（おし）", oku:"える", group:2, meaning:"to teach"},
+  {dict:"覚（おぼ）える", stem:"覚（おぼ）", oku:"える", group:2, meaning:"to remember"},
+  {dict:"着（き）る", stem:"着（き）", oku:"る", group:2, meaning:"to wear"},
+  {dict:"借（か）りる", stem:"借（か）", oku:"りる", group:2, meaning:"to borrow"},
+  {dict:"降（お）りる", stem:"降（お）", oku:"りる", group:2, meaning:"to get off, go down"},
+  {dict:"疲（つか）れる", stem:"疲（つか）", oku:"れる", group:2, meaning:"to get tired"},
+  {dict:"褒（ほ）める", stem:"褒（ほ）", oku:"める", group:2, meaning:"to praise"},
+  {dict:"閉（し）める", stem:"閉（し）", oku:"める", group:2, meaning:"to close"},
+  // ---- Group 3 (irregular) ----
+  {dict:"する", group:3, irregular:'suru', meaning:"to do", stem:""},
+  {dict:"来（く）る", group:3, irregular:'kuru', meaning:"to come"},
+  {dict:"勉強（べんきょう）する", group:3, irregular:'suru', meaning:"to study", stem:"勉強（べんきょう）"},
+  {dict:"洗濯（せんたく）する", group:3, irregular:'suru', meaning:"to do laundry", stem:"洗濯（せんたく）"},
+  {dict:"掃除（そうじ）する", group:3, irregular:'suru', meaning:"to clean", stem:"掃除（そうじ）"},
+  {dict:"結婚（けっこん）する", group:3, irregular:'suru', meaning:"to marry", stem:"結婚（けっこん）"}
+];
+
+const FORM_LABELS = {
+  masuNeg: "polite negative (ません) form",
+  masuPast: "polite past (ました) form",
+  masuPastNeg: "polite past negative (ませんでした) form",
+  te: "て-form",
+  ta: "plain past (た-form)",
+  nai: "plain negative (ない-form)",
+  naiPast: "plain past negative (なかった-form)",
+  dict: "dictionary form",
+  potential: "potential form (“can do”)",
+  volitional: "volitional form (“let's / shall”)",
+  passive: "passive form",
+  causative: "causative form"
+};
+const FORM_UNLOCK_LESSON = {
+  masuNeg:1, masuPast:7, masuPastNeg:7, te:14, ta:14,
+  nai:16, naiPast:16, dict:17, potential:17, volitional:19,
+  passive:24, causative:25
+};
+
+const GODAN_ROWS = {
+  'う':['わ','い','う','え','お'], 'く':['か','き','く','け','こ'],
+  'ぐ':['が','ぎ','ぐ','げ','ご'], 'す':['さ','し','す','せ','そ'],
+  'つ':['た','ち','つ','て','と'], 'ぬ':['な','に','ぬ','ね','の'],
+  'ぶ':['ば','び','ぶ','べ','ぼ'], 'む':['ま','み','む','め','も'],
+  'る':['ら','り','る','れ','ろ']
+};
+const TE_TA_MAP = {
+  'う':{te:'って',ta:'った'}, 'つ':{te:'って',ta:'った'}, 'る':{te:'って',ta:'った'},
+  'む':{te:'んで',ta:'んだ'}, 'ぶ':{te:'んで',ta:'んだ'}, 'ぬ':{te:'んで',ta:'んだ'},
+  'く':{te:'いて',ta:'いた'}, 'ぐ':{te:'いで',ta:'いだ'}, 'す':{te:'して',ta:'した'}
+};
+function godanForms(oku){
+  const last = oku.slice(-1), rest = oku.slice(0,-1);
+  const row = GODAN_ROWS[last], teTa = TE_TA_MAP[last];
+  return {
+    dict: oku,
+    masuNeg: rest+row[1]+'ません', masuPast: rest+row[1]+'ました', masuPastNeg: rest+row[1]+'ませんでした',
+    te: rest+teTa.te, ta: rest+teTa.ta,
+    nai: rest+row[0]+'ない', naiPast: rest+row[0]+'なかった',
+    potential: rest+row[3]+'る', volitional: rest+row[4]+'う',
+    passive: rest+row[0]+'れる', causative: rest+row[0]+'せる'
+  };
+}
+function ichidanForms(oku){
+  const rest = oku.slice(0,-1);
+  return {
+    dict: oku,
+    masuNeg: rest+'ません', masuPast: rest+'ました', masuPastNeg: rest+'ませんでした',
+    te: rest+'て', ta: rest+'た',
+    nai: rest+'ない', naiPast: rest+'なかった',
+    potential: rest+'られる', volitional: rest+'よう',
+    passive: rest+'られる', causative: rest+'させる'
+  };
+}
+const SURU_SUFFIX = {
+  dict:'する', masuNeg:'しません', masuPast:'しました', masuPastNeg:'しませんでした',
+  te:'して', ta:'した', nai:'しない', naiPast:'しなかった',
+  potential:'できる', volitional:'しよう', passive:'される', causative:'させる'
+};
+const KURU_FORMS = {
+  dict:'来（く）る', masuNeg:'来（き）ません', masuPast:'来（き）ました', masuPastNeg:'来（き）ませんでした',
+  te:'来（き）て', ta:'来（き）た', nai:'来（こ）ない', naiPast:'来（こ）なかった',
+  potential:'来（こ）られる', volitional:'来（こ）よう', passive:'来（こ）られる', causative:'来（こ）させる'
+};
+function computeForms(verb){
+  if(verb.irregular==='kuru') return KURU_FORMS;
+  if(verb.irregular==='suru'){
+    const out = {};
+    for(const k in SURU_SUFFIX) out[k] = (verb.stem||'') + SURU_SUFFIX[k];
+    return out;
+  }
+  if(verb.group===2){
+    const f = ichidanForms(verb.oku);
+    const out = {}; for(const k in f) out[k] = (verb.stem||'') + f[k];
+    return out;
+  }
+  const f = godanForms(verb.oku);
+  if(verb.irregularTe){
+    const rest = verb.oku.slice(0,-1);
+    f.te = rest+'って'; f.ta = rest+'った';
+  }
+  const out = {}; for(const k in f) out[k] = (verb.stem||'') + f[k];
+  return out;
+}
+function masuForm(verb){
+  if(verb.irregular==='kuru') return '来（き）ます';
+  if(verb.irregular==='suru') return (verb.stem||'')+'します';
+  if(verb.group===2) return (verb.stem||'')+verb.oku.slice(0,-1)+'ます';
+  const last = verb.oku.slice(-1), rest = verb.oku.slice(0,-1);
+  return (verb.stem||'')+rest+GODAN_ROWS[last][1]+'ます';
+}
+// The most common real learner mistakes, generated the same way a person
+// would actually make them — not random unrelated verbs.
+function generateMistakes(verb, formKey){
+  const out = [];
+  const push = s => { if(s && !out.includes(s)) out.push(s); };
+  const forms = computeForms(verb);
+  const correct = forms[formKey];
+
+  if(verb.group===1){
+    const ic = ichidanForms(verb.oku);
+    push((verb.stem||'')+ic[formKey]);
+  } else if(verb.group===2){
+    const go = godanForms(verb.oku);
+    push((verb.stem||'')+go[formKey]);
+  } else if(verb.irregular==='suru'){
+    const go = godanForms('する');
+    push((verb.stem||'')+go[formKey]);
+  }
+
+  if(verb.group===1 && (formKey==='te'||formKey==='ta')){
+    const last = verb.oku.slice(-1);
+    const rest = verb.oku.slice(0,-1);
+    const altBranches = ['く','む','す','ぐ'].filter(b=>b!==last);
+    shuffle(altBranches, Math.random).slice(0,2).forEach(b=>{
+      const teTa = TE_TA_MAP[b];
+      push((verb.stem||'')+rest+(formKey==='te'?teTa.te:teTa.ta));
+    });
+  }
+
+  const masuFam = ['masuNeg','masuPast','masuPastNeg'];
+  const plainFam = ['dict','nai','ta','naiPast'];
+  const advFam = ['potential','volitional','passive','causative'];
+  const fam = masuFam.includes(formKey) ? masuFam : plainFam.includes(formKey) ? plainFam : advFam.includes(formKey) ? advFam : null;
+  if(fam) fam.filter(k=>k!==formKey).forEach(k=>push(forms[k]));
+
+  return out.filter(s=>s && s!==correct);
+}
+function explainForm(verb, formKey){
+  const groupLabel = verb.group===1 ? "Group 1 (godan/う-verb)" : verb.group===2 ? "Group 2 (ichidan/る-verb)" : "Group 3 (irregular)";
+  let rule = '';
+  if(verb.group===1){
+    if(formKey==='te'||formKey==='ta') rule = "Godan て/た-form depends on the final kana: う・つ・る→って/った, む・ぶ・ぬ→んで/んだ, く→いて/いた, ぐ→いで/いだ, す→して/した.";
+    else if(formKey==='nai'||formKey==='naiPast') rule = "Godan ない-form: change the final う-row kana to its あ-row equivalent, then add ない (う verbs take わ, not あ).";
+    else if(formKey==='potential') rule = "Godan potential: change the final う-row kana to its え-row equivalent, then add る.";
+    else if(formKey==='volitional') rule = "Godan volitional: change the final う-row kana to its お-row equivalent, then add う.";
+    else if(formKey==='passive'||formKey==='causative') rule = "Godan passive/causative: change the final う-row kana to its あ-row equivalent, then add れる/せる.";
+    if(verb.trap) rule += ` ${verb.dict} ends in る but is godan, not ichidan — a classic trap.`;
+  } else if(verb.group===2){
+    rule = "Ichidan verbs just drop る and add the ending directly — no branching by final kana.";
+  } else if(verb.irregular==='suru'){
+    rule = "する is irregular: します／して／した／しない, and its potential is the special form できる, not される-style.";
+  } else if(verb.irregular==='kuru'){
+    rule = "来る is irregular: the kanji 来 shifts reading between き (来ます／来て／来た) and こ (来ない／来よう／来られる).";
+  }
+  return `${groupLabel}. ${rule} Meaning: ${verb.meaning}.`.trim();
+}
+const CONJUGATION_POOL = [];
+VERBS.forEach((v,vi)=>{
+  Object.keys(FORM_LABELS).forEach(formKey=>{
+    CONJUGATION_POOL.push({ qid:`conj-${vi}-${formKey}`, verbIdx:vi, formKey });
+  });
+});
+function conjugationIdsUpTo(lessonNum){
+  if(lessonNum < 14) return [];
+  return CONJUGATION_POOL
+    .filter(it => (FORM_UNLOCK_LESSON[it.formKey]||99) <= lessonNum)
+    .map(it => it.qid);
+}
+function resolveConjugationQuestion(qid){
+  const parts = qid.split('-');
+  const verbIdx = Number(parts[1]);
+  const formKey = parts.slice(2).join('-');
+  const verb = VERBS[verbIdx];
+  const forms = computeForms(verb);
+  const given = masuForm(verb);
+  const correct = forms[formKey];
+  const mistakes = generateMistakes(verb, formKey);
+  let distractors = mistakes.slice(0,3);
+  if(distractors.length < 3){
+    const otherVerbs = shuffle(VERBS.filter((v,i)=>i!==verbIdx), Math.random);
+    for(const ov of otherVerbs){
+      if(distractors.length>=3) break;
+      const ovForm = computeForms(ov)[formKey];
+      if(ovForm && ovForm!==correct && !distractors.includes(ovForm)) distractors.push(ovForm);
+    }
+  }
+  const choices = shuffle([correct, ...distractors.slice(0,3)], Math.random);
+  return {
+    qid, lesson: 14, type:'conjugation',
+    prompt: `What's the ${FORM_LABELS[formKey]} of ${given}?`,
+    choices, a: choices.indexOf(correct),
+    note: explainForm(verb, formKey)
+  };
 }
 
 // Spaced repetition (Leitner-style): each question tracks a "box" 1-5.
@@ -1763,6 +2193,7 @@ function allQuestionsUpTo(lessonNum){
   for(let n=1;n<=lessonNum;n++){
     out.push(...lessonQuestionIds(n));
   }
+  out.push(...conjugationIdsUpTo(lessonNum));
   return out;
 }
 function lessonQuestionIds(lessonNum){
@@ -1791,6 +2222,9 @@ function getTodaysSet(){
 function qByQid(qid){
   if(qid.indexOf('gen-') === 0){
     return resolveGeneratedQuestion(GENERATED_INDEX[qid]);
+  }
+  if(qid.indexOf('conj-') === 0){
+    return resolveConjugationQuestion(qid);
   }
   const [lessonNum, idx] = qid.split("-").map(Number);
   const l = LESSONS.find(x=>x.n===lessonNum);
@@ -1836,9 +2270,18 @@ function isCapstoneDone(lessonNum){
 }
 function completeCapstone(lessonNum){
   PROGRESS.capstoneStatus[lessonNum] = 'done';
+  if(REVIEW_CAPSTONES.some(rc=>rc.block===lessonNum) && !PROGRESS.reviewCapstoneStatus[lessonNum]){
+    PROGRESS.reviewCapstoneStatus[lessonNum] = 'available';
+  }
   if(lessonNum === PROGRESS.currentLesson && lessonNum < 25){
     PROGRESS.currentLesson = lessonNum + 1;
     if(!PROGRESS.capstoneStatus[lessonNum+1]) PROGRESS.capstoneStatus[lessonNum+1] = 'locked';
+  }
+}
+// Sentences marked "needs more work" resurface later instead of disappearing.
+function requeueSentence(sentence){
+  if(!PROGRESS.capstoneRequeue.some(x=>x.jp===sentence.jp)){
+    PROGRESS.capstoneRequeue.push({en:sentence.en, jp:sentence.jp, note:sentence.note, check:sentence.check||null});
   }
 }
 
@@ -1847,7 +2290,7 @@ function completeCapstone(lessonNum){
    ============================================================ */
 let activeTab = 'today';
 let quizState = null; // {qids, idx, mode:'daily'|'practice', answers}
-let capstoneState = null; // {lessonNum, idx, showAnswer}
+let capstoneState = null; // {mode:'lesson'|'review'|'requeue', lessonNum, idx, list}
 
 const main = document.getElementById('main');
 
@@ -1870,6 +2313,7 @@ function render(){
   if(activeTab==='today') renderToday();
   else if(activeTab==='lessons') renderLessons();
   else if(activeTab==='grammar') renderGrammar();
+  else if(activeTab==='conjugate') renderConjugate();
   else if(activeTab==='textbook') renderTextbook();
   else if(activeTab==='stats') renderStats();
 }
@@ -1937,6 +2381,24 @@ function renderToday(){
       <button class="primary" id="startCapstoneBtn" style="margin-top:10px;">Begin Capstone</button>
     </div></div>` : '' }
 
+    ${ (() => {
+      const readyBlock = REVIEW_CAPSTONES.find(rc => PROGRESS.reviewCapstoneStatus[rc.block]==='available');
+      if(!readyBlock) return '';
+      return `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">${readyBlock.title} Unlocked</div>
+      <p class="muted">A cumulative check-in combining grammar from lessons ${readyBlock.block-4}&ndash;${readyBlock.block}, so earlier patterns don't fade as you move on.</p>
+      <button class="primary" id="startReviewCapstoneBtn" data-block="${readyBlock.block}" style="margin-top:10px;">Begin Review</button>
+    </div></div>`;
+    })() }
+
+    ${ PROGRESS.capstoneRequeue.length>0 ? `
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:17px;">Needs More Work (${PROGRESS.capstoneRequeue.length})</div>
+      <p class="muted">Capstone sentences you marked "needs more work" — they stay here until you get them right.</p>
+      <button class="ghost" id="startRequeueBtn" style="margin-top:10px;">Review Them</button>
+    </div></div>` : '' }
+
     ${ (PROGRESS.currentLesson>1 || Object.values(PROGRESS.capstoneStatus).some(s=>s==='done')) ? `
     <div class="card"><div class="card-inner">
       <div class="section-title" style="font-size:16px;">Progress</div>
@@ -1955,10 +2417,13 @@ function renderToday(){
     renderQuizQuestion();
   });
   const capBtn = document.getElementById('startCapstoneBtn');
-  if(capBtn) capBtn.addEventListener('click', ()=>{
-    capstoneState = { lessonNum: PROGRESS.currentLesson, idx:0, showAnswer:false };
-    renderCapstone();
-  });
+  if(capBtn) capBtn.addEventListener('click', ()=> startLessonCapstone(PROGRESS.currentLesson));
+
+  const reviewBtn = document.getElementById('startReviewCapstoneBtn');
+  if(reviewBtn) reviewBtn.addEventListener('click', ()=> startReviewCapstone(Number(reviewBtn.dataset.block)));
+
+  const requeueBtn = document.getElementById('startRequeueBtn');
+  if(requeueBtn) requeueBtn.addEventListener('click', startRequeueCapstone);
 }
 
 function renderQuizQuestion(){
@@ -1973,7 +2438,7 @@ function renderQuizQuestion(){
     checkLessonUnlocks();
     saveProgress();
     quizState = null;
-    renderToday();
+    render();
     return;
   }
   const qid = quizState.qids[quizState.idx];
@@ -1982,7 +2447,7 @@ function renderQuizQuestion(){
 
   main.innerHTML = `
     <div class="card"><div class="card-inner">
-      <div class="qmeta">Lesson ${q.lesson} &middot; ${q.type} &middot; ${isDaily ? 'Today\u2019s Quiz' : 'Practice Round'} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}</div>
+      <div class="qmeta">${q.type==='conjugation' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${quizState.mode==='daily' ? 'Today\u2019s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round'} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}</div>
       <p class="qprompt">${q.prompt}</p>
       <div class="choices" id="choicesWrap"></div>
       <div id="feedbackArea"></div>
@@ -2045,14 +2510,34 @@ function lockChoices(q, pickedIdx){
   };
 }
 
+// capstoneState shapes:
+//   {mode:'lesson',  lessonNum, idx, list: lesson.cap}
+//   {mode:'review',  lessonNum: block, idx, list: reviewSet.cap}
+//   {mode:'requeue', idx, list: snapshot of PROGRESS.capstoneRequeue}
+function startLessonCapstone(lessonNum){
+  const lesson = LESSONS.find(l=>l.n===lessonNum);
+  capstoneState = { mode:'lesson', lessonNum, idx:0, list: lesson.cap };
+  renderCapstone();
+}
+function startReviewCapstone(block){
+  const rc = REVIEW_CAPSTONES.find(r=>r.block===block);
+  capstoneState = { mode:'review', lessonNum: block, idx:0, list: rc.cap };
+  renderCapstone();
+}
+function startRequeueCapstone(){
+  capstoneState = { mode:'requeue', idx:0, list: PROGRESS.capstoneRequeue.slice() };
+  renderCapstone();
+}
 function renderCapstone(){
-  const lesson = LESSONS.find(l=>l.n===capstoneState.lessonNum);
-  const sentence = lesson.cap[capstoneState.idx];
-  const isLast = capstoneState.idx === lesson.cap.length - 1;
+  const sentence = capstoneState.list[capstoneState.idx];
+  const isLast = capstoneState.idx === capstoneState.list.length - 1;
+  const heading = capstoneState.mode==='lesson' ? `Lesson ${capstoneState.lessonNum} Capstone`
+    : capstoneState.mode==='review' ? REVIEW_CAPSTONES.find(r=>r.block===capstoneState.lessonNum).title
+    : 'Needs-Work Review';
 
   main.innerHTML = `
     <div class="card"><div class="card-inner">
-      <div class="qmeta">Lesson ${lesson.n} Capstone &middot; ${capstoneState.idx+1} of ${lesson.cap.length}</div>
+      <div class="qmeta">${heading} &middot; ${capstoneState.idx+1} of ${capstoneState.list.length}</div>
       <p class="en-sentence">&ldquo;${sentence.en}&rdquo;</p>
       <textarea id="capInput" placeholder="Type your Japanese translation here..."></textarea>
       <div style="margin-top:14px;" id="capActionArea">
@@ -2063,11 +2548,17 @@ function renderCapstone(){
   `;
 
   document.getElementById('revealBtn').addEventListener('click', ()=>{
+    const checkHtml = sentence.check ? `
+      <div class="feedback-note" style="margin-top:12px;">
+        <b>Check your answer for:</b>
+        <ul style="margin:8px 0 0; padding-left:18px;">${sentence.check.map(c=>`<li style="margin-bottom:4px;">${c}</li>`).join('')}</ul>
+      </div>` : '';
     document.getElementById('capAnswerArea').innerHTML = `
       <div class="model-answer">
         <div class="jp">${sentence.jp}</div>
         <div class="note">${sentence.note}</div>
       </div>
+      ${checkHtml}
       <div class="selfgrade">
         <button class="ghost" id="gotItBtn">✓ Got it right</button>
         <button class="ghost" id="retryBtn">Needs more work</button>
@@ -2079,11 +2570,19 @@ function renderCapstone(){
   });
 
   function gradeCapstone(good){
-    if(!PROGRESS.capstoneResults[lesson.n]) PROGRESS.capstoneResults[lesson.n] = {};
-    PROGRESS.capstoneResults[lesson.n][capstoneState.idx] = good ? 'good' : 'retry';
+    if(capstoneState.mode==='lesson'){
+      if(!PROGRESS.capstoneResults[capstoneState.lessonNum]) PROGRESS.capstoneResults[capstoneState.lessonNum] = {};
+      PROGRESS.capstoneResults[capstoneState.lessonNum][capstoneState.idx] = good ? 'good' : 'retry';
+      if(!good) requeueSentence(sentence);
+    } else if(capstoneState.mode==='review'){
+      if(!good) requeueSentence(sentence);
+    } else if(capstoneState.mode==='requeue' && good){
+      PROGRESS.capstoneRequeue = PROGRESS.capstoneRequeue.filter(x=>x.jp!==sentence.jp);
+    }
     saveProgress();
     if(isLast){
-      completeCapstone(lesson.n);
+      if(capstoneState.mode==='lesson') completeCapstone(capstoneState.lessonNum);
+      else if(capstoneState.mode==='review') PROGRESS.reviewCapstoneStatus[capstoneState.lessonNum] = 'done';
       saveProgress();
       capstoneState = null;
       setTab('today');
@@ -2121,16 +2620,10 @@ function renderLessons(){
     row.addEventListener('click', ()=>{
       const n = Number(row.dataset.lesson);
       const status = PROGRESS.capstoneStatus[n];
-      if(status==='available'){
-        capstoneState = { lessonNum:n, idx:0, showAnswer:false };
+      if(status==='available' || status==='done'){
         activeTab = 'today';
         document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab==='today'));
-        renderCapstone();
-      } else if(status==='done'){
-        capstoneState = { lessonNum:n, idx:0, showAnswer:false };
-        activeTab = 'today';
-        document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab==='today'));
-        renderCapstone();
+        startLessonCapstone(n);
       }
     });
   });
@@ -2197,6 +2690,55 @@ function renderGrammar(){
       openParticle = (openParticle === idx) ? null : idx;
       renderGrammar();
     });
+  });
+}
+
+function renderConjugate(){
+  if(quizState){ renderQuizQuestion(); return; }
+
+  const godanRowHtml = Object.keys(GODAN_ROWS).map(k=>{
+    const row = GODAN_ROWS[k], teTa = TE_TA_MAP[k];
+    return `<div class="barrow" style="font-family:'JetBrains Mono',monospace; font-size:12px;">
+      <div class="lname" style="width:36px;">${k}〜</div>
+      <div style="flex:1; display:grid; grid-template-columns:repeat(5,1fr); gap:4px;">
+        <span>〜${row[1]}ます</span><span>〜${row[0]}ない</span><span>〜${teTa.te}</span><span>〜${teTa.ta}</span><span>〜${row[3]}る</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const seenConj = CONJUGATION_POOL.filter(it=>PROGRESS.seen[it.qid] && PROGRESS.seen[it.qid].count>0).length;
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Conjugation Drill</div>
+      <p class="muted">Verb forms gate almost every grammar pattern from Lesson 14 onward. Drill any verb &times; any form here, independent of your lesson pace &mdash; wrong answers are the mistakes learners actually make (wrong verb-group rule, wrong godan branch, wrong tense), not random unrelated words.</p>
+      <p class="muted" style="margin-top:10px; font-size:12px;">${VERBS.length} verbs &middot; ${Object.keys(FORM_LABELS).length} forms each &middot; ${seenConj}/${CONJUGATION_POOL.length} combinations practiced so far</p>
+      <button class="primary" id="startConjDrillBtn" style="margin-top:14px;">Start Conjugation Drill</button>
+    </div></div>
+
+    <div class="card"><div class="card-inner">
+      <div class="section-title" style="font-size:17px;">Reference &mdash; the three groups</div>
+      <div class="gstruct">
+        <div class="gstruct-title">Group 1 &mdash; godan / う-verbs</div>
+        <p class="muted" style="margin:6px 0 10px;">Every form branches off the verb's final kana. This is the branch table &mdash; memorize the row, not each verb individually.</p>
+        <div style="border:1px solid var(--line); padding:10px 12px; margin-top:6px;">${godanRowHtml}</div>
+        <div class="gexample-note" style="margin-top:10px;">Watch for traps: 帰る・入る・要る・知る・走る all end in る but are godan, not ichidan &mdash; conjugate them off this table, not the Group 2 rule below.</div>
+      </div>
+      <div class="gstruct">
+        <div class="gstruct-title">Group 2 &mdash; ichidan / る-verbs</div>
+        <p class="muted" style="margin:6px 0 10px;">Drop る, then attach the ending directly &mdash; no branching. 食べる → 食べます・食べない・食べて・食べた・食べられる・食べよう.</p>
+      </div>
+      <div class="gstruct">
+        <div class="gstruct-title">Group 3 &mdash; irregular</div>
+        <p class="muted" style="margin:6px 0 10px;">Only する and 来る (plus noun＋する compounds like 勉強する). Both are memorized outright: します／して／した／しない, and 来る shifts reading between き and こ depending on the form.</p>
+      </div>
+    </div></div>
+  `;
+
+  document.getElementById('startConjDrillBtn').addEventListener('click', ()=>{
+    const ids = weightedSample(CONJUGATION_POOL.map(it=>it.qid), boxWeight, Math.min(15, CONJUGATION_POOL.length));
+    quizState = { qids: ids, idx:0, mode:'conjugation', answers:{} };
+    renderQuizQuestion();
   });
 }
 
