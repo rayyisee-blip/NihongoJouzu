@@ -1,0 +1,533 @@
+  :root{
+    --paper:#F6F1E4;
+    --paper-2:#EFE7D3;
+    --ink:#262220;
+    --ink-soft:#5b544c;
+    --indigo:#223A5E;
+    --indigo-2:#3C5A82;
+    --vermillion:#BF3B30;
+    --vermillion-soft:#e2b3ac;
+    --gold:#C99A3B;
+    --line:#DCD3BE;
+    --success:#5C7A5A;
+    --success-soft:#e1e9df;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:22px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:32px;
+    margin:0;
+    line-height:1.1;
+    letter-spacing:.02em;
+  }
+  h1 small{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-soft);
+    letter-spacing:.08em;
+    margin-top:5px;
+  }
+  .streak-badge{
+    font-family:'JetBrains Mono',monospace;
+    text-align:right;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .streak-badge b{
+    display:block;
+    font-family:'Shippori Mincho', serif;
+    font-size:26px;
+    color:var(--vermillion);
+    line-height:1;
+  }
+
+  /* ---------- Account / sync bar ---------- */
+  .authbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 12px;
+    margin-bottom:18px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.03em;
+  }
+  .authbar b{color:var(--indigo); font-weight:600;}
+  .authbar button.linklike{
+    background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.05em;
+    color:var(--vermillion); text-decoration:underline;
+    padding:0;
+  }
+  .authcard{margin-bottom:20px;}
+  .authtabs{display:flex; gap:16px; margin-bottom:16px; border-bottom:1px solid var(--line);}
+  .authtabs button{
+    background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    padding:8px 2px; color:var(--ink-soft); border-bottom:2px solid transparent;
+  }
+  .authtabs button.active{color:var(--ink); border-bottom-color:var(--vermillion); font-weight:600;}
+  .authfield{margin-bottom:12px;}
+  .authfield label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:5px; letter-spacing:.05em;}
+  .authfield input{
+    width:100%; font-family:'Zen Kaku Gothic New',sans-serif; font-size:15px;
+    border:1.5px solid var(--ink); background:var(--paper); padding:10px 12px;
+  }
+  .autherror{color:var(--vermillion); font-size:13px; margin:10px 0 0;}
+  .authnote{color:var(--ink-soft); font-size:12px; margin-top:12px;}
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    display:flex;
+    flex-wrap:wrap;
+    row-gap:2px;
+    column-gap:22px;
+    margin-bottom:24px;
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:none;
+    border:none;
+    padding:10px 4px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:color .15s;
+  }
+  nav.tabs button.active{
+    color:var(--ink);
+    border-bottom-color:var(--vermillion);
+    font-weight:600;
+  }
+  nav.tabs button:hover{color:var(--ink);}
+
+  /* ---------- Cards ---------- */
+  .card{
+    background:var(--paper);
+    border:1.5px solid var(--ink);
+    padding:24px;
+    margin-bottom:20px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .card-inner{position:relative;}
+
+  .section-title{
+    font-family:'Shippori Mincho', serif;
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 6px;
+  }
+  .muted{color:var(--ink-soft); font-size:14px;}
+
+  /* ---------- Stamp card (signature element) ---------- */
+  .stampcard{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:18px 0 6px;
+  }
+  .stamp{
+    width:40px;height:40px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Shippori Mincho', serif;
+    font-size:11px;
+    font-weight:800;
+    flex-shrink:0;
+  }
+  .stamp.filled{
+    border:2.5px solid var(--vermillion);
+    color:var(--vermillion);
+    transform:rotate(-6deg);
+    box-shadow:inset 0 0 0 2px rgba(191,59,48,.08);
+    animation:stampland .35s ease-out;
+  }
+  .stamp.empty{
+    border:1.5px dashed var(--line);
+    color:var(--line);
+  }
+  @keyframes stampland{
+    0%{transform:rotate(-6deg) scale(1.9); opacity:0;}
+    60%{transform:rotate(-6deg) scale(0.92); opacity:1;}
+    100%{transform:rotate(-6deg) scale(1);}
+  }
+
+  /* ---------- Buttons ---------- */
+  button.primary{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:.06em;
+    background:var(--indigo);
+    color:var(--paper);
+    border:none;
+    padding:13px 22px;
+    cursor:pointer;
+    text-transform:uppercase;
+    transition:background .15s;
+  }
+  button.primary:hover{background:var(--indigo-2);}
+  button.ghost{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:none;
+    border:1.5px solid var(--ink);
+    color:var(--ink);
+    padding:10px 16px;
+    cursor:pointer;
+    letter-spacing:.05em;
+  }
+  button.ghost:hover{background:var(--ink); color:var(--paper);}
+  button:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* ---------- Progress dots ---------- */
+  .dots{display:flex; gap:6px; margin:14px 0;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line);}
+  .dot.done{background:var(--indigo);}
+  .dot.wrong{background:var(--vermillion);}
+
+  /* ---------- Question ---------- */
+  .qmeta{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .qprompt{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 20px;
+    line-height:1.5;
+  }
+  .choices{display:flex; flex-direction:column; gap:10px;}
+  .choice{
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:16px;
+    background:var(--paper);
+    border:1.5px solid var(--ink);
+    padding:13px 16px;
+    cursor:pointer;
+    transition:.12s;
+  }
+  .choice:hover{background:var(--paper-2);}
+  .choice.correct{
+    background:var(--success-soft);
+    border-color:var(--success);
+    color:var(--success);
+    font-weight:700;
+  }
+  .choice.incorrect{
+    background:#f3dcd9;
+    border-color:var(--vermillion);
+    color:var(--vermillion);
+    font-weight:700;
+  }
+  .choice[disabled]{cursor:default;}
+  .feedback-note{
+    margin-top:16px;
+    padding:12px 14px;
+    background:var(--paper-2);
+    border-left:3px solid var(--gold);
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .nextbar{margin-top:20px; display:flex; justify-content:flex-end;}
+
+  /* ---------- Lessons list ---------- */
+  .lesson-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 4px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .lesson-row:last-child{border-bottom:none;}
+  .lesson-num{
+    font-family:'Shippori Mincho',serif;
+    font-size:22px;
+    font-weight:800;
+    width:34px;
+    color:var(--ink-soft);
+  }
+  .lesson-row.unlocked .lesson-num{color:var(--indigo);}
+  .lesson-row.done .lesson-num{color:var(--vermillion);}
+  .lesson-title{flex:1;}
+  .lesson-title b{display:block; font-size:15px;}
+  .lesson-title span{font-size:12px; color:var(--ink-soft);}
+  .lesson-status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    padding:4px 8px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+  }
+  .lesson-status.avail{border-color:var(--indigo); color:var(--indigo);}
+  .lesson-status.done{border-color:var(--vermillion); color:var(--vermillion);}
+
+  /* ---------- Capstone ---------- */
+  .en-sentence{
+    font-family:'Shippori Mincho', serif;
+    font-style:italic;
+    font-size:19px;
+    margin:0 0 14px;
+    line-height:1.5;
+  }
+  textarea{
+    width:100%;
+    min-height:80px;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:18px;
+    border:1.5px solid var(--ink);
+    background:var(--paper);
+    padding:12px;
+    resize:vertical;
+  }
+  .notes-textarea{min-height:120px; font-size:15px; line-height:1.6;}
+  .notes-savebar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    gap:12px;
+  }
+  .notes-savestatus{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.04em;
+  }
+  .note-card{margin-bottom:14px;}
+  .note-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .note-card-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.04em;
+  }
+  .note-card-text{
+    font-size:15px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .linklike-delete{
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    color:var(--vermillion);
+    text-decoration:underline;
+    padding:0;
+  }
+  .model-answer{
+    margin-top:16px;
+    padding:16px;
+    background:var(--paper-2);
+    border-left:3px solid var(--indigo);
+  }
+  .model-answer .jp{font-size:20px; font-weight:700; margin-bottom:6px;}
+  .model-answer .note{font-size:13px; color:var(--ink-soft);}
+  .selfgrade{display:flex; gap:10px; margin-top:16px;}
+
+  /* ---------- Stats ---------- */
+  .statgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+  .statbox{border:1px solid var(--line); padding:14px;}
+  .statbox .num{font-family:'Shippori Mincho',serif; font-size:28px; font-weight:800; color:var(--indigo);}
+  .statbox .lbl{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.06em;}
+  .barrow{display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:13px;}
+  .barrow .lname{width:80px; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px;}
+  .barwrap{flex:1; height:8px; background:var(--paper-2); border:1px solid var(--line);}
+  .barfill{height:100%; background:var(--indigo);}
+
+  .empty-state{text-align:center; padding:40px 20px; color:var(--ink-soft);}
+  .empty-state .glyph{font-family:'Shippori Mincho',serif; font-size:40px; color:var(--vermillion); margin-bottom:10px;}
+
+  /* ---------- Grammar tab ---------- */
+  .gstruct{border-bottom:1px solid var(--line); padding:14px 0;}
+  .gstruct:last-child{border-bottom:none;}
+  .gstruct-title{font-family:'Shippori Mincho',serif; font-weight:700; font-size:16px;}
+  .gexample{background:var(--paper-2); border-left:3px solid var(--indigo); padding:10px 12px; margin-top:8px;}
+  .gexample-jp{font-size:16px; font-weight:600; margin-bottom:3px;}
+  .gexample-en{font-size:13px; color:var(--ink-soft); font-style:italic;}
+  .gexample-note{font-size:12px; color:var(--ink-soft); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px;}
+  .particle-list{margin-top:6px;}
+  .particle-row{border-bottom:1px solid var(--line);}
+  .particle-row:last-child{border-bottom:none;}
+  .particle-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:none;
+    border:none;
+    padding:14px 4px;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+  }
+  .particle-char{
+    font-family:'Shippori Mincho',serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--indigo);
+    width:38px;
+    flex-shrink:0;
+  }
+  .particle-role{flex:1; font-size:14px;}
+  .particle-level{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--vermillion);
+    border:1px solid var(--vermillion-soft);
+    padding:2px 6px;
+    flex-shrink:0;
+  }
+  .particle-caret{
+    font-family:'JetBrains Mono',monospace;
+    font-size:16px;
+    color:var(--ink-soft);
+    width:16px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .particle-body{padding:0 4px 16px;}
+  .gpattern{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:var(--paper-2);
+    border:1px dashed var(--line);
+    padding:8px 10px;
+    margin-bottom:10px;
+    color:var(--indigo-2);
+  }
+
+  /* ---------- N5 Textbook tab ---------- */
+  .tb-lesson{border-bottom:1px solid var(--line);}
+  .tb-lesson:last-child{border-bottom:none;}
+  .tb-lesson-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:none;
+    border:none;
+    padding:14px 4px;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+  }
+  .tb-lesson-num{
+    font-family:'Shippori Mincho',serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--indigo);
+    width:34px;
+    flex-shrink:0;
+  }
+  .tb-lesson-title-wrap{flex:1;}
+  .tb-lesson-title-wrap b{display:block; font-size:15px;}
+  .tb-lesson-title-wrap span{font-size:12px; color:var(--ink-soft);}
+  .tb-lesson-body{padding:4px 4px 20px;}
+  .tb-section-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--vermillion);
+    border-bottom:1px solid var(--vermillion-soft);
+    padding-bottom:6px;
+    margin-bottom:10px;
+  }
+  .tb-vocab-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 18px;
+  }
+  .tb-vocab-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px dotted var(--line);
+    font-size:14px;
+  }
+  .tb-vocab-jp{font-weight:600; flex-shrink:0;}
+  .tb-vocab-en{color:var(--ink-soft); text-align:right; font-size:13px;}
+  .tb-pattern{margin-bottom:16px;}
+  .tb-pattern-title{
+    font-family:'Shippori Mincho',serif;
+    font-weight:700;
+    font-size:16px;
+  }
+
+  footer{text-align:center; margin-top:40px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:.05em;}
+
+  @media (max-width:480px){
+    h1{font-size:26px;}
+    .qprompt{font-size:19px;}
+    .statgrid{grid-template-columns:1fr;}
+    .tb-vocab-list{grid-template-columns:1fr;}
+    nav.tabs{column-gap:14px; row-gap:6px;}
+    nav.tabs button{font-size:11px; padding:8px 2px;}
+  }
