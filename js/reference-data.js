@@ -610,3 +610,131 @@ const TEXTBOOK = [
     examples:[{jp:"説明（せつめい）させてください。",en:"Please let me explain."}]}
  ]}
 ];
+
+/* ============================================================
+   READING — short N5-level passages for listening/reading practice.
+   Vocabulary and grammar are drawn from TEXTBOOK[] (see the `lessons`
+   field on each passage) so every passage stays genuinely readable at
+   this level, not just simple-sounding. `audio` points to a
+   pre-generated ElevenLabs narration bundled in audio/reading/.
+   ============================================================ */
+const READING = [
+  {id:"r01", title:"自己紹介（じこしょうかい）", titleEn:"Self-Introduction", lessons:"Lessons 1–3",
+   jp:[
+     "私（わたし）は 田中（たなか）です。",
+     "会社員（かいしゃいん）です。",
+     "これは 私（わたし）の 辞書（じしょ）です。",
+     "あの 人（ひと）は 山田（やまだ）さんです。",
+     "山田（やまだ）さんも 会社員（かいしゃいん）です。"
+   ],
+   en:"I'm Tanaka. I'm a company employee. This is my dictionary. That person is Mr. Yamada. Mr. Yamada is also a company employee.",
+   audio:"audio/reading/r01.mp3"},
+  {id:"r02", title:"会社（かいしゃ）で", titleEn:"At the Office", lessons:"Lesson 3",
+   jp:[
+     "すみません、お手洗（てあら）いは どこですか。",
+     "お手洗（てあら）いは あそこです。",
+     "会議室（かいぎしつ）は 2階（かい）です。",
+     "エレベーターは 受付（うけつけ）の 隣（となり）です。",
+     "どうも ありがとうございます。"
+   ],
+   en:"Excuse me, where is the restroom? The restroom is over there. The meeting room is on the 2nd floor. The elevator is next to the reception desk. Thank you very much.",
+   audio:"audio/reading/r02.mp3"},
+  {id:"r03", title:"私（わたし）の 一日（いちにち）", titleEn:"My Day", lessons:"Lesson 4",
+   jp:[
+     "私（わたし）は 毎日（まいにち） 6時（じ）に 起（お）きます。",
+     "7時（じ）に 朝（あさ）ごはんを 食（た）べます。",
+     "9時（じ）から 5時（じ）まで 働（はたら）きます。",
+     "夜（よる） 11時（じ）に 寝（ね）ます。",
+     "土曜日（どようび）と 日曜日（にちようび）は 休（やす）みです。"
+   ],
+   en:"I wake up at 6 every day. I eat breakfast at 7. I work from 9 to 5. I go to sleep at 11 at night. Saturday and Sunday are my days off.",
+   audio:"audio/reading/r03.mp3"},
+  {id:"r04", title:"駅（えき）まで", titleEn:"To the Station", lessons:"Lesson 5",
+   jp:[
+     "私（わたし）の 家（いえ）は 駅（えき）から 近（ちか）いです。",
+     "毎日（まいにち） 電車（でんしゃ）で 会社（かいしゃ）へ 行（い）きます。",
+     "駅（えき）まで 歩（ある）いて 行（い）きます。",
+     "週末（しゅうまつ）は どこへも 行（い）きません。",
+     "家（いえ）で のんびり します。"
+   ],
+   en:"My house is close to the station. I go to the office by train every day. I walk to the station. On weekends, I don't go anywhere. I relax at home.",
+   audio:"audio/reading/r04.mp3"},
+  {id:"r05", title:"週末（しゅうまつ）の 誘（さそ）い", titleEn:"A Weekend Invitation", lessons:"Lessons 5–6",
+   jp:[
+     "今度（こんど）の 週末（しゅうまつ）、何（なに）を しますか。",
+     "映画（えいが）を 見（み）ませんか。",
+     "いいですね。 一緒（いっしょ）に 行（い）きましょう。",
+     "それから、レストランで 晩（ばん）ごはんを 食（た）べましょう。"
+   ],
+   en:"What are you doing this coming weekend? Won't you watch a movie? Sounds good — let's go together. After that, let's eat dinner at a restaurant.",
+   audio:"audio/reading/r05.mp3"},
+  {id:"r06", title:"母（はは）の 誕生日（たんじょうび）", titleEn:"Mother's Birthday", lessons:"Lessons 6–7",
+   jp:[
+     "今日（きょう）は 母（はは）の 誕生日（たんじょうび）です。",
+     "私（わたし）は 母（はは）に 花（はな）を あげました。",
+     "兄（あに）は 母（はは）に 手紙（てがみ）を 書（か）きました。",
+     "母（はは）は とても 喜（よろこ）びました。",
+     "みんなで ケーキを 食（た）べました。"
+   ],
+   en:"Today is my mother's birthday. I gave flowers to my mother. My brother wrote a letter to my mother. My mother was very happy. We all ate cake together.",
+   audio:"audio/reading/r06.mp3"},
+  {id:"r07", title:"私（わたし）の 町（まち）", titleEn:"My Town", lessons:"Lesson 8",
+   jp:[
+     "私（わたし）の 町（まち）は 静（しず）かです。",
+     "とても きれいな 町（まち）です。",
+     "駅（えき）は 新（あたら）しいです。",
+     "でも、あまり 便利（べんり）じゃないです。",
+     "私（わたし）は この 町（まち）が 好（す）きです。"
+   ],
+   en:"My town is quiet. It's a very pretty town. The station is new. But it's not very convenient. I like this town.",
+   audio:"audio/reading/r07.mp3"},
+  {id:"r08", title:"好（す）きな こと", titleEn:"Things I Like", lessons:"Lesson 9",
+   jp:[
+     "私（わたし）は 音楽（おんがく）が 好（す）きです。",
+     "歌（うた）も 好（す）きです。",
+     "でも、ダンスは あまり 好（す）きじゃないです。",
+     "山田（やまだ）さんは 料理（りょうり）が 上手（じょうず）です。",
+     "私（わたし）は 料理（りょうり）が 下手（へた）です。"
+   ],
+   en:"I like music. I like singing too. But I don't really like dancing. Yamada-san is good at cooking. I'm bad at cooking.",
+   audio:"audio/reading/r08.mp3"},
+  {id:"r09", title:"私（わたし）の 部屋（へや）", titleEn:"My Room", lessons:"Lesson 10",
+   jp:[
+     "私（わたし）の 部屋（へや）に 机（つくえ）と 椅子（いす）が あります。",
+     "机（つくえ）の 上（うえ）に 辞書（じしょ）が あります。",
+     "机（つくえ）の 下（した）に かばんが あります。",
+     "部屋（へや）に 犬（いぬ）が います。",
+     "その 犬（いぬ）は とても 元気（げんき）です。"
+   ],
+   en:"In my room there is a desk and a chair. On the desk there is a dictionary. Under the desk there is a bag. There is a dog in my room. The dog is very energetic.",
+   audio:"audio/reading/r09.mp3"},
+  {id:"r10", title:"買（か）い物（もの）", titleEn:"Shopping", lessons:"Lessons 2, 11–12",
+   jp:[
+     "りんごを 4（よん）つ 買（か）いました。",
+     "みかんも 3（みっ）つ 買（か）いました。",
+     "全部（ぜんぶ）で 800円（えん）でした。",
+     "安（やす）かったです。"
+   ],
+   en:"I bought four apples. I also bought three mandarin oranges. It was 800 yen in total. It was cheap.",
+   audio:"audio/reading/r10.mp3"},
+  {id:"r11", title:"温泉（おんせん）へ 行（い）きたいです", titleEn:"I Want to Go to a Hot Spring", lessons:"Lesson 13",
+   jp:[
+     "今度（こんど）の 休（やす）みに 旅行（りょこう）を したいです。",
+     "温泉（おんせん）へ 行（い）きたいです。",
+     "おいしい 料理（りょうり）も 食（た）べたいです。",
+     "買（か）い物（もの）は しません。",
+     "のんびり 休（やす）みたいです。"
+   ],
+   en:"I want to travel on my next day off. I want to go to a hot spring. I also want to eat delicious food. I won't do any shopping. I want to relax leisurely.",
+   audio:"audio/reading/r11.mp3"},
+  {id:"r12", title:"事務所（じむしょ）で", titleEn:"Office Rules", lessons:"Lessons 14–15",
+   jp:[
+     "すみません、ここに 座（すわ）っても いいですか。",
+     "はい、いいですよ。",
+     "ここで たばこを 吸（す）っては いけません。",
+     "エアコンを つけても いいですか。",
+     "すみません、今（いま）は だめです。"
+   ],
+   en:"Excuse me, may I sit here? Yes, that's fine. You mustn't smoke here. May I turn on the air conditioner? Sorry, not right now.",
+   audio:"audio/reading/r12.mp3"}
+];

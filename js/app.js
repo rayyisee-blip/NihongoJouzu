@@ -111,6 +111,7 @@ function setTab(tab){
   });
   quizState = null;
   capstoneState = null;
+  if(tab !== 'reading') stopReadingAudio();
   render();
 }
 document.querySelectorAll('nav.tabs button').forEach(b=>{
@@ -125,6 +126,7 @@ function render(){
   else if(activeTab==='grammar') renderGrammar();
   else if(activeTab==='conjugate') renderConjugate();
   else if(activeTab==='textbook') renderTextbook();
+  else if(activeTab==='reading') renderReading();
   else if(activeTab==='stats') renderStats();
   else if(activeTab==='notes') renderNotes();
 }
@@ -612,6 +614,101 @@ function renderTextbook(){
       if(openTextbookLesson === n){
         btn.scrollIntoView({behavior:'smooth', block:'start'});
       }
+    });
+  });
+}
+
+/* ============================================================
+   READING — short N5 passages with a translation toggle and an
+   ElevenLabs-narrated Listen button (pre-generated static audio files,
+   see audio/reading/). Follows the same expand/toggle + re-render
+   pattern as renderGrammar/renderTextbook above.
+   ============================================================ */
+let revealedReading = new Set(); // passage ids currently showing their translation
+let readingAudio = null;         // the Audio object currently loaded/playing, if any
+let readingPlaybackId = null;    // passage id that owns readingAudio
+let readingPlaybackState = null; // 'loading' | 'playing' | null
+
+function stopReadingAudio(){
+  if(readingAudio){
+    readingAudio.pause();
+    readingAudio.src = '';
+  }
+  readingAudio = null;
+  readingPlaybackId = null;
+  readingPlaybackState = null;
+}
+
+function renderReading(){
+  const cards = READING.map(p => {
+    const revealed = revealedReading.has(p.id);
+    const isThis = readingPlaybackId === p.id;
+    const btnState = isThis ? readingPlaybackState : null;
+    const btnLabel = btnState === 'loading' ? 'LOADING…' : btnState === 'playing' ? '■ PLAYING' : '▶ LISTEN';
+    const btnClass = btnState ? ` is-${btnState}` : '';
+
+    const jpHtml = p.jp.map(s => `<p class="reading-line">${s}</p>`).join('');
+
+    return `
+      <div class="card"><div class="card-inner">
+        <div class="reading-head">
+          <div>
+            <div class="section-title" style="margin-bottom:2px;">${p.title}</div>
+            <div class="muted" style="font-size:12px;">${p.titleEn} &middot; ${p.lessons}</div>
+          </div>
+          <button class="ghost reading-listen${btnClass}" data-id="${p.id}" ${btnState ? 'disabled' : ''}>${btnLabel}</button>
+        </div>
+        <div class="reading-jp">${jpHtml}</div>
+        <button class="reading-toggle" data-id="${p.id}">${revealed ? 'Hide translation' : 'Show translation'}</button>
+        <div class="reading-en" style="display:${revealed ? 'block' : 'none'};">${p.en}</div>
+      </div></div>
+    `;
+  }).join('');
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Reading</div>
+      <p class="muted">Short N5-level passages built from vocabulary and grammar you've already met in the N5 Textbook. Read first, then reveal the translation to check yourself &mdash; or tap Listen to hear it read aloud.</p>
+    </div></div>
+    ${cards}
+  `;
+
+  document.querySelectorAll('.reading-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      if(revealedReading.has(id)) revealedReading.delete(id);
+      else revealedReading.add(id);
+      renderReading();
+    });
+  });
+
+  document.querySelectorAll('.reading-listen').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      const passage = READING.find(p=>p.id===id);
+      if(!passage) return;
+
+      stopReadingAudio();
+      readingPlaybackId = id;
+      readingPlaybackState = 'loading';
+      renderReading();
+
+      const audio = new Audio(passage.audio);
+      audio.playbackRate = 0.7; // slowed down for learners — raw files are normal-speed narration
+      readingAudio = audio;
+
+      audio.addEventListener('playing', ()=>{
+        if(readingPlaybackId===id){ readingPlaybackState = 'playing'; renderReading(); }
+      });
+      audio.addEventListener('ended', ()=>{
+        if(readingPlaybackId===id){ stopReadingAudio(); renderReading(); }
+      });
+      audio.addEventListener('error', ()=>{
+        if(readingPlaybackId===id){ stopReadingAudio(); renderReading(); }
+      });
+      audio.play().catch(()=>{
+        if(readingPlaybackId===id){ stopReadingAudio(); renderReading(); }
+      });
     });
   });
 }

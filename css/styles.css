@@ -611,6 +611,52 @@
     font-size:16px;
   }
 
+  /* ---------- Reading tab ---------- */
+  .reading-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .reading-jp{margin-bottom:4px;}
+  .reading-line{
+    font-size:17px;
+    line-height:1.95;
+    margin:0 0 4px;
+  }
+  .reading-toggle{
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    color:var(--indigo);
+    text-decoration:underline;
+    padding:0;
+    margin-top:12px;
+  }
+  .reading-toggle:hover{color:var(--indigo-2);}
+  .reading-en{
+    margin-top:10px;
+    padding:14px 16px;
+    background:var(--paper-2);
+    border-left:3px solid var(--indigo);
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+  .reading-listen{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .reading-listen.is-loading{opacity:.6;}
+  .reading-listen.is-playing{border-color:var(--vermillion); color:var(--vermillion);}
+
   footer{text-align:center; margin-top:18px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:.05em;}
 
   @media (max-width:480px){
