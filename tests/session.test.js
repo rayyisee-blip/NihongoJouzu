@@ -34,3 +34,24 @@ test('no adjacent same type at lesson 20', () => {
     for (let j = 1; j < t.length; j++) assert.notEqual(t[j], t[j-1]);
   }
 });
+// Digit-containing models (4（よん）つ, 9時（じ）) pass once digits may precede a reading, so none are excluded.
+test('every typed model accepts its kana form and its kanji-only form', () => {
+  const bad = app.run(`typedSentenceIdsUpTo(25).filter(id=>{
+    const m = resolveTypedSentence(id).model;
+    const kanjiOnly = m.replace(/（[^）]*）/g,'');
+    return !checkTyped(kanaForm(m), m).correct || !checkTyped(kanjiOnly, m).correct;
+  })`);
+  assert.equal(bad.length, 0, JSON.stringify(bad));
+});
+test('every conjugation model accepts its own kana form', () => {
+  const bad = app.run(`allConjSentenceIds().filter(id=>{
+    const m = resolveConjSentence(id).model;
+    return !checkTyped(kanaForm(m), m).correct;
+  })`);
+  assert.equal(bad.length, 0, JSON.stringify(bad));
+});
+test('ensureTodaysSession reuse returns the same object', () => {
+  app.run(`delete PROGRESS.dailyLog['2026-11-01']`);
+  const first = app.run(`ensureTodaysSession(PROGRESS,'2026-11-01',3)`);
+  assert.equal(app.run(`ensureTodaysSession(PROGRESS,'2026-11-01',3) === PROGRESS.dailyLog['2026-11-01']`), true);
+});

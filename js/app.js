@@ -114,8 +114,9 @@ function render(){
 function renderToday(){
   checkLessonUnlocks();
   const date = todayStr();
+  const before = PROGRESS.dailyLog[date];
   const set = ensureTodaysSession(PROGRESS, date, PROGRESS.currentLesson);
-  saveProgress();
+  if(set !== before) saveProgress();   // only when a new set was built
   const curLesson = LESSONS.find(l=>l.n===PROGRESS.currentLesson);
 
   if(quizState){
@@ -202,7 +203,7 @@ function renderToday(){
 
   const startBtn = document.getElementById('startQuizBtn');
   if(startBtn) startBtn.addEventListener('click', ()=>{
-    quizState = { qids: set.qids, idx: firstUnansweredIndex(set), mode:'daily', answers:{} };
+    quizState = { qids: set.qids, idx: firstUnansweredIndex(set), mode:'daily', answers:{}, date };
     renderQuizQuestion();
   });
   const practiceBtn = document.getElementById('practiceBtn');
@@ -222,7 +223,7 @@ function renderToday(){
 
 function renderQuizQuestion(){
   const isDaily = quizState.mode === 'daily';
-  const dailySet = isDaily ? PROGRESS.dailyLog[todayStr()] : null;
+  const dailySet = isDaily ? PROGRESS.dailyLog[quizState.date || todayStr()] : null;
 
   if(quizState.idx >= quizState.qids.length){
     const qids = quizState.qids;
@@ -234,6 +235,7 @@ function renderQuizQuestion(){
     saveProgress();
     quizState = null;
     if(isDaily){
+      document.getElementById('streakNum').textContent = PROGRESS.streak;
       renderDoneScreen(dailySet.answers || {}, qids);
       return;
     }
@@ -279,7 +281,7 @@ function selectAnswer(qid, q, pickedIdx){
   quizState.answers[qid] = { picked: pickedIdx, correct };
 
   if(isDaily){
-    const dailySet = PROGRESS.dailyLog[todayStr()];
+    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
     if(!dailySet.answers) dailySet.answers = {};
     dailySet.answers[qid] = { picked: pickedIdx, correct };
   }
@@ -298,11 +300,14 @@ function quizMetaLine(q){
   return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
 }
 
-// Diff of your answer against the model's kana form: only-yours struck out, only-model underlined.
-function diffHtml(yours, modelKana){
-  return diffChars(yours, modelKana).map(d=>
-    d.op==='same' ? escapeHtml(d.ch) : `<span class="diff-${d.op}">${escapeHtml(d.ch)}</span>`
-  ).join('');
+// Both lines of the "Not quite" diff come from one diffChars result.
+// You: your characters only (same + del, del struck out). Model: same + add (add underlined).
+function diffLinesHtml(yours, modelKana){
+  const d = diffChars(yours, modelKana);
+  const span = (x, op) => `<span class="diff-${op}">${escapeHtml(x.ch)}</span>`;
+  const youHtml = d.filter(x=>x.op!=='add').map(x=> x.op==='del' ? span(x,'del') : escapeHtml(x.ch)).join('');
+  const modelHtml = d.filter(x=>x.op!=='del').map(x=> x.op==='add' ? span(x,'add') : escapeHtml(x.ch)).join('');
+  return { youHtml, modelHtml };
 }
 
 // Verb and form key behind a conjs-<verbIdx>-<formKey>-<frameIdx> id.
@@ -367,8 +372,10 @@ function showTypedVerdict(qid, q, value, res, markCorrect){
     return;
   }
   const isConj = q.kind === 'conj';
+  const diff = diffLinesHtml(normalizeAnswer(value), res.expected);
   let specific = '';
-  if(res.kind === 'particle'){
+  // Conjugation items skip particle diagnosis so diagnoseConj gets its turn.
+  if(res.kind === 'particle' && !isConj){
     specific = `Particle: you used ${res.used}, this needs ${res.needed}.`;
   } else if(isConj){
     const { verb, formKey } = conjParts(qid);
@@ -379,8 +386,8 @@ function showTypedVerdict(qid, q, value, res, markCorrect){
     <div class="feedback-note verdict-bad">
       <div id="verdictStatus"><strong>Not quite</strong></div>
       <div class="diff-block">
-        <div class="diff-line"><span class="diff-label">You</span> ${diffHtml(normalizeAnswer(value), res.expected)}</div>
-        <div class="diff-line"><span class="diff-label">Model</span> ${escapeHtml(res.expected)}</div>
+        <div class="diff-line"><span class="diff-label">You</span> ${diff.youHtml}</div>
+        <div class="diff-line"><span class="diff-label">Model</span> ${diff.modelHtml}</div>
       </div>
       ${modelHtml}
       ${specific ? `<p class="verdict-line">${escapeHtml(specific)}</p>` : ''}
@@ -399,7 +406,7 @@ function finishTyped(qid, input, correct){
   recordResult(qid, correct);
   quizState.answers[qid] = { correct, typed: input };
   if(quizState.mode === 'daily'){
-    const dailySet = PROGRESS.dailyLog[todayStr()];
+    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
     if(!dailySet.answers) dailySet.answers = {};
     dailySet.answers[qid] = { correct, typed: input };
   }

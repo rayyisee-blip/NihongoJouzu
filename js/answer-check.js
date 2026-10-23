@@ -15,7 +15,7 @@ const ROMAJI_PARTICLE_SOUNDS = { 'は': 'わ', 'へ': 'え', 'を': 'お' };
 
 const CHECK_STRIP_RE = /[\s　。、！？!?.,]/g;
 const CHECK_PUNCT_TAIL_RE = /[。、！？!?.,]+$/;
-const CHECK_KANJI_READING_RE = /([一-鿿々〆ヵヶ]+)（([^）]*)）/g;
+const CHECK_KANJI_READING_RE = /([0-9０-９一-鿿々〆ヵヶ]+)（([^）]*)）/g;
 
 // ---------- Romaji ----------
 
@@ -64,6 +64,15 @@ function convertRomajiRun(s) {
   while (i < s.length) {
     const c = s[i];
     const next = s[i + 1];
+    // 'nn' before a consonant or the end is one ん (sennsei); before a vowel it stays ん + na-row (onna).
+    if (c === 'n' && next === 'n') {
+      const after = s[i + 2];
+      if (after === undefined || (ROMAJI_VOWELS.indexOf(after) < 0 && after !== 'y')) {
+        out += 'ん';
+        i += 2;
+        continue;
+      }
+    }
     // n before a consonant, an apostrophe or the end is ん (n + vowel/y is handled by the table).
     if (c === 'n' && (next === undefined || next === "'" || (ROMAJI_VOWELS.indexOf(next) < 0 && next !== 'y'))) {
       out += 'ん';

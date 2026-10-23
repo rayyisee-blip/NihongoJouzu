@@ -32,3 +32,14 @@ test('diff marks differences', () => {
   assert.ok(d.some(x => x.op === 'del') && d.some(x => x.op === 'add'));
   assert.deepEqual(d.filter(x => x.op !== 'add').map(x => x.ch).join(''), 'がくせい');
 });
+test('digit before a reading is answerable', () => {
+  const m = 'りんごを 4（よん）つ 買（か）いました。';
+  assert.equal(app.run(`checkTyped('りんごを4つ買いました', ${JSON.stringify(m)}).correct`), true);
+  assert.equal(app.run(`checkTyped('りんごをよんつかいました', ${JSON.stringify(m)}).correct`), true);
+});
+test('romaji nn before a consonant is a single ん', () => {
+  assert.equal(app.run(`romajiToHiragana('sennsei')`), 'せんせい');
+  assert.equal(app.run(`romajiToHiragana('honn')`), 'ほん');
+  assert.equal(app.run(`romajiToHiragana('konnichiha')`), 'こんにちは');
+  assert.equal(app.run(`romajiToHiragana('onna')`), 'おんな');
+});
