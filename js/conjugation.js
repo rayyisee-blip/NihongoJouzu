@@ -250,7 +250,7 @@ const CONJ_FRAMES = {
   masuNeg: [
     {jp:'今日（きょう）は___。', en:"I don't ___ today.", use:'Polite negative: say you do not do something, politely.'},
     {jp:'あまり___。', en:"I don't ___ much.", use:'Polite negative; あまり always pairs with a negative.'},
-    {jp:'私（わたし）は、いつも___。', en:"I never ___.", use:'Polite negative: a habit you do not have.'}
+    {jp:'家（いえ）では___。', en:"I don't ___ at home.", use:'Polite negative: something you do not do in a place.'}
   ],
   masuPast: [
     {jp:'昨日（きのう）、___。', en:'Yesterday, I ___.', use:'Polite past: something you did, said politely.'},
@@ -295,12 +295,12 @@ const CONJ_FRAMES = {
     {jp:'今（いま）から___。', en:"Let's ___ from now.", use:'Volitional form: proposing to start now.'}
   ],
   passive: [
-    {jp:'先生（せんせい）に___。', en:'I was ___ by my teacher (passive).', use:'Passive form: something is done to the subject, by someone (に).'},
-    {jp:'友達（ともだち）に___。', en:'I was ___ by a friend (passive).', use:'Passive form: something is done to the subject, by someone (に).'}
+    {jp:'よく先生（せんせい）に___。', en:'I often get ___ by my teacher (passive).', use:'Passive form: something is done to the subject, by someone (に).'},
+    {jp:'よく友達（ともだち）に___。', en:'I often get ___ by a friend (passive).', use:'Passive form: something is done to the subject, by someone (に).'}
   ],
   causative: [
-    {jp:'先生（せんせい）は、私（わたし）に___。', en:'My teacher made me ___.', use:'Causative form: someone makes another person do something.'},
-    {jp:'母（はは）は、私（わたし）に___。', en:'My mother made me ___.', use:'Causative form: someone makes another person do something.'}
+    {jp:'先生（せんせい）は、毎日（まいにち）___。', en:'My teacher makes us ___ every day.', use:'Causative form: someone makes other people do something.'},
+    {jp:'母（はは）は、いつも___。', en:'My mother always makes us ___.', use:'Causative form: someone makes other people do something.'}
   ]
 };
 
