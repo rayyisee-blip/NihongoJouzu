@@ -161,31 +161,38 @@ function masuForm(verb){
   return (verb.stem||'')+rest+GODAN_ROWS[last][1]+'ます';
 }
 // The most common real learner mistakes, generated the same way a person
-// would actually make them — not random unrelated verbs.
-function generateMistakes(verb, formKey){
+// would actually make them — not random unrelated verbs. Each is tagged so
+// diagnoseConj can name the slip: 'group' (wrong verb-group rule), 'branch'
+// (wrong godan て/た branch), 'tense' (right verb, neighbouring form; also
+// carries that form's key). opts.allBranches skips the random sampling of
+// wrong branches so diagnosis can recognise every one of them.
+function generateMistakes(verb, formKey, opts){
   const out = [];
-  const push = s => { if(s && !out.includes(s)) out.push(s); };
+  const push = (text, kind, extra) => {
+    if(text && !out.some(m=>m.text===text)) out.push(Object.assign({text, kind}, extra||{}));
+  };
   const forms = computeForms(verb);
   const correct = forms[formKey];
 
   if(verb.group===1){
     const ic = ichidanForms(verb.oku);
-    push((verb.stem||'')+ic[formKey]);
+    push((verb.stem||'')+ic[formKey], 'group');
   } else if(verb.group===2){
     const go = godanForms(verb.oku);
-    push((verb.stem||'')+go[formKey]);
+    push((verb.stem||'')+go[formKey], 'group');
   } else if(verb.irregular==='suru'){
     const go = godanForms('する');
-    push((verb.stem||'')+go[formKey]);
+    push((verb.stem||'')+go[formKey], 'group');
   }
 
   if(verb.group===1 && (formKey==='te'||formKey==='ta')){
     const last = verb.oku.slice(-1);
     const rest = verb.oku.slice(0,-1);
     const altBranches = ['く','む','す','ぐ'].filter(b=>b!==last);
-    shuffle(altBranches, Math.random).slice(0,2).forEach(b=>{
+    const chosen = opts && opts.allBranches ? altBranches : shuffle(altBranches, Math.random).slice(0,2);
+    chosen.forEach(b=>{
       const teTa = TE_TA_MAP[b];
-      push((verb.stem||'')+rest+(formKey==='te'?teTa.te:teTa.ta));
+      push((verb.stem||'')+rest+(formKey==='te'?teTa.te:teTa.ta), 'branch');
     });
   }
 
@@ -193,9 +200,28 @@ function generateMistakes(verb, formKey){
   const plainFam = ['dict','nai','ta','naiPast'];
   const advFam = ['potential','volitional','passive','causative'];
   const fam = masuFam.includes(formKey) ? masuFam : plainFam.includes(formKey) ? plainFam : advFam.includes(formKey) ? advFam : null;
-  if(fam) fam.filter(k=>k!==formKey).forEach(k=>push(forms[k]));
+  if(fam) fam.filter(k=>k!==formKey).forEach(k=>push(forms[k], 'tense', {formKey:k}));
 
-  return out.filter(s=>s && s!==correct);
+  return out.filter(m=>m.text!==correct);
+}
+
+// Names the slip behind a wrong typed answer, or null when it isn't one of
+// the predictable mistakes. Readings are stripped by matching the mistake
+// through buildAnswerRegex, so kana-only and kanji answers both match.
+function diagnoseConj(verb, formKey, input){
+  const norm = normalizeAnswer(input);
+  const model = computeForms(verb)[formKey];
+  const hit = generateMistakes(verb, formKey, {allBranches:true}).find(m=>buildAnswerRegex(m.text).test(norm));
+  if(!hit) return null;
+  if(hit.kind==='group')
+    return `${verb.dict} is Group ${verb.group}${verb.trap ? " (looks like a る-verb but isn't)" : ''}, so the ${FORM_LABELS[formKey]} is ${model}.`;
+  if(hit.kind==='branch'){
+    const last = verb.oku.slice(-1);
+    // 行く is the one く-verb that breaks the pattern (行って, not 行いて).
+    const ending = verb.irregularTe ? (formKey==='te' ? 'って' : 'った') : TE_TA_MAP[last][formKey];
+    return `Verbs ending in ${last} take ${ending}: ${model}.`;
+  }
+  return `That's the ${FORM_LABELS[hit.formKey]}; this sentence needs the ${FORM_LABELS[formKey]}.`;
 }
 function explainForm(verb, formKey){
   const groupLabel = verb.group===1 ? "Group 1 (godan/う-verb)" : verb.group===2 ? "Group 2 (ichidan/る-verb)" : "Group 3 (irregular)";
@@ -216,54 +242,137 @@ function explainForm(verb, formKey){
   }
   return `${groupLabel}. ${rule} Meaning: ${verb.meaning}.`.trim();
 }
-const CONJUGATION_POOL = [];
+// ---- Sentence frames -------------------------------------------------
+// Each frame is a short, natural N5 sentence with one blank for the verb
+// form. No frame has an object tied to one verb, so every verb fits.
+// jp/en both hold ___ exactly once; use is the "when do I use this form" note.
+const CONJ_FRAMES = {
+  masuNeg: [
+    {jp:'今日（きょう）は___。', en:"I don't ___ today.", use:'Polite negative: say you do not do something, politely.'},
+    {jp:'あまり___。', en:"I don't ___ much.", use:'Polite negative; あまり always pairs with a negative.'},
+    {jp:'私（わたし）は、いつも___。', en:"I never ___.", use:'Polite negative: a habit you do not have.'}
+  ],
+  masuPast: [
+    {jp:'昨日（きのう）、___。', en:'Yesterday, I ___.', use:'Polite past: something you did, said politely.'},
+    {jp:'先週（せんしゅう）、___。', en:'Last week, I ___.', use:'Polite past: a finished action in the past.'},
+    {jp:'さっき___。', en:'A little while ago, I ___.', use:'Polite past: something that just happened.'}
+  ],
+  masuPastNeg: [
+    {jp:'昨日（きのう）は___。', en:"I didn't ___ yesterday.", use:'Polite past negative: something you did not do, politely.'},
+    {jp:'先週（せんしゅう）は___。', en:"I didn't ___ last week.", use:'Polite past negative: an action that did not happen.'}
+  ],
+  te: [
+    {jp:'___ください。', en:'Please ___.', use:'て-form + ください: a polite request.'},
+    {jp:'___もいいですか。', en:'May I ___?', use:'て-form + もいいですか: asking permission.'},
+    {jp:'いま、___います。', en:'Right now, I am ___ing.', use:'て-form + います: an action in progress.'}
+  ],
+  ta: [
+    {jp:'昨日（きのう）、___。', en:'Yesterday, I ___ (plain past).', use:'Plain past (た): casual or written past tense.'},
+    {jp:'先週（せんしゅう）、___。', en:'Last week, I ___ (plain past).', use:'Plain past (た): a finished action, casually.'},
+    {jp:'さっき___。', en:'A little while ago, I ___ (plain past).', use:'Plain past (た): something that just happened.'}
+  ],
+  nai: [
+    {jp:'___でください。', en:"Please don't ___.", use:'ない-form + でください: asking someone not to do it.'},
+    {jp:'明日（あした）は___つもりです。', en:"Tomorrow, I don't plan to ___.", use:'ない-form + つもりです: a plan not to do something.'},
+    {jp:'たぶん___。', en:"I probably won't ___.", use:'Plain negative (ない): casual "do not".'}
+  ],
+  naiPast: [
+    {jp:'昨日（きのう）は___。', en:"I didn't ___ yesterday (plain).", use:'Plain past negative (なかった): casual "did not".'},
+    {jp:'先週（せんしゅう）は___。', en:"I didn't ___ last week (plain).", use:'Plain past negative (なかった): an action that did not happen.'}
+  ],
+  dict: [
+    {jp:'明日（あした）、___つもりです。', en:'Tomorrow, I plan to ___.', use:'Dictionary form + つもりです: a plan to do something.'},
+    {jp:'___ことができます。', en:'I can ___.', use:'Dictionary form + ことができます: ability.'},
+    {jp:'毎日（まいにち）___。', en:'Every day, I ___ (plain).', use:'Dictionary form: plain present or habit.'}
+  ],
+  potential: [
+    {jp:'私（わたし）は___。', en:'I can ___.', use:'Potential form: be able to do something.'},
+    {jp:'明日（あした）なら___。', en:'If it is tomorrow, I can ___.', use:'Potential form: what you are able to do.'}
+  ],
+  volitional: [
+    {jp:'一緒（いっしょ）に___。', en:"Let's ___ together.", use:'Volitional form: "let\'s" or "shall we".'},
+    {jp:'そろそろ___。', en:"Shall we ___ soon?", use:'Volitional form: suggesting that you start.'},
+    {jp:'今（いま）から___。', en:"Let's ___ from now.", use:'Volitional form: proposing to start now.'}
+  ],
+  passive: [
+    {jp:'先生（せんせい）に___。', en:'I was ___ by my teacher (passive).', use:'Passive form: something is done to the subject, by someone (に).'},
+    {jp:'友達（ともだち）に___。', en:'I was ___ by a friend (passive).', use:'Passive form: something is done to the subject, by someone (に).'}
+  ],
+  causative: [
+    {jp:'先生（せんせい）は、私（わたし）に___。', en:'My teacher made me ___.', use:'Causative form: someone makes another person do something.'},
+    {jp:'母（はは）は、私（わたし）に___。', en:'My mother made me ___.', use:'Causative form: someone makes another person do something.'}
+  ]
+};
+
+const CONJ_SENTENCE_POOL = [];
 VERBS.forEach((v,vi)=>{
-  Object.keys(FORM_LABELS).forEach(formKey=>{
-    CONJUGATION_POOL.push({ qid:`conj-${vi}-${formKey}`, verbIdx:vi, formKey });
+  Object.keys(FORM_UNLOCK_LESSON).forEach(formKey=>{
+    CONJ_FRAMES[formKey].forEach((f,frameIdx)=>{
+      CONJ_SENTENCE_POOL.push({ qid:`conjs-${vi}-${formKey}-${frameIdx}`, verbIdx:vi, formKey, frameIdx });
+    });
   });
 });
-function conjugationIdsUpTo(lessonNum){
+function conjSentenceIdsUpTo(lessonNum){
   if(lessonNum < 14) return [];
-  return CONJUGATION_POOL
-    .filter(it => (FORM_UNLOCK_LESSON[it.formKey]||99) <= lessonNum)
+  return CONJ_SENTENCE_POOL
+    .filter(it => FORM_UNLOCK_LESSON[it.formKey] <= lessonNum)
     .map(it => it.qid);
 }
-function resolveConjugationQuestion(qid){
+function allConjSentenceIds(){
+  return CONJ_SENTENCE_POOL.map(it => it.qid);
+}
+function resolveConjSentence(qid){
   const parts = qid.split('-');
-  const verbIdx = Number(parts[1]);
-  const formKey = parts.slice(2).join('-');
-  const verb = VERBS[verbIdx];
-  const forms = computeForms(verb);
-  const given = masuForm(verb);
-  const correct = forms[formKey];
-  const mistakes = generateMistakes(verb, formKey);
-  let distractors = mistakes.slice(0,3);
-  if(distractors.length < 3){
-    const otherVerbs = shuffle(VERBS.filter((v,i)=>i!==verbIdx), Math.random);
-    for(const ov of otherVerbs){
-      if(distractors.length>=3) break;
-      const ovForm = computeForms(ov)[formKey];
-      if(ovForm && ovForm!==correct && !distractors.includes(ovForm)) distractors.push(ovForm);
-    }
-  }
-  const choices = shuffle([correct, ...distractors.slice(0,3)], Math.random);
+  const verb = VERBS[Number(parts[1])];
+  const formKey = parts[2];
+  const frame = CONJ_FRAMES[formKey][Number(parts[3])];
   return {
-    qid, lesson: 14, type:'conjugation',
-    prompt: `What's the ${FORM_LABELS[formKey]} of ${given}?`,
-    choices, a: choices.indexOf(correct),
-    note: explainForm(verb, formKey)
+    qid, lesson: 14, type:'typed', kind:'conj',
+    promptEn: frame.en.replace('___', `___ (${verb.meaning})`),
+    frameJp: frame.jp,
+    dict: verb.dict,
+    model: computeForms(verb)[formKey],
+    use: frame.use,
+    explain: explainForm(verb, formKey)
   };
+}
+// conjs-<verb>-<form>-<frame> -> the old multiple-choice record conj-<verb>-<form>.
+function legacyConjKey(qid){
+  const m = /^conjs-(\d+)-([A-Za-z]+)-\d+$/.exec(qid);
+  return m ? `conj-${m[1]}-${m[2]}` : null;
 }
 
 // Spaced repetition (Leitner-style): each question tracks a "box" 1-5.
 // Wrong answer -> back to box 1 (resurfaces soon). Right answer -> box up
 // to 5 (resurfaces less often). Selection weight favors low boxes and
 // brand-new questions, without ever fully excluding mastered ones.
+// A conjs-* sentence with no record of its own inherits the box of the
+// multiple-choice conj-* record it replaces, so earlier progress counts.
 function boxWeight(qid){
-  const rec = PROGRESS.seen[qid];
+  let rec = PROGRESS.seen[qid];
+  if(!rec){
+    const legacy = legacyConjKey(qid);
+    if(legacy) rec = PROGRESS.seen[legacy];
+  }
   if(!rec || rec.count===0) return 6;
   const box = rec.box || 1;
   return Math.max(1, 6-box);
+}
+// Leitner bookkeeping for one answer. Does not save; the caller calls saveProgress().
+function recordResult(qid, correct){
+  if(!PROGRESS.seen[qid]){
+    const legacy = legacyConjKey(qid);
+    const legacyRec = legacy && PROGRESS.seen[legacy];
+    PROGRESS.seen[qid] = {count:0, correct:0, box: legacyRec ? (legacyRec.box||1) : 1};
+  }
+  const rec = PROGRESS.seen[qid];
+  rec.count += 1;
+  if(correct){
+    rec.correct += 1;
+    rec.box = Math.min(5, (rec.box||1) + 1);
+  } else {
+    rec.box = 1;
+  }
 }
 function weightedSample(items, weightFn, count){
   const pool = items.slice();
