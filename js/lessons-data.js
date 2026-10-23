@@ -116,7 +116,7 @@ const LESSONS = [
  ]},
 {n:9,title:"好（す）き・上手（じょうず）・わかります",topic:"Likes, skill, understanding",
  q:[
-  {type:"vocab",prompt:"「上手（じょうず）」means:",choices:["Skilled / good at","Bad at","Difficult","Famous"],a:0,note:"上手（じょうず）な = skilled, good at."},
+  {type:"vocab",prompt:"「上手（じょうず）」means:",choices:["Skilled / good at","Poor / bad at","Difficult / hard","Famous / well-known"],a:0,note:"上手（じょうず）な = skilled, good at."},
   {type:"vocab",prompt:"「わかります」means:",choices:["To see","To understand","To hear","To speak"],a:1,note:"わかります = to understand / comprehend."},
   {type:"grammar",prompt:"私（わたし）は 音楽（おんがく） ___ 好（す）きです。(I like music.)",choices:["を","に","が","へ"],a:2,note:"With 好（す）き/嫌（きら）い/上手（じょうず）/下手（へた）/わかります, the object takes が, not を."},
   {type:"structure",prompt:"Which correctly says \"I don't understand Japanese very well\"?",choices:["日本語（にほんご）を あまり わかりません。","日本語（にほんご）が あまり わかります。","日本語（にほんご）が あまり わかりません。","日本語（にほんご）に あまり わかりません。"],a:2,note:"わかります pairs with が for the thing understood."}
@@ -158,7 +158,7 @@ const LESSONS = [
  ]},
 {n:12,title:"比較（ひかく） / 形容詞（けいようし）の過去（かこ）",topic:"Comparison, adjective past tense",
  q:[
-  {type:"vocab",prompt:"「一番（いちばん）」means:",choices:["Number one / the most","Half","Second","Only"],a:0,note:"一番（いちばん）= the most, number one (superlative marker)."},
+  {type:"vocab",prompt:"「一番（いちばん）」means:",choices:["Number one / the most","Half / a part","Second / next","Only / just"],a:0,note:"一番（いちばん）= the most, number one (superlative marker)."},
   {type:"vocab",prompt:"「季節（きせつ）」means:",choices:["Weather","Season","Month","Weekend"],a:1,note:"季節（きせつ）= season."},
   {type:"grammar",prompt:"夏（なつ）と 冬（ふゆ）と、___ 好（す）きですか。(Summer or winter, which do you like?)",choices:["どちらが","どちらを","どこが","どれに"],a:0,note:"N1とN2と、どちらが〜 is the standard comparison question pattern."},
   {type:"structure",prompt:"Which correctly says \"Of all seasons, I like spring the most\"?",choices:["季節（きせつ）の 中（なか）に 春（はる）が 一番（いちばん） 好（す）きです。","春（はる）の 中（なか）で 季節（きせつ）が 一番（いちばん） 好（す）きです。","季節（きせつ）の 中（なか）で 春（はる）を 一番（いちばん） 好（す）きです。","季節（きせつ）の 中（なか）で 春（はる）が 一番（いちばん） 好（す）きです。"],a:3,note:"Nの中（なか）で + subject + が + 一番（いちばん） + adjective/verb."}
@@ -187,7 +187,7 @@ const LESSONS = [
 {n:14,title:"て形（けい） / ています",topic:"Te-form requests and ongoing states",
  q:[
   {type:"vocab",prompt:"「手伝（てつだ）います」means:",choices:["To wait","To help","To turn off","To submit"],a:1,note:"手伝（てつだ）います= to help."},
-  {type:"vocab",prompt:"「消（け）します」means:",choices:["To turn on","To turn off/erase","To open","To close"],a:1,note:"消（け）します = to turn off (a light) or erase."},
+  {type:"vocab",prompt:"「消（け）します」means:",choices:["To turn on/light","To turn off/erase","To open/unlock","To close/lock"],a:1,note:"消（け）します = to turn off (a light) or erase."},
   {type:"grammar",prompt:"ちょっと 待（ま）っ ___ ください。(Please wait a moment.)",choices:["て","た","たり","ない"],a:0,note:"Te-form + ください = a polite request."},
   {type:"structure",prompt:"Which correctly says \"I am reading a book now\" (ongoing action)?",choices:["今（いま） 本（ほん）が 読（よ）んでいます。","今（いま） 本（ほん）を 読（よ）みています。","今（いま） 本（ほん）を 読（よ）んでいます。","本（ほん）を 今（いま） 読（よ）んでいました。"],a:2,note:"Te-form + います shows an action in progress."}
  ],
@@ -215,8 +215,8 @@ const LESSONS = [
 {n:16,title:"なければなりません",topic:"Obligation and non-obligation",
  q:[
   {type:"vocab",prompt:"「予約（よやく）」means:",choices:["Reservation","Payment","Cancellation","Ticket"],a:0,note:"予約（よやく）= reservation, booking."},
-  {type:"vocab",prompt:"「出（だ）します」means:",choices:["To take out / submit","To put in","To carry","To throw away"],a:0,note:"出（だ）します = to take out, submit, mail."},
-  {type:"grammar",prompt:"レポートを 明日（あした）までに 出（だ）さ ___ なりません。(I must submit the report by tomorrow.)",choices:["なければ","ないと","なくても","ないでは"],a:0,note:"Vない-form (dropping い) + ければなりません = must do."},
+  {type:"vocab",prompt:"「出（だ）します」means:",choices:["To take out / submit","To put in / insert","To carry / hold","To throw away / discard"],a:0,note:"出（だ）します = to take out, submit, mail."},
+  {type:"grammar",prompt:"レポートを 明日（あした）までに 出（だ）さ ___ なりません。(I must submit the report by tomorrow.)",choices:["なければ","ないで","なくても","ないでは"],a:0,note:"Vない-form (dropping い) + ければなりません = must do."},
   {type:"structure",prompt:"Which correctly says \"You don't have to make a reservation\"?",choices:["予約（よやく）を しなくても いいです。","予約（よやく）を しなければ なりません。","予約（よやく）を してはいけません。","予約（よやく）を しないと いいです。"],a:0,note:"Vない-form + くてもいいです = don't have to."}
  ],
  cap:[
@@ -256,8 +256,8 @@ const LESSONS = [
  ]},
 {n:19,title:"予定（よてい） / 〜と思（おも）っています",topic:"Plans and ongoing intentions",
  q:[
-  {type:"vocab",prompt:"「予定（よてい）」means:",choices:["Plan / schedule","Memory","Promise","Reservation"],a:0,note:"予定（よてい）= plan, schedule."},
-  {type:"vocab",prompt:"「帰国（きこく）します」means:",choices:["To travel abroad","To return to one's home country","To move house","To graduate"],a:1,note:"帰国（きこく）します= to return to one's country."},
+  {type:"vocab",prompt:"「予定（よてい）」means:",choices:["Plan / schedule","Memory / record","Promise / pledge","Reservation / booking"],a:0,note:"予定（よてい）= plan, schedule."},
+  {type:"vocab",prompt:"「帰国（きこく）します」means:",choices:["To travel to a foreign country","To return to one's home country","To move to a new house","To graduate from a school"],a:1,note:"帰国（きこく）します= to return to one's country."},
   {type:"grammar",prompt:"来年（らいねん） 日本（にほん）へ 行（い）こう ___ 思（おも）っています。(I'm planning to go to Japan next year.)",choices:["と","を","が","に"],a:0,note:"Volitional form + と思（おも）っています expresses an ongoing intention/plan."},
   {type:"structure",prompt:"Which correctly says \"I plan to study abroad next year\"?",choices:["来年（らいねん） 留学（りゅうがく）した 予定（よてい）です。","来年（らいねん） 留学（りゅうがく）する 予定（よてい）です。","来年（らいねん） 留学（りゅうがく）しない 予定（よてい）です。","予定（よてい）は 来年（らいねん） 留学（りゅうがく）します。"],a:1,note:"Dictionary form + 予定（よてい）です states a plan."}
  ],
@@ -273,7 +273,7 @@ const LESSONS = [
   {type:"vocab",prompt:"「疲（つか）れます」means:",choices:["To relax","To get tired","To get sick","To sleep"],a:1,note:"疲（つか）れます= to become tired."},
   {type:"vocab",prompt:"「込（こ）みます」means:",choices:["To become crowded","To become empty","To become quiet","To become expensive"],a:0,note:"込（こ）みます= to get crowded."},
   {type:"grammar",prompt:"昨日（きのう）は 働（はたら）き ___ 疲（つか）れました。(I worked too much yesterday and got tired.)",choices:["すぎます","すぎた","すぎる","すぎて"],a:3,note:"Vます-stem + すぎて = 'because of doing too much', linking to the result."},
-  {type:"structure",prompt:"Which correctly gives advice: \"You'd better see a doctor\"?",choices:["医者（いしゃ）に 行（い）った ほうが いいです。","医者（いしゃ）に 行（い）く ほうが いいです。","医者（いしゃ）に 行（い）きます ほうが いいです。","医者（いしゃ）は 行（い）った ほうが いいです。"],a:0,note:"Vた-form + ほうがいいです is the standard way to give advice."}
+  {type:"structure",prompt:"Which correctly gives advice: \"You'd better see a doctor\"?",choices:["医者（いしゃ）に 行（い）った ほうが いいです。","医者（いしゃ）に 行（い）って ほうが いいです。","医者（いしゃ）に 行（い）きます ほうが いいです。","医者（いしゃ）は 行（い）った ほうが いいです。"],a:0,note:"Vた-form + ほうがいいです is the standard way to give advice."}
  ],
  cap:[
   {en:"You ate too much, so you should rest a bit.",jp:"食（た）べすぎましたから、少（すこ）し 休（やす）んだ ほうが いいです。",note:"すぎました states the excess; ほうがいいです gives the recommendation."},
@@ -287,7 +287,7 @@ const LESSONS = [
   {type:"vocab",prompt:"「台風（たいふう）」means:",choices:["Typhoon","Earthquake","Rain","Snow"],a:0,note:"台風（たいふう）= typhoon."},
   {type:"vocab",prompt:"「天気（てんき）」means:",choices:["Season","Weather","Temperature","Sky"],a:1,note:"天気（てんき）= weather."},
   {type:"grammar",prompt:"明日（あした）は 雨（あめ）が 降（ふ）る ___ 思（おも）います。(I think it will rain tomorrow.)",choices:["と","を","が","に"],a:0,note:"Plain form + と思（おも）います = 'I think that...'"},
-  {type:"structure",prompt:"Which correctly says \"It will probably be sunny tomorrow\"?",choices:["明日（あした）は 晴（は）れるです。","明日（あした）は 晴（は）れますでしょう。","明日（あした）は 晴（は）れるでしょう。","明日（あした）は 晴（は）れると でしょう。"],a:2,note:"Plain form + でしょう expresses probability, said with falling intonation for a guess."}
+  {type:"structure",prompt:"Which correctly says \"It will probably be sunny tomorrow\"?",choices:["明日（あした）は 晴（は）れるです。","明日（あした）は 晴（は）れましょう。","明日（あした）は 晴（は）れるでしょう。","明日（あした）は 晴（は）れると でしょう。"],a:2,note:"Plain form + でしょう expresses probability, said with falling intonation for a guess."}
  ],
  cap:[
   {en:"I think this typhoon is quite big.",jp:"この 台風（たいふう）は かなり 大（おお）きいと 思（おも）います。",note:"い-adjective plain form + と思（おも）います, no だ needed after い-adjectives."},
@@ -341,7 +341,7 @@ const LESSONS = [
 {n:25,title:"使役形（しえきけい）",topic:"Causative form",
  q:[
   {type:"vocab",prompt:"「泣（な）きます」means:",choices:["To laugh","To cry","To shout","To smile"],a:1,note:"泣（な）きます= to cry."},
-  {type:"vocab",prompt:"「休（やす）ませます」is the causative of which verb?",choices:["働（はたら）きます","休（やす）みます","泣（な）きます","待（ま）ちます"],a:1,note:"休（やす）みます (to rest) → 休（やす）ませます (to make/let someone rest)."},
+  {type:"vocab",prompt:"「休（やす）ませます」is the causative of which verb?",choices:["休（やす）めます","休（やす）みます","休（やす）まります","休（やす）まれます"],a:1,note:"休（やす）みます (to rest) → 休（やす）ませます (to make/let someone rest)."},
   {type:"grammar",prompt:"母（はは）は 子供（こども） ___ 野菜（やさい）を 食（た）べさせました。(Mother made the child eat vegetables.)",choices:["を","に","が","で"],a:1,note:"With causative verbs, the person made to act usually takes に (especially with verbs that can take an object)."},
   {type:"structure",prompt:"Which correctly makes a humble request: \"Please let me rest today\"?",choices:["今日（きょう） 休（やす）ませて ください。","今日（きょう） 休（やす）みさせて ください。","今日（きょう） 休（やす）んで もらって ください。","今日（きょう） 休（やす）ませます ください。"],a:0,note:"Causative te-form + ください = 'please let/make me do...', a common polite request pattern."}
  ],
