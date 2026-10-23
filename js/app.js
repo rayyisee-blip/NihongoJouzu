@@ -151,6 +151,16 @@ function renderToday(){
   const lessonRemaining = lessonQuestionIds(PROGRESS.currentLesson).filter(qid => !PROGRESS.seen[qid] || PROGRESS.seen[qid].count===0).length;
 
   main.innerHTML = `
+    <section class="hero">
+      <p class="eyebrow">A quiet place to begin</p>
+      <h2 class="hero-title">A little Japanese, every day.</h2>
+      <p class="hero-sub">Follow your curiosity through sounds, words, and small discoveries. Take your time; the journey is yours.</p>
+      <div class="hero-actions">
+        <button class="primary" id="heroStartBtn">${allDone ? 'Practise a little more' : answeredCount>0 ? 'Continue my session' : 'Begin a session'}</button>
+        <button class="ghost" id="heroNotesBtn">Open my notes</button>
+      </div>
+    </section>
+
     <div class="card"><div class="card-inner">
       <div class="section-title">Today &mdash; ${date}</div>
       <p class="muted">Lesson ${PROGRESS.currentLesson} in rotation &middot; ${curLesson.title}</p>
@@ -200,6 +210,13 @@ function renderToday(){
       <p class="muted">Lessons completed: ${Object.values(PROGRESS.capstoneStatus).filter(s=>s==='done').length} / 25 &middot; Currently on Lesson ${PROGRESS.currentLesson}</p>
     </div></div>` : ''}
   `;
+
+  // Hero buttons reuse the card's own handlers: today's session, or a practice round once it's done.
+  document.getElementById('heroStartBtn').addEventListener('click', ()=>{
+    const target = document.getElementById('startQuizBtn') || document.getElementById('practiceBtn');
+    if(target) target.click();
+  });
+  document.getElementById('heroNotesBtn').addEventListener('click', ()=> setTab('notes'));
 
   const startBtn = document.getElementById('startQuizBtn');
   if(startBtn) startBtn.addEventListener('click', ()=>{

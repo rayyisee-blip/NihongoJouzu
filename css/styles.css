@@ -1,149 +1,116 @@
+  /* Palette + type taken from the Canva "komorebi" design. Token names are
+     kept from the earlier theme so every existing rule re-colours at once:
+     --indigo is now the primary forest green, --vermillion the terracotta accent. */
   :root{
-    --paper:#F6F1E4;
-    --paper-2:#EFE7D3;
-    --ink:#262220;
-    --ink-soft:#5b544c;
-    --indigo:#223A5E;
-    --indigo-2:#3C5A82;
-    --vermillion:#BF3B30;
-    --vermillion-soft:#e2b3ac;
-    --gold:#C99A3B;
-    --line:#DCD3BE;
-    --success:#5C7A5A;
-    --success-soft:#e1e9df;
-    --radius:2px;
-    --gold-faint:#dcc282;
+    --paper:#F5F0E5;
+    --paper-2:#ECE6D6;
+    --surface:#FBF8F0;
+    --ink:#1F2A1D;
+    --ink-soft:#5F6455;
+    --indigo:#2C513E;
+    --indigo-2:#3F6B54;
+    --vermillion:#A9492D;
+    --vermillion-soft:#E3BBA8;
+    --gold:#B89150;
+    --line:#DDD6C4;
+    --edge:#BDB49C;
+    --success:#4F7A5A;
+    --success-soft:#E2EADF;
+    --radius:4px;
+    --gold-faint:#E8D7A8;
+    --font-body:'Alegreya','Shippori Mincho','Zen Kaku Gothic New',serif;
+    --font-display:'Alegreya','Shippori Mincho',serif;
+    --font-label:'Alegreya','Shippori Mincho',serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background-color:var(--paper);
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      linear-gradient(var(--line) 1px, transparent 1px);
-    background-size: 180px 180px, 100% 42px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     color:var(--ink);
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
+    font-size:17px;
     min-height:100vh;
+    font-variant-numeric:lining-nums;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:720px;margin:0 auto;padding:32px 20px 88px;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 88px;}
 
-  /* ---------- Header ---------- */
+  /* ---------- Header (brand mark + wordmark, streak on the right) ---------- */
   header{
-    position:relative;
     display:flex;
     justify-content:space-between;
-    align-items:flex-end;
-    border-bottom:1.5px solid var(--ink);
-    padding:34px 0 16px;
-    margin-bottom:0;
+    align-items:center;
+    gap:16px;
+    padding:18px 0 16px;
+    border-bottom:1px solid var(--line);
   }
-
-  /* ---------- Sakura branch (header corner motif) ---------- */
-  .hero-art{
-    position:absolute;
-    z-index:-1;
-    top:-4px;
-    right:-6px;
-    width:170px;
-    height:58px;
-    overflow:hidden;
-    pointer-events:none;
-  }
-  .hero-art svg{display:block; width:100%; height:100%;}
-  .hero-art .petal{
-    transform-box:fill-box;
-    transform-origin:center;
-    opacity:0;
-    animation:sakura-fall 7s linear infinite;
-  }
-  .hero-art .petal-1{animation-delay:0s; animation-duration:6.5s;}
-  .hero-art .petal-2{animation-delay:1.8s; animation-duration:7.4s;}
-  .hero-art .petal-3{animation-delay:3.2s; animation-duration:6.9s;}
-  .hero-art .petal-4{animation-delay:4.6s; animation-duration:7.8s;}
-  @keyframes sakura-fall{
-    0%{transform:translate(0,0) rotate(0deg); opacity:0;}
-    12%{opacity:.7;}
-    85%{opacity:.5;}
-    100%{transform:translate(16px,150px) rotate(320deg); opacity:0;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .hero-art .petal{animation:none; opacity:.45;}
-  }
-  .eyebrow{
-    position:relative;
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px;
-    letter-spacing:.14em;
-    color:var(--ink-soft);
-    text-transform:uppercase;
-    margin-bottom:6px;
+  .brand{display:flex; align-items:center; gap:12px; min-width:0;}
+  .brand-mark{
+    width:38px; height:38px; flex-shrink:0;
+    border:1px solid var(--ink);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display);
+    font-size:18px;
   }
   h1{
-    position:relative;
-    font-family:'Shippori Mincho', serif;
-    font-weight:800;
-    font-size:32px;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:21px;
     margin:0;
-    line-height:1.1;
-    letter-spacing:.02em;
+    line-height:1.15;
+    letter-spacing:.01em;
   }
-  h1 small{
+  h1 .brand-sub{
     display:block;
-    font-family:'JetBrains Mono',monospace;
     font-size:12px;
     font-weight:500;
     color:var(--ink-soft);
-    letter-spacing:.08em;
-    margin-top:7px;
+    letter-spacing:.04em;
+    margin-top:2px;
   }
   .streak-badge{
-    position:relative;
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     text-align:right;
-    font-size:12px;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
     color:var(--ink-soft);
+    flex-shrink:0;
   }
   .streak-badge b{
     display:block;
-    font-family:'Shippori Mincho', serif;
+    font-family:var(--font-display);
     font-size:26px;
+    font-weight:700;
+    letter-spacing:0;
     color:var(--vermillion);
     line-height:1;
   }
 
-  /* ---------- Brush-stroke divider (opening motif) ---------- */
-  .brush-divider{
-    width:100%;
-    height:11px;
-    margin:0 0 26px;
-    overflow:hidden;
+  /* ---------- Hero (top of the Today tab) ---------- */
+  .eyebrow{
+    font-family:var(--font-label);
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--vermillion);
+    margin:0 0 10px;
   }
-  .brush-divider svg{width:100%; height:100%; display:block;}
-  .brush-divider path{fill:var(--ink); opacity:.13;}
-
-  /* ---------- Mount Fuji + rising sun (footer landscape) ---------- */
-  .fuji-scene{
-    height:82px;
-    margin:52px 0 0;
-    overflow:hidden;
+  .hero{position:relative; padding:34px 0 30px; overflow:hidden; border-bottom:1px solid var(--line); margin-bottom:26px;}
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-70px; top:-30px;
+    width:230px; height:230px;
+    border:22px solid rgba(31,42,29,.045);
+    border-radius:50%;
+    pointer-events:none;
   }
-  .fuji-scene svg{display:block; width:100%; height:100%;}
-
-  /* ---------- Wave divider (seigaiha bookend, above footer) ---------- */
-  .wave-divider{
-    height:15px;
-    margin:2px 0 0;
-    background-image:
-      radial-gradient(circle at 0 100%, transparent 22%, var(--gold-faint) 23%, var(--gold-faint) 26%, transparent 27%, transparent 34%, var(--gold-faint) 35%, var(--gold-faint) 38%, transparent 39%),
-      radial-gradient(circle at 50% 100%, transparent 22%, var(--gold-faint) 23%, var(--gold-faint) 26%, transparent 27%, transparent 34%, var(--gold-faint) 35%, var(--gold-faint) 38%, transparent 39%),
-      radial-gradient(circle at 100% 100%, transparent 22%, var(--gold-faint) 23%, var(--gold-faint) 26%, transparent 27%, transparent 34%, var(--gold-faint) 35%, var(--gold-faint) 38%, transparent 39%);
-    background-size:26px 13px;
-    background-repeat:repeat-x;
-    background-position:center bottom;
-    opacity:.55;
-  }
+  .hero-title{font-family:var(--font-display); font-weight:700; font-size:34px; line-height:1.15; margin:0 0 10px; position:relative;}
+  .hero-sub{color:var(--ink-soft); font-size:18px; line-height:1.45; max-width:30em; margin:0 0 22px; position:relative;}
+  .hero-actions{display:flex; flex-wrap:wrap; gap:12px; position:relative;}
 
   /* ---------- Account / sync bar ---------- */
   .authbar{
@@ -154,7 +121,7 @@
     margin-bottom:18px;
     background:var(--paper-2);
     border:1px solid var(--line);
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     color:var(--ink-soft);
     letter-spacing:.03em;
@@ -162,7 +129,7 @@
   .authbar b{color:var(--indigo); font-weight:600;}
   .authbar button.linklike{
     background:none; border:none; cursor:pointer;
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px; letter-spacing:.05em;
     color:var(--vermillion); text-decoration:underline;
     padding:0;
@@ -171,92 +138,64 @@
   .authtabs{display:flex; gap:16px; margin-bottom:16px; border-bottom:1px solid var(--line);}
   .authtabs button{
     background:none; border:none; cursor:pointer;
-    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    font-family:var(--font-label); font-size:12px; letter-spacing:.05em; text-transform:uppercase;
     padding:8px 2px; color:var(--ink-soft); border-bottom:2px solid transparent;
   }
   .authtabs button.active{color:var(--ink); border-bottom-color:var(--vermillion); font-weight:600;}
   .authfield{margin-bottom:12px;}
-  .authfield label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:5px; letter-spacing:.05em;}
+  .authfield label{display:block; font-family:var(--font-label); font-size:11px; color:var(--ink-soft); margin-bottom:5px; letter-spacing:.05em;}
   .authfield input{
-    width:100%; font-family:'Zen Kaku Gothic New',sans-serif; font-size:15px;
-    border:1.5px solid var(--ink); background:var(--paper); padding:10px 12px;
+    width:100%; font-family:var(--font-body); font-size:15px;
+    border:1px solid var(--edge); background:var(--paper); padding:10px 12px;
   }
   .autherror{color:var(--vermillion); font-size:13px; margin:10px 0 0;}
   .authnote{color:var(--ink-soft); font-size:12px; margin-top:12px;}
 
-  /* ---------- Tabs ---------- */
+  /* ---------- Tabs (pill nav) ---------- */
   nav.tabs{
     display:flex;
-    flex-wrap:wrap;
-    row-gap:2px;
-    column-gap:22px;
-    margin-bottom:24px;
-    border-bottom:1px solid var(--line);
+    gap:4px;
+    margin:14px 0 26px;
+    overflow-x:auto;
+    scrollbar-width:none;
   }
+  nav.tabs::-webkit-scrollbar{display:none;}
   nav.tabs button{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:500;
     background:none;
     border:none;
-    padding:10px 4px;
+    border-radius:var(--radius);
+    padding:8px 14px;
     color:var(--ink-soft);
     cursor:pointer;
-    border-bottom:3px solid transparent;
-    transition:color .15s;
+    white-space:nowrap;
+    transition:color .15s, background .15s;
   }
-  nav.tabs button.active{
-    color:var(--ink);
-    border-bottom-color:var(--vermillion);
-    font-weight:600;
-  }
+  nav.tabs button.active{color:var(--ink); background:var(--paper-2); font-weight:700;}
   nav.tabs button:hover{color:var(--ink);}
 
   /* ---------- Cards ---------- */
   .card{
-    background:var(--paper);
-    border:1.5px solid var(--ink);
-    padding:26px 26px 28px;
-    margin-bottom:24px;
-    position:relative;
-    box-shadow:0 1px 0 rgba(38,34,32,.04), 0 10px 22px -18px rgba(38,34,32,.5);
-  }
-  .card::before{
-    content:"";
-    position:absolute;
-    inset:6px;
+    background:var(--surface);
     border:1px solid var(--line);
-    pointer-events:none;
-  }
-  .card::after{
-    content:"";
-    position:absolute;
-    top:0; right:0;
-    width:0; height:0;
-    border-style:solid;
-    border-width:0 15px 15px 0;
-    border-color:transparent var(--paper-2) transparent transparent;
-    pointer-events:none;
+    border-radius:6px;
+    padding:26px 26px 28px;
+    margin-bottom:22px;
+    position:relative;
+    box-shadow:0 14px 28px -24px rgba(31,42,29,.45);
   }
   .card-inner{position:relative;}
 
   .section-title{
-    position:relative;
-    font-family:'Shippori Mincho', serif;
-    font-size:20px;
+    font-family:var(--font-display);
+    font-size:23px;
     font-weight:700;
-    margin:0 0 14px;
-    padding-left:13px;
+    margin:0 0 12px;
+    line-height:1.2;
   }
-  .section-title::before{
-    content:"";
-    position:absolute;
-    left:0; top:3px; bottom:3px;
-    width:3px;
-    background:var(--vermillion);
-  }
-  .muted{color:var(--ink-soft); font-size:14px;}
+  .muted{color:var(--ink-soft); font-size:16px;}
 
   /* ---------- Stamp card (signature element) ---------- */
   .stampcard{
@@ -269,7 +208,7 @@
     width:40px;height:40px;
     border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    font-family:'Shippori Mincho', serif;
+    font-family:var(--font-display);
     font-size:11px;
     font-weight:800;
     flex-shrink:0;
@@ -293,29 +232,31 @@
 
   /* ---------- Buttons ---------- */
   button.primary{
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-    letter-spacing:.06em;
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.01em;
     background:var(--indigo);
-    color:var(--paper);
-    border:none;
-    padding:13px 22px;
+    color:var(--surface);
+    border:1px solid var(--indigo);
+    border-radius:var(--radius);
+    padding:11px 22px;
     cursor:pointer;
-    text-transform:uppercase;
     transition:background .15s;
   }
   button.primary:hover{background:var(--indigo-2);}
   button.ghost{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:500;
     background:none;
-    border:1.5px solid var(--ink);
+    border:1px solid var(--ink);
+    border-radius:var(--radius);
     color:var(--ink);
-    padding:10px 16px;
+    padding:10px 20px;
     cursor:pointer;
-    letter-spacing:.05em;
   }
-  button.ghost:hover{background:var(--ink); color:var(--paper);}
+  button.ghost:hover{background:var(--ink); color:var(--surface);}
   button:disabled{opacity:.4; cursor:not-allowed;}
 
   /* ---------- Progress dots ---------- */
@@ -326,7 +267,7 @@
 
   /* ---------- Question ---------- */
   .qmeta{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     color:var(--ink-soft);
     letter-spacing:.06em;
@@ -342,10 +283,10 @@
   .choices{display:flex; flex-direction:column; gap:10px;}
   .choice{
     text-align:left;
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
     font-size:16px;
     background:var(--paper);
-    border:1.5px solid var(--ink);
+    border:1px solid var(--edge);
     padding:13px 16px;
     cursor:pointer;
     transition:.12s;
@@ -381,11 +322,11 @@
   .typed-row{display:flex; flex-direction:column; gap:10px;}
   .typed-input{
     width:100%;
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
     font-size:18px;
     min-height:48px;
     padding:10px 12px;
-    border:1.5px solid var(--ink);
+    border:1px solid var(--edge);
     background:var(--paper);
     color:var(--ink);
     border-radius:var(--radius);
@@ -398,7 +339,7 @@
   .verdict-line{margin:8px 0 0;}
   .diff-block{margin:8px 0; font-size:17px; color:var(--ink);}
   .diff-line{margin:2px 0; word-break:break-all;}
-  .diff-label{display:inline-block; width:3.5em; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); text-transform:uppercase;}
+  .diff-label{display:inline-block; width:3.5em; font-family:var(--font-label); font-size:11px; color:var(--ink-soft); text-transform:uppercase;}
   .diff-del{color:var(--vermillion); text-decoration:line-through;}
   .diff-add{color:var(--success); text-decoration:underline;}
   .done-score{font-size:28px; font-weight:700; margin:6px 0;}
@@ -419,7 +360,7 @@
   }
   .lesson-row:last-child{border-bottom:none;}
   .lesson-num{
-    font-family:'Shippori Mincho',serif;
+    font-family:var(--font-display);
     font-size:22px;
     font-weight:800;
     width:34px;
@@ -431,7 +372,7 @@
   .lesson-title b{display:block; font-size:15px;}
   .lesson-title span{font-size:12px; color:var(--ink-soft);}
   .lesson-status{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:10px;
     text-transform:uppercase;
     letter-spacing:.06em;
@@ -444,7 +385,7 @@
 
   /* ---------- Capstone ---------- */
   .en-sentence{
-    font-family:'Shippori Mincho', serif;
+    font-family:var(--font-display);
     font-style:italic;
     font-size:19px;
     margin:0 0 14px;
@@ -453,9 +394,9 @@
   textarea{
     width:100%;
     min-height:80px;
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
     font-size:18px;
-    border:1.5px solid var(--ink);
+    border:1px solid var(--edge);
     background:var(--paper);
     padding:12px;
     resize:vertical;
@@ -469,7 +410,7 @@
     gap:12px;
   }
   .notes-savestatus{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     color:var(--ink-soft);
     letter-spacing:.04em;
@@ -482,7 +423,7 @@
     margin-bottom:10px;
   }
   .note-card-date{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     color:var(--ink-soft);
     letter-spacing:.04em;
@@ -497,7 +438,7 @@
     background:none;
     border:none;
     cursor:pointer;
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     letter-spacing:.05em;
     color:var(--vermillion);
@@ -517,20 +458,20 @@
   /* ---------- Stats ---------- */
   .statgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
   .statbox{border:1px solid var(--line); padding:14px;}
-  .statbox .num{font-family:'Shippori Mincho',serif; font-size:28px; font-weight:800; color:var(--indigo);}
-  .statbox .lbl{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.06em;}
+  .statbox .num{font-family:var(--font-display); font-size:28px; font-weight:800; color:var(--indigo);}
+  .statbox .lbl{font-family:var(--font-label); font-size:10px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.06em;}
   .barrow{display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:13px;}
-  .barrow .lname{width:80px; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px;}
+  .barrow .lname{width:80px; flex-shrink:0; font-family:var(--font-label); font-size:11px;}
   .barwrap{flex:1; height:8px; background:var(--paper-2); border:1px solid var(--line);}
   .barfill{height:100%; background:var(--indigo);}
 
   .empty-state{text-align:center; padding:40px 20px; color:var(--ink-soft);}
-  .empty-state .glyph{font-family:'Shippori Mincho',serif; font-size:40px; color:var(--vermillion); margin-bottom:10px;}
+  .empty-state .glyph{font-family:var(--font-display); font-size:40px; color:var(--vermillion); margin-bottom:10px;}
 
   /* ---------- Grammar tab ---------- */
   .gstruct{border-bottom:1px solid var(--line); padding:14px 0;}
   .gstruct:last-child{border-bottom:none;}
-  .gstruct-title{font-family:'Shippori Mincho',serif; font-weight:700; font-size:16px;}
+  .gstruct-title{font-family:var(--font-display); font-weight:700; font-size:16px;}
   .gexample{background:var(--paper-2); border-left:3px solid var(--indigo); padding:10px 12px; margin-top:8px;}
   .gexample-jp{font-size:16px; font-weight:600; margin-bottom:3px;}
   .gexample-en{font-size:13px; color:var(--ink-soft); font-style:italic;}
@@ -548,10 +489,10 @@
     padding:14px 4px;
     cursor:pointer;
     text-align:left;
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
   }
   .particle-char{
-    font-family:'Shippori Mincho',serif;
+    font-family:var(--font-display);
     font-weight:800;
     font-size:22px;
     color:var(--indigo);
@@ -560,7 +501,7 @@
   }
   .particle-role{flex:1; font-size:14px;}
   .particle-level{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:10px;
     color:var(--vermillion);
     border:1px solid var(--vermillion-soft);
@@ -568,7 +509,7 @@
     flex-shrink:0;
   }
   .particle-caret{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:16px;
     color:var(--ink-soft);
     width:16px;
@@ -599,10 +540,10 @@
     padding:14px 4px;
     cursor:pointer;
     text-align:left;
-    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-family:var(--font-body);
   }
   .tb-lesson-num{
-    font-family:'Shippori Mincho',serif;
+    font-family:var(--font-display);
     font-weight:800;
     font-size:22px;
     color:var(--indigo);
@@ -614,7 +555,7 @@
   .tb-lesson-title-wrap span{font-size:12px; color:var(--ink-soft);}
   .tb-lesson-body{padding:4px 4px 20px;}
   .tb-section-label{
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     letter-spacing:.08em;
     text-transform:uppercase;
@@ -640,7 +581,7 @@
   .tb-vocab-en{color:var(--ink-soft); text-align:right; font-size:13px;}
   .tb-pattern{margin-bottom:16px;}
   .tb-pattern-title{
-    font-family:'Shippori Mincho',serif;
+    font-family:var(--font-display);
     font-weight:700;
     font-size:16px;
   }
@@ -663,7 +604,7 @@
     background:none;
     border:none;
     cursor:pointer;
-    font-family:'JetBrains Mono',monospace;
+    font-family:var(--font-label);
     font-size:11px;
     letter-spacing:.05em;
     color:var(--indigo);
@@ -691,15 +632,14 @@
   .reading-listen.is-loading{opacity:.6;}
   .reading-listen.is-playing{border-color:var(--vermillion); color:var(--vermillion);}
 
-  footer{text-align:center; margin-top:18px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:.05em;}
+  footer{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); font-family:var(--font-label); font-size:12px; color:var(--ink-soft); letter-spacing:.12em; text-transform:uppercase;}
 
   @media (max-width:480px){
-    h1{font-size:26px;}
-    .qprompt{font-size:19px;}
+    h1{font-size:19px;}
+    .hero-title{font-size:28px;}
+    .hero-sub{font-size:17px;}
+    .qprompt{font-size:20px;}
     .statgrid{grid-template-columns:1fr;}
     .tb-vocab-list{grid-template-columns:1fr;}
-    nav.tabs{column-gap:14px; row-gap:6px;}
-    nav.tabs button{font-size:11px; padding:8px 2px;}
-    .hero-art{width:130px; height:80px; top:-10px; right:-6px;}
-    .fuji-scene{height:60px; margin-top:38px;}
+    .card{padding:22px 18px 24px;}
   }
