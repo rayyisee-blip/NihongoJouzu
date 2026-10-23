@@ -1,0 +1,652 @@
+[
+ [
+  {
+   "prompt": "How do you say \"this (thing, near me)\" in Japanese?",
+   "answer": "これ",
+   "note": "これ = this (near speaker). それ = that (near listener). あれ = that over there (far from both).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「学生（がくせい）」means:",
+   "answer": "Student",
+   "note": "学生（がくせい）= student.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "これ ___ 辞書（じしょ）です。(This is a dictionary.)",
+   "answer": "は",
+   "note": "は marks the topic. 'これは辞書（じしょ）です' = As for this, it is a dictionary.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Choose the correct question form of 'Is that a book?'",
+   "answer": "それは 本（ほん）ですか。",
+   "note": "Add か directly after です, no extra space needed: それは本（ほん）ですか。",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「傘（かさ）」means:",
+   "answer": "Umbrella",
+   "note": "傘（かさ）= umbrella.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "How do you ask \"How much is it?\"",
+   "answer": "いくらですか。",
+   "note": "いくら = how much (price).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "___ 本（ほん）は 私（わたし）のです。(That book [near you] is mine.)",
+   "answer": "その",
+   "note": "その + noun = that (near listener). Contrast with それ, which stands alone.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which is correctly formed: \"Whose bag is this?\"",
+   "answer": "これは 誰（だれ）の かばんですか。",
+   "note": "誰（だれ）の (whose) + noun comes right before です.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「デパート」means:",
+   "answer": "Department store",
+   "note": "デパート = department store (loanword).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "How do you say \"where\"?",
+   "answer": "どこ",
+   "note": "どこ = where (question word).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "お手洗（てあら）いは ___ ですか。(Where is the restroom?)",
+   "answer": "どこ",
+   "note": "どこ asks about location.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Choose the correct sentence for \"The department store is over there.\"",
+   "answer": "デパートは あそこです。",
+   "note": "Topic (デパート) + は + location + です.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「起（お）きます」means:",
+   "answer": "To wake up",
+   "note": "起（お）きます = to get up / wake up.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「働（はたら）きます」means:",
+   "answer": "To work",
+   "note": "働（はたら）きます = to work.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "毎日（まいにち） 7時（じ） ___ 起（お）きます。(I get up at 7 every day.)",
+   "answer": "に",
+   "note": "に marks a specific point in time with clock times, days, etc.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I work from 9 to 5\"?",
+   "answer": "9時（じ）から5時（じ）まで 働（はたら）きます。",
+   "note": "から (from) ... まで (until) brackets the time range, verb comes last.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「駅（えき）」means:",
+   "answer": "Station",
+   "note": "駅（えき）= station.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "How do you say \"alone / by oneself\"?",
+   "answer": "一人（ひとり）で",
+   "note": "一人（ひとり）で = alone, by oneself.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "電車（でんしゃ） ___ 行（い）きます。(I go by train.)",
+   "answer": "で",
+   "note": "で marks the means of transportation.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Choose the correct sentence: \"I'll go to Kyoto with my family.\"",
+   "answer": "家族（かぞく）と 京都（きょうと）へ 行（い）きます。",
+   "note": "Companion + と, destination + へ, then the verb.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「新聞（しんぶん）」means:",
+   "answer": "Newspaper",
+   "note": "新聞（しんぶん）= newspaper.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "How do you invite someone: \"Won't you eat?\"",
+   "answer": "食（た）べませんか。",
+   "note": "Vませんか = a polite invitation, 'won't you...?'",
+   "type": "vocab"
+  },
+  {
+   "prompt": "朝（あさ）ごはん ___ 食（た）べます。(I eat breakfast.)",
+   "answer": "を",
+   "note": "を marks the direct object of a transitive verb.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly proposes \"Let's go together\"?",
+   "answer": "一緒（いっしょ）に 行（い）きましょう。",
+   "note": "一緒（いっしょ）に (together) + verb in the ましょう (let's) form.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「あげます」means:",
+   "answer": "To give",
+   "note": "あげます = to give (to someone else).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「もう」+ past tense means:",
+   "answer": "Already",
+   "note": "もう + Vました = already did something.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "田中（たなか）さんに 花（はな） ___ もらいました。(I received flowers from Mr. Tanaka.)",
+   "answer": "を",
+   "note": "The thing received takes を; に marks the giver.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I haven't eaten lunch yet\"?",
+   "answer": "まだ 昼（ひる）ごはんを 食（た）べていません。",
+   "note": "まだ + negative = 'not yet'.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「静（しず）か」means:",
+   "answer": "Quiet",
+   "note": "静（しず）かな = quiet (な-adjective).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「おいしい」means:",
+   "answer": "Delicious",
+   "note": "おいしい = delicious (い-adjective).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "この 町（まち）は あまり ___ ありません。(This town isn't very lively.)",
+   "answer": "にぎやかで",
+   "note": "な-adjective negative: 〜で + ありません (or じゃありません).",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"This book is very interesting\"?",
+   "answer": "この 本（ほん）は とても 面白（おもしろ）いです。",
+   "note": "とても + い-adjective + です, straightforward word order.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「上手（じょうず）」means:",
+   "answer": "Skilled / good at",
+   "note": "上手（じょうず）な = skilled, good at.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「わかります」means:",
+   "answer": "To understand",
+   "note": "わかります = to understand / comprehend.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "私（わたし）は 音楽（おんがく） ___ 好（す）きです。(I like music.)",
+   "answer": "が",
+   "note": "With 好（す）き/嫌（きら）い/上手（じょうず）/下手（へた）/わかります, the object takes が, not を.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I don't understand Japanese very well\"?",
+   "answer": "日本語（にほんご）が あまり わかりません。",
+   "note": "わかります pairs with が for the thing understood.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "Which verb is used for living things (people/animals)?",
+   "answer": "います",
+   "note": "います = there is/are, for animate things (people, animals).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「隣（となり）」means:",
+   "answer": "Next to",
+   "note": "隣（となり）= next to, adjacent.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "机（つくえ）の 上（うえ） ___ 本（ほん）が あります。(There is a book on the desk.)",
+   "answer": "に",
+   "note": "に marks the location where something exists.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"There is a cat under the chair\"?",
+   "answer": "椅子（いす）の 下（した）に 猫（ねこ）が います。",
+   "note": "Location + の + 上（うえ）/下（した）/etc + に, then subject + が + います (animate).",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「卵（たまご）」means:",
+   "answer": "Egg",
+   "note": "卵（たまご）= egg.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「だけ」means:",
+   "answer": "Only",
+   "note": "だけ = only, just.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "りんごを 三（さん） ___ 買（か）いました。(I bought three apples.)",
+   "answer": "つ",
+   "note": "つ is the general counter for small round/miscellaneous objects like apples.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I only have 500 yen\"?",
+   "answer": "500円（えん）だけ あります。",
+   "note": "Quantity + だけ + verb.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「一番（いちばん）」means:",
+   "answer": "Number one / the most",
+   "note": "一番（いちばん）= the most, number one (superlative marker).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「季節（きせつ）」means:",
+   "answer": "Season",
+   "note": "季節（きせつ）= season.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "夏（なつ）と 冬（ふゆ）と、___ 好（す）きですか。(Summer or winter, which do you like?)",
+   "answer": "どちらが",
+   "note": "N1とN2と、どちらが〜 is the standard comparison question pattern.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"Of all seasons, I like spring the most\"?",
+   "answer": "季節（きせつ）の 中（なか）で 春（はる）が 一番（いちばん） 好（す）きです。",
+   "note": "Nの中（なか）で + subject + が + 一番（いちばん） + adjective/verb.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「旅行（りょこう）」means:",
+   "answer": "Travel",
+   "note": "旅行（りょこう）= travel, trip.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "How do you say \"nothing\" (with negative verb)?",
+   "answer": "何（なに）も",
+   "note": "何（なに）も + negative verb = nothing.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "日本（にほん）へ 旅行（りょこう）に 行（い）き ___ です。(I want to go to Japan on a trip.)",
+   "answer": "たい",
+   "note": "Vます-stem + たい = want to do.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I'm going to the library to borrow a book\"?",
+   "answer": "本（ほん）を 借（か）りに 図書館（としょかん）へ 行（い）きます。",
+   "note": "Vます-stem + に + 行（い）きます expresses purpose of movement.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「手伝（てつだ）います」means:",
+   "answer": "To help",
+   "note": "手伝（てつだ）います= to help.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「消（け）します」means:",
+   "answer": "To turn off/erase",
+   "note": "消（け）します = to turn off (a light) or erase.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "ちょっと 待（ま）っ ___ ください。(Please wait a moment.)",
+   "answer": "て",
+   "note": "Te-form + ください = a polite request.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I am reading a book now\" (ongoing action)?",
+   "answer": "今（いま） 本（ほん）を 読（よ）んでいます。",
+   "note": "Te-form + います shows an action in progress.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「使（つか）います」means:",
+   "answer": "To use",
+   "note": "使（つか）います= to use.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「写真（しゃしん）」means:",
+   "answer": "Photo",
+   "note": "写真（しゃしん）= photograph.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "ここで 写真（しゃしん）を 撮（と）っ ___ いいですか。(Is it okay to take photos here?)",
+   "answer": "ても",
+   "note": "Te-form + もいいですか asks for permission.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"You must not smoke here\"?",
+   "answer": "ここで たばこを 吸（す）っては いけません。",
+   "note": "Te-form + はいけません = prohibition, 'must not.'",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「予約（よやく）」means:",
+   "answer": "Reservation",
+   "note": "予約（よやく）= reservation, booking.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「出（だ）します」means:",
+   "answer": "To take out / submit",
+   "note": "出（だ）します = to take out, submit, mail.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "レポートを 明日（あした）までに 出（だ）さ ___ なりません。(I must submit the report by tomorrow.)",
+   "answer": "なければ",
+   "note": "Vない-form (dropping い) + ければなりません = must do.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"You don't have to make a reservation\"?",
+   "answer": "予約（よやく）を しなくても いいです。",
+   "note": "Vない-form + くてもいいです = don't have to.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「趣味（しゅみ）」means:",
+   "answer": "Hobby",
+   "note": "趣味（しゅみ）= hobby.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「泳（およ）ぐ」(dictionary form) means:",
+   "answer": "To swim",
+   "note": "泳（およ）ぐ= to swim.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "私（わたし）は ギターを 弾（ひ）く ___ できます。(I can play the guitar.)",
+   "answer": "こと が",
+   "note": "Dictionary form + ことができます = to be able to do.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"Before eating, I wash my hands\"?",
+   "answer": "食（た）べる 前（まえ）に、手（て）を 洗（あら）います。",
+   "note": "Dictionary form + 前（まえ）に = 'before doing'.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「掃除（そうじ）します」means:",
+   "answer": "To clean",
+   "note": "掃除（そうじ）します= to clean.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「洗濯（せんたく）します」means:",
+   "answer": "To do laundry",
+   "note": "洗濯（せんたく）します= to do laundry.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "週末（しゅうまつ）は 掃除（そうじ）を ___ 洗濯（せんたく）を したり します。(On weekends I do things like cleaning and laundry.)",
+   "answer": "したり",
+   "note": "Both verbs take the たり form when listing example actions: 〜たり〜たりします.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"On holidays I read books or watch movies\"?",
+   "answer": "休（やす）みの日（ひ）は 本（ほん）を 読（よ）んだり 映画（えいが）を 見（み）たり します。",
+   "note": "〜たり〜たりします lists a few representative activities, not an exhaustive list.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「予定（よてい）」means:",
+   "answer": "Plan / schedule",
+   "note": "予定（よてい）= plan, schedule.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「帰国（きこく）します」means:",
+   "answer": "To return to one's home country",
+   "note": "帰国（きこく）します= to return to one's country.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "来年（らいねん） 日本（にほん）へ 行（い）こう ___ 思（おも）っています。(I'm planning to go to Japan next year.)",
+   "answer": "と",
+   "note": "Volitional form + と思（おも）っています expresses an ongoing intention/plan.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I plan to study abroad next year\"?",
+   "answer": "来年（らいねん） 留学（りゅうがく）する 予定（よてい）です。",
+   "note": "Dictionary form + 予定（よてい）です states a plan.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「疲（つか）れます」means:",
+   "answer": "To get tired",
+   "note": "疲（つか）れます= to become tired.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「込（こ）みます」means:",
+   "answer": "To become crowded",
+   "note": "込（こ）みます= to get crowded.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "昨日（きのう）は 働（はたら）き ___ 疲（つか）れました。(I worked too much yesterday and got tired.)",
+   "answer": "すぎて",
+   "note": "Vます-stem + すぎて = 'because of doing too much', linking to the result.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly gives advice: \"You'd better see a doctor\"?",
+   "answer": "医者（いしゃ）に 行（い）った ほうが いいです。",
+   "note": "Vた-form + ほうがいいです is the standard way to give advice.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「台風（たいふう）」means:",
+   "answer": "Typhoon",
+   "note": "台風（たいふう）= typhoon.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「天気（てんき）」means:",
+   "answer": "Weather",
+   "note": "天気（てんき）= weather.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "明日（あした）は 雨（あめ）が 降（ふ）る ___ 思（おも）います。(I think it will rain tomorrow.)",
+   "answer": "と",
+   "note": "Plain form + と思（おも）います = 'I think that...'",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"It will probably be sunny tomorrow\"?",
+   "answer": "明日（あした）は 晴（は）れるでしょう。",
+   "note": "Plain form + でしょう expresses probability, said with falling intonation for a guess.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「眼鏡（めがね）」means:",
+   "answer": "Glasses",
+   "note": "眼鏡（めがね）= eyeglasses.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「人形（にんぎょう）」means:",
+   "answer": "Doll",
+   "note": "人形（にんぎょう）= doll.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "これは 私（わたし）が 撮（と）っ ___ 写真（しゃしん）です。(This is the photo that I took.)",
+   "answer": "た",
+   "note": "Plain past form directly modifies the following noun: 撮（と）った写真（しゃしん） = 'the photo [that I] took'.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"The woman wearing glasses is my mother\"?",
+   "answer": "眼鏡（めがね）を かけている 人（ひと）は 母（はは）です。",
+   "note": "A clause ending in ている can modify a noun directly, just like an adjective.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「曲（ま）がります」means:",
+   "answer": "To turn",
+   "note": "曲（ま）がります= to turn.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「まっすぐ」means:",
+   "answer": "Straight ahead",
+   "note": "まっすぐ = straight, straight ahead.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "日本（にほん）へ 行（い）く ___ 、パスポートが 要（い）ります。(When [you] go to Japan, you need a passport.)",
+   "answer": "とき",
+   "note": "Dictionary form + とき describes 'when [an event happens/will happen]'.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"I walk across the park every morning\"?",
+   "answer": "毎朝（まいあさ） 公園（こうえん）を 歩（ある）きます。",
+   "note": "を marks the space traversed with verbs of movement like 歩（ある）きます, 渡（わた）ります, 通（とお）ります.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「褒（ほ）めます」means:",
+   "answer": "To praise",
+   "note": "褒（ほ）めます= to praise.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「叱（しか）ります」means:",
+   "answer": "To scold",
+   "note": "叱（しか）ります= to scold.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "私（わたし）は 先生（せんせい）に ___ 。(I was praised by my teacher.)",
+   "answer": "褒（ほ）められました",
+   "note": "Passive form: 褒（ほ）める → 褒（ほ）められる → past 褒（ほ）められました.",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly says \"This building was built 100 years ago\"?",
+   "answer": "この 建物（たてもの）は 100年前（ねんまえ）に 建（た）てられました。",
+   "note": "Passive form 建（た）てられました is natural when the agent (who built it) is unspecified or unimportant.",
+   "type": "structure"
+  }
+ ],
+ [
+  {
+   "prompt": "「泣（な）きます」means:",
+   "answer": "To cry",
+   "note": "泣（な）きます= to cry.",
+   "type": "vocab"
+  },
+  {
+   "prompt": "「休（やす）ませます」is the causative of which verb?",
+   "answer": "休（やす）みます",
+   "note": "休（やす）みます (to rest) → 休（やす）ませます (to make/let someone rest).",
+   "type": "vocab"
+  },
+  {
+   "prompt": "母（はは）は 子供（こども） ___ 野菜（やさい）を 食（た）べさせました。(Mother made the child eat vegetables.)",
+   "answer": "に",
+   "note": "With causative verbs, the person made to act usually takes に (especially with verbs that can take an object).",
+   "type": "grammar"
+  },
+  {
+   "prompt": "Which correctly makes a humble request: \"Please let me rest today\"?",
+   "answer": "今日（きょう） 休（やす）ませて ください。",
+   "note": "Causative te-form + ください = 'please let/make me do...', a common polite request pattern.",
+   "type": "structure"
+  }
+ ]
+]
