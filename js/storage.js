@@ -113,6 +113,7 @@ async function loadProgress(){
   if(!PROGRESS.capstoneStatus[1]) PROGRESS.capstoneStatus[1] = 'locked';
   if(!PROGRESS.reviewCapstoneStatus) PROGRESS.reviewCapstoneStatus = {};
   if(!PROGRESS.capstoneRequeue) PROGRESS.capstoneRequeue = [];
+  if(!PROGRESS.dailyLog) PROGRESS.dailyLog = {};
   // Notes used to be a single freeform string; migrate any old save into
   // the new one-entry-per-note-bar array format so nothing is lost.
   if(typeof PROGRESS.notes === 'string'){

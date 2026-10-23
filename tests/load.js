@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const FILES = ['lessons-data.js', 'reference-data.js', 'storage.js', 'conjugation.js', 'answer-check.js'];
+const FILES = ['lessons-data.js', 'reference-data.js', 'storage.js', 'conjugation.js', 'answer-check.js', 'session.js'];
 
 function loadApp() {
   const ctx = { window: {}, console, setTimeout, Math, Date };

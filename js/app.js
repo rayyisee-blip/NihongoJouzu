@@ -1,17 +1,3 @@
-function allQuestionsUpTo(lessonNum){
-  const out = [];
-  for(let n=1;n<=lessonNum;n++){
-    out.push(...lessonQuestionIds(n));
-  }
-  out.push(...conjugationIdsUpTo(lessonNum));
-  return out;
-}
-function lessonQuestionIds(lessonNum){
-  const l = LESSONS.find(x=>x.n===lessonNum);
-  const staticIds = l.q.map((q,i)=> l.n+"-"+i);
-  const genIds = (GENERATED_POOL_BY_LESSON[lessonNum]||[]).map(it=>it.qid);
-  return [...staticIds, ...genIds];
-}
 // Capstone unlock stays gated on the 4 original hand-written questions only
 // (not the full generated pool) so lesson pacing doesn't change - the
 // generated questions add practice depth without slowing progression.
@@ -20,21 +6,15 @@ function lessonFullySeen(lessonNum){
   const staticIds = l.q.map((q,i)=> l.n+"-"+i);
   return staticIds.every(qid => PROGRESS.seen[qid] && PROGRESS.seen[qid].count>0);
 }
-function getTodaysSet(){
-  const date = todayStr();
-  if(PROGRESS.dailyLog[date]) return PROGRESS.dailyLog[date];
-  const pool = allQuestionsUpTo(PROGRESS.currentLesson);
-  const picked = weightedSample(pool, boxWeight, Math.min(12, pool.length));
-  PROGRESS.dailyLog[date] = { qids: picked, answers:{}, completed:false };
-  saveProgress();
-  return PROGRESS.dailyLog[date];
-}
 function qByQid(qid){
   if(qid.indexOf('gen-') === 0){
     return resolveGeneratedQuestion(GENERATED_INDEX[qid]);
   }
-  if(qid.indexOf('conj-') === 0){
-    return resolveConjugationQuestion(qid);
+  if(qid.indexOf('type-') === 0){
+    return resolveTypedSentence(qid);
+  }
+  if(qid.indexOf('conjs-') === 0){
+    return resolveConjSentence(qid);
   }
   const [lessonNum, idx] = qid.split("-").map(Number);
   const l = LESSONS.find(x=>x.n===lessonNum);
@@ -134,7 +114,8 @@ function render(){
 function renderToday(){
   checkLessonUnlocks();
   const date = todayStr();
-  const set = getTodaysSet();
+  const set = ensureTodaysSession(PROGRESS, date, PROGRESS.currentLesson);
+  saveProgress();
   const curLesson = LESSONS.find(l=>l.n===PROGRESS.currentLesson);
 
   if(quizState){
