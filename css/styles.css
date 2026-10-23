@@ -374,6 +374,40 @@
   }
   .nextbar{margin-top:20px; display:flex; justify-content:flex-end;}
 
+  /* ---------- Typed answers ---------- */
+  .typed-hint{margin:-10px 0 16px; font-size:13px;}
+  .frame-jp{font-size:20px; margin:0 0 16px; line-height:1.6;}
+  .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--vermillion); background:var(--gold-faint); vertical-align:baseline;}
+  .typed-row{display:flex; flex-direction:column; gap:10px;}
+  .typed-input{
+    width:100%;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:18px;
+    min-height:48px;
+    padding:10px 12px;
+    border:1.5px solid var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:var(--radius);
+    box-sizing:border-box;
+  }
+  .typed-input:disabled{background:var(--paper-2); color:var(--ink-soft);}
+  .verdict-ok{border-left-color:var(--success);}
+  .verdict-bad{border-left-color:var(--vermillion);}
+  .verdict-model{font-size:17px; color:var(--ink); margin:6px 0;}
+  .verdict-line{margin:8px 0 0;}
+  .diff-block{margin:8px 0; font-size:17px; color:var(--ink);}
+  .diff-line{margin:2px 0; word-break:break-all;}
+  .diff-label{display:inline-block; width:3.5em; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); text-transform:uppercase;}
+  .diff-del{color:var(--vermillion); text-decoration:line-through;}
+  .diff-add{color:var(--success); text-decoration:underline;}
+  .done-score{font-size:28px; font-weight:700; margin:6px 0;}
+  .missed-list{list-style:none; padding:0; margin:8px 0 0;}
+  .missed-list li{padding:10px 0; border-bottom:1px solid var(--line);}
+  .missed-prompt{font-size:14px; color:var(--ink-soft);}
+  .missed-answer{font-size:17px; font-weight:700;}
+  .done-actions{display:flex; flex-direction:column; gap:10px; margin-top:20px;}
+
   /* ---------- Lessons list ---------- */
   .lesson-row{
     display:flex;

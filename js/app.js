@@ -155,8 +155,8 @@ function renderToday(){
       <p class="muted">Lesson ${PROGRESS.currentLesson} in rotation &middot; ${curLesson.title}</p>
       <div class="dots">${dotsHtml}</div>
       ${ allDone
-        ? `<p class="muted" style="margin-top:14px;">You've completed today's ${set.qids.length} questions${capstoneAvailable ? ' &mdash; nice work. Take on the lesson capstone below whenever you\'re ready.' : '.'}</p>`
-        : `<button class="primary" id="startQuizBtn" style="margin-top:8px;">${answeredCount>0 ? 'Continue Quiz' : "Start Today's Quiz"}</button>`
+        ? `<p class="muted" style="margin-top:14px;">Done for today &mdash; all ${set.qids.length} questions finished${capstoneAvailable ? '. Take on the lesson capstone below whenever you\'re ready.' : '.'}</p>`
+        : `<button class="primary" id="startQuizBtn" style="margin-top:8px;">${answeredCount>0 ? 'Continue session' : "Start today's session"}</button>`
       }
       <div class="stampcard">${stampsHtml}</div>
       <p class="muted" style="font-size:11px;">Stamp trail &middot; last 14 days</p>
@@ -202,7 +202,7 @@ function renderToday(){
 
   const startBtn = document.getElementById('startQuizBtn');
   if(startBtn) startBtn.addEventListener('click', ()=>{
-    quizState = { qids: set.qids, idx: answeredCount, mode:'daily', answers:{} };
+    quizState = { qids: set.qids, idx: firstUnansweredIndex(set), mode:'daily', answers:{} };
     renderQuizQuestion();
   });
   const practiceBtn = document.getElementById('practiceBtn');
@@ -225,6 +225,7 @@ function renderQuizQuestion(){
   const dailySet = isDaily ? PROGRESS.dailyLog[todayStr()] : null;
 
   if(quizState.idx >= quizState.qids.length){
+    const qids = quizState.qids;
     if(isDaily){
       dailySet.completed = true;
       updateStreakOnComplete();
@@ -232,16 +233,24 @@ function renderQuizQuestion(){
     checkLessonUnlocks();
     saveProgress();
     quizState = null;
+    if(isDaily){
+      renderDoneScreen(dailySet.answers || {}, qids);
+      return;
+    }
     render();
     return;
   }
   const qid = quizState.qids[quizState.idx];
   const q = qByQid(qid);
   const alreadyAnswered = quizState.answers[qid];
+  if(itemType(qid) !== 'mc'){
+    renderTypedQuestion(qid, q);
+    return;
+  }
 
   main.innerHTML = `
     <div class="card"><div class="card-inner">
-      <div class="qmeta">${q.type==='conjugation' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${quizState.mode==='daily' ? 'Today\u2019s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round'} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}</div>
+      <div class="qmeta">${quizMetaLine(q)}</div>
       <p class="qprompt">${q.prompt}</p>
       <div class="choices" id="choicesWrap"></div>
       <div id="feedbackArea"></div>
@@ -275,18 +284,160 @@ function selectAnswer(qid, q, pickedIdx){
     dailySet.answers[qid] = { picked: pickedIdx, correct };
   }
 
-  if(!PROGRESS.seen[qid]) PROGRESS.seen[qid] = {count:0, correct:0, box:1};
-  const rec = PROGRESS.seen[qid];
-  rec.count += 1;
-  if(correct){
-    rec.correct += 1;
-    rec.box = Math.min(5, (rec.box||1) + 1);
-  } else {
-    rec.box = 1;
-  }
+  recordResult(qid, correct);
 
   saveProgress();
   lockChoices(q, pickedIdx);
+}
+
+// ---------- Typed questions ----------
+
+// Meta line shared by multiple-choice and typed screens.
+function quizMetaLine(q){
+  const label = quizState.mode==='daily' ? 'Today’s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round';
+  return `${q.type==='conjugation' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
+}
+
+// Diff of your answer against the model's kana form: only-yours struck out, only-model underlined.
+function diffHtml(yours, modelKana){
+  return diffChars(yours, modelKana).map(d=>
+    d.op==='same' ? escapeHtml(d.ch) : `<span class="diff-${d.op}">${escapeHtml(d.ch)}</span>`
+  ).join('');
+}
+
+// Verb and form key behind a conjs-<verbIdx>-<formKey>-<frameIdx> id.
+function conjParts(qid){
+  const parts = qid.split('-');
+  return { verb: VERBS[Number(parts[1])], formKey: parts[2] };
+}
+
+// Typed screen for sentence and conjugation-in-sentence items. The result is
+// held until Next so "I was right" can still flip it; only then is it recorded.
+function renderTypedQuestion(qid, q){
+  const isConj = q.kind === 'conj';
+  const promptHtml = isConj
+    ? `<p class="qprompt">${escapeHtml(q.promptEn)}</p>
+       <p class="frame-jp">${escapeHtml(q.frameJp).replace('___', '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')} <span class="muted">(${escapeHtml(q.dict)})</span></p>`
+    : `<p class="qprompt">${escapeHtml(q.promptEn)}</p>
+       <p class="muted typed-hint">${escapeHtml(q.hint)}</p>`;
+
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="qmeta">${quizMetaLine(q)}</div>
+      ${promptHtml}
+      <div class="typed-row">
+        <input type="text" id="typedInput" class="typed-input" lang="ja" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="${isConj ? 'Type the missing word' : 'Type in Japanese or romaji'}">
+        <button class="primary" id="checkBtn">Check</button>
+      </div>
+      <div id="feedbackArea"></div>
+      <div class="nextbar" id="nextBar" style="display:none;">
+        <button class="primary" id="nextBtn">Next &rarr;</button>
+      </div>
+    </div></div>
+  `;
+  const input = document.getElementById('typedInput');
+  const checkBtn = document.getElementById('checkBtn');
+  input.focus();
+
+  let finalCorrect = null;
+  function runCheck(){
+    if(finalCorrect !== null) return;
+    const value = input.value;
+    const res = checkTyped(value, q.model);
+    if(res.kind === 'empty') return;   // nothing typed: no verdict, nothing recorded
+    finalCorrect = res.correct;
+    input.disabled = true;
+    checkBtn.style.display = 'none';
+    showTypedVerdict(qid, q, value, res, ()=>{ finalCorrect = true; });
+    document.getElementById('nextBar').style.display = 'flex';
+    document.getElementById('nextBtn').onclick = ()=> finishTyped(qid, value, finalCorrect);
+  }
+  checkBtn.addEventListener('click', runCheck);
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){ e.preventDefault(); runCheck(); }
+  });
+}
+
+function showTypedVerdict(qid, q, value, res, markCorrect){
+  const area = document.getElementById('feedbackArea');
+  // No furigana helper exists in the app, so the model is shown as stored.
+  const modelHtml = `<div class="verdict-model">${escapeHtml(q.model)}</div>`;
+  if(res.correct){
+    area.innerHTML = `<div class="feedback-note verdict-ok"><strong>Correct</strong>${modelHtml}</div>`;
+    return;
+  }
+  const isConj = q.kind === 'conj';
+  let specific = '';
+  if(res.kind === 'particle'){
+    specific = `Particle: you used ${res.used}, this needs ${res.needed}.`;
+  } else if(isConj){
+    const { verb, formKey } = conjParts(qid);
+    specific = diagnoseConj(verb, formKey, value) || '';
+  }
+  const why = isConj ? [q.use, q.explain] : [q.explain];
+  area.innerHTML = `
+    <div class="feedback-note verdict-bad">
+      <div id="verdictStatus"><strong>Not quite</strong></div>
+      <div class="diff-block">
+        <div class="diff-line"><span class="diff-label">You</span> ${diffHtml(normalizeAnswer(value), res.expected)}</div>
+        <div class="diff-line"><span class="diff-label">Model</span> ${escapeHtml(res.expected)}</div>
+      </div>
+      ${modelHtml}
+      ${specific ? `<p class="verdict-line">${escapeHtml(specific)}</p>` : ''}
+      ${why.filter(Boolean).map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
+      <button class="ghost" id="rightBtn" style="margin-top:8px;">I was right</button>
+    </div>`;
+  document.getElementById('rightBtn').addEventListener('click', ()=>{
+    markCorrect();
+    document.getElementById('verdictStatus').innerHTML = '<strong>Counted as correct.</strong>';
+    document.getElementById('rightBtn').remove();
+  });
+}
+
+// Writes a typed result (called when Next is pressed) and moves on.
+function finishTyped(qid, input, correct){
+  recordResult(qid, correct);
+  quizState.answers[qid] = { correct, typed: input };
+  if(quizState.mode === 'daily'){
+    const dailySet = PROGRESS.dailyLog[todayStr()];
+    if(!dailySet.answers) dailySet.answers = {};
+    dailySet.answers[qid] = { correct, typed: input };
+  }
+  saveProgress();
+  quizState.idx += 1;
+  renderQuizQuestion();
+}
+
+// End-of-day summary: score, streak, and what was missed with the right answer.
+function renderDoneScreen(answers, qids){
+  const correctCount = qids.filter(qid => answers[qid] && answers[qid].correct).length;
+  const missed = qids.filter(qid => !(answers[qid] && answers[qid].correct));
+  const missedHtml = missed.map(qid=>{
+    const q = qByQid(qid);
+    const prompt = q.type === 'typed' ? q.promptEn : q.prompt;
+    const answer = q.type === 'typed' ? q.model : q.choices[q.a];
+    return `<li><div class="missed-prompt">${escapeHtml(prompt)}</div><div class="missed-answer">${escapeHtml(answer)}</div></li>`;
+  }).join('');
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Done for today</div>
+      <p class="done-score">${correctCount} / ${qids.length} correct</p>
+      <p class="muted">Streak: ${PROGRESS.streak} day${PROGRESS.streak===1?'':'s'}</p>
+      ${missed.length ? `<div class="section-title" style="font-size:16px; margin-top:18px;">Missed</div><ul class="missed-list">${missedHtml}</ul>` : '<p class="muted">No misses today.</p>'}
+      <div class="done-actions">
+        <button class="ghost" id="anotherRoundBtn">Another round</button>
+        <button class="primary" id="backTodayBtn">Back to Today</button>
+      </div>
+    </div></div>
+  `;
+  document.getElementById('anotherRoundBtn').addEventListener('click', ()=>{
+    quizState = { qids: buildPracticeSet(), idx: 0, mode:'practice', answers:{} };
+    renderQuizQuestion();
+  });
+  document.getElementById('backTodayBtn').addEventListener('click', ()=>{
+    quizState = null;
+    render();
+  });
 }
 
 function lockChoices(q, pickedIdx){
