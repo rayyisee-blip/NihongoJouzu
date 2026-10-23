@@ -295,7 +295,7 @@ function selectAnswer(qid, q, pickedIdx){
 // Meta line shared by multiple-choice and typed screens.
 function quizMetaLine(q){
   const label = quizState.mode==='daily' ? 'Today’s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round';
-  return `${q.type==='conjugation' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
+  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
 }
 
 // Diff of your answer against the model's kana form: only-yours struck out, only-model underlined.
@@ -651,13 +651,13 @@ function renderConjugate(){
     </div>`;
   }).join('');
 
-  const seenConj = CONJUGATION_POOL.filter(it=>PROGRESS.seen[it.qid] && PROGRESS.seen[it.qid].count>0).length;
+  const seenConj = CONJ_SENTENCE_POOL.filter(it=>PROGRESS.seen[it.qid] && PROGRESS.seen[it.qid].count>0).length;
 
   main.innerHTML = `
     <div class="card"><div class="card-inner">
       <div class="section-title">Conjugation Drill</div>
-      <p class="muted">Verb forms gate almost every grammar pattern from Lesson 14 onward. Drill any verb &times; any form here, independent of your lesson pace &mdash; wrong answers are the mistakes learners actually make (wrong verb-group rule, wrong godan branch, wrong tense), not random unrelated words.</p>
-      <p class="muted" style="margin-top:10px; font-size:12px;">${VERBS.length} verbs &middot; ${Object.keys(FORM_LABELS).length} forms each &middot; ${seenConj}/${CONJUGATION_POOL.length} combinations practiced so far</p>
+      <p class="muted">Drill any verb in any form inside a real sentence, independent of your lesson pace. Type the conjugated verb; if you slip, you'll see which rule you broke (verb group, godan branch, or wrong tense).</p>
+      <p class="muted" style="margin-top:10px; font-size:12px;">${VERBS.length} verbs &middot; ${Object.keys(FORM_LABELS).length} forms each &middot; ${seenConj}/${CONJ_SENTENCE_POOL.length} sentence drills practiced so far</p>
       <button class="primary" id="startConjDrillBtn" style="margin-top:14px;">Start Conjugation Drill</button>
     </div></div>
 
@@ -681,7 +681,7 @@ function renderConjugate(){
   `;
 
   document.getElementById('startConjDrillBtn').addEventListener('click', ()=>{
-    const ids = weightedSample(CONJUGATION_POOL.map(it=>it.qid), boxWeight, Math.min(15, CONJUGATION_POOL.length));
+    const ids = weightedSample(allConjSentenceIds(), boxWeight, Math.min(15, CONJ_SENTENCE_POOL.length));
     quizState = { qids: ids, idx:0, mode:'conjugation', answers:{} };
     renderQuizQuestion();
   });
