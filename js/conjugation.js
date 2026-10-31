@@ -203,13 +203,13 @@ const CONJ_FRAMES = {
   ],
   masuPast: [
     {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o}.', use:'Polite past: something you did, said politely.'},
-    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o}.', needs:['action'], use:'Polite past: a finished action in the past.'},
+    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o}.', needs:['action','event'], use:'Polite past: a finished action in the past.'},
     {jp:'さっき{o}___。', en:'A little while ago, I ___ {o}.', needs:['action'], use:'Polite past: something that just happened.'},
     {jp:'昨日（きのう）は{o}___。', en:'Yesterday, {o} ___.', needs:['thing'], use:'Polite past with a thing as the subject (が).'}
   ],
   masuPastNeg: [
     {jp:'昨日（きのう）は{o}___。', en:"I didn't ___ {o} yesterday.", use:'Polite past negative: something you did not do, politely.'},
-    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week.", needs:['action'], use:'Polite past negative: an action that did not happen.'},
+    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week.", needs:['action','event'], use:'Polite past negative: an action that did not happen.'},
     {jp:'昨日（きのう）は{o}___。', en:"Yesterday, {o} didn't ___.", needs:['thing'], use:'Polite past negative with a thing as the subject (が).'}
   ],
   te: [
@@ -222,7 +222,7 @@ const CONJ_FRAMES = {
   ],
   ta: [
     {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o} (plain past).', use:'Plain past (た): casual or written past tense.'},
-    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o} (plain past).', needs:['action'], use:'Plain past (た): a finished action, casually.'},
+    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o} (plain past).', needs:['action','event'], use:'Plain past (た): a finished action, casually.'},
     {jp:'さっき{o}___。', en:'A little while ago, I ___ {o} (plain past).', needs:['action'], use:'Plain past (た): something that just happened.'},
     {jp:'昨日（きのう）は{o}___。', en:'Yesterday, {o} ___ (plain past).', needs:['thing'], use:'Plain past (た) with a thing as the subject (が).'}
   ],
@@ -234,11 +234,11 @@ const CONJ_FRAMES = {
   ],
   naiPast: [
     {jp:'昨日（きのう）は{o}___。', en:"I didn't ___ {o} yesterday (plain).", use:'Plain past negative (なかった): casual "did not".'},
-    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week (plain).", needs:['action'], use:'Plain past negative (なかった): an action that did not happen.'},
+    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week (plain).", needs:['action','event'], use:'Plain past negative (なかった): an action that did not happen.'},
     {jp:'昨日（きのう）は{o}___。', en:"Yesterday, {o} didn't ___ (plain).", needs:['thing'], use:'Plain past negative (なかった) with a thing as the subject (が).'}
   ],
   dict: [
-    {jp:'明日（あした）、{o}___つもりです。', en:'Tomorrow, I plan to ___ {o}.', needs:['action'], use:'Dictionary form + つもりです: a plan to do something.'},
+    {jp:'明日（あした）、{o}___つもりです。', en:'Tomorrow, I plan to ___ {o}.', needs:['action','event'], use:'Dictionary form + つもりです: a plan to do something.'},
     {jp:'{o}___ことができます。', en:'I can ___ {o}.', needs:['action'], use:'Dictionary form + ことができます: ability.'},
     {jp:'これから{o}___。', en:"Starting now, I'll ___ {o} (plain).", needs:['action'], use:'Dictionary form: plain non-past, for what you are about to do.'}
   ],

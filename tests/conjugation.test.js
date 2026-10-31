@@ -17,6 +17,10 @@ const onlyFor = (form, idx, tag) => app.run(`CONJ_SENTENCE_POOL.filter(it=>it.fo
 test('progressive frame only for ongoing verbs', () => assert.equal(onlyFor('te', 2, 'ongoing'), true));
 test('result frame only for result verbs', () => assert.equal(onlyFor('te', 4, 'result'), true));
 test("please-don't frame only for dont verbs", () => assert.equal(onlyFor('nai', 0, 'dont'), true));
+test('last-week and plan frames only for event verbs', () => {
+  [['masuPast',1],['masuPastNeg',1],['ta',1],['naiPast',1],['dict',0]].forEach(([f,i]) => assert.equal(onlyFor(f, i, 'event'), true));
+});
+test('outcome verbs skip plain negatives', () => assert.equal(app.run("['勝（か）つ','見（み）つける'].every(d => !CONJ_SENTENCE_POOL.some(it => VERBS[it.verbIdx].dict===d && ['masuPastNeg','naiPast','nai'].includes(it.formKey)))"), true));
 test('causative frames need school or home', () => {
   assert.equal(onlyFor('causative', 0, 'school'), true);
   assert.equal(onlyFor('causative', 1, 'home'), true);
