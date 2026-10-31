@@ -809,6 +809,27 @@ function formPanelsHtml(){
   </div></div>`;
 }
 
+function drillTileHtml(seg){
+  const {done, total} = segmentProgress(seg.key);
+  const cls = 'conj-tile' + (seg.key === 'trap' ? ' is-trap' : '');
+  // A segment with no sentences cannot start a round, so its tile is inert.
+  const disabled = total === 0 ? ' disabled' : '';
+  const jp = seg.labelJp ? `<span class="conj-tile-jp">${escapeHtml(seg.labelJp)}</span>` : '';
+  return `<button class="${cls}" data-seg="${escapeHtml(seg.key)}"${disabled}>
+    <span class="conj-tile-label">${escapeHtml(seg.label)}${jp}</span>
+    <span class="conj-tile-count">${done}/${total}</span>
+  </button>`;
+}
+
+function drillMenuHtml(){
+  const grid = kind => `<div class="conj-tiles">${CONJ_SEGMENTS.filter(s => s.kind === kind).map(drillTileHtml).join('')}</div>`;
+  return `
+    <div class="conj-tiles-title">By verb type</div>
+    ${grid('type')}
+    <div class="conj-tiles-title">By form</div>
+    ${grid('form')}`;
+}
+
 function renderConjugate(){
   if(quizState){ renderQuizQuestion(); return; }
 
@@ -819,17 +840,19 @@ function renderConjugate(){
       <div class="section-title">Conjugation Drill</div>
       <p class="muted">Drill any verb in any form inside a real sentence, independent of your lesson pace. Type the conjugated verb; if you slip, you'll see which rule you broke (verb group, godan branch, or wrong tense).</p>
       <p class="muted" style="margin-top:10px; font-size:12px;">${VERBS.length} verbs &middot; ${Object.keys(FORM_LABELS).length} forms each &middot; ${seenConj}/${CONJ_SENTENCE_POOL.length} sentence drills practiced so far</p>
-      <button class="primary" id="startConjDrillBtn" style="margin-top:14px;">Start Conjugation Drill</button>
+      ${drillMenuHtml()}
     </div></div>
 
     ${referenceCardHtml()}
     ${formPanelsHtml()}
   `;
 
-  document.getElementById('startConjDrillBtn').addEventListener('click', ()=>{
-    const ids = weightedSample(allConjSentenceIds(), boxWeight, Math.min(15, CONJ_SENTENCE_POOL.length));
-    quizState = { qids: ids, idx:0, mode:'conjugation', seg:'mixed', answers:{} };
-    renderQuizQuestion();
+  main.querySelectorAll('.conj-tile').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.seg;
+      quizState = { qids: segmentRound(key), idx:0, mode:'conjugation', seg:key, answers:{} };
+      renderQuizQuestion();
+    });
   });
 }
 
