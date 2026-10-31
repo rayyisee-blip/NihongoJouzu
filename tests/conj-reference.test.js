@@ -32,6 +32,7 @@ test('reference columns', () => assert.deepEqual(j(`REFERENCE_COLUMNS`), [
 test('godan sections in order', () => assert.deepEqual(j(`referenceGroups()[0].sections.map(s=>s.label)`), ['う','く','ぐ','す','つ','ぬ・ぶ・む','る']));
 test('traps last in る', () => { const ru = j(`referenceGroups()[0].sections[6].verbs.map(v=>!!v.trap)`); assert.deepEqual(ru, ru.slice().sort()); });
 test('every verb in the reference except extra する compounds', () => assert.equal(app.run(`referenceGroups().reduce((n,g)=>n+(g.sections?g.sections.reduce((m,s)=>m+s.verbs.length,0):g.verbs.length),0)`), app.run(`VERBS.filter(v=>v.group!==3).length + 3`)));
+test('the tables plus the group 3 note cover every verb', () => assert.equal(app.run(`referenceGroups().reduce((n,g)=>n+(g.sections?g.sections.reduce((m,s)=>m+s.verbs.length,0):g.verbs.length),0) + referenceGroup3Extras().length`), app.run(`VERBS.length`)));
 test('group 3 is exactly する, 来る and 勉強する', () => assert.deepEqual(j(`referenceGroups()[2].verbs.map(v=>stripReadings(v.dict))`), ['する','来る','勉強する']));
 test('groups 1 and 2 hold only their own verbs', () => {
   assert.equal(app.run(`referenceGroups()[0].sections.every(s=>s.verbs.every(v=>v.group===1))`), true);
@@ -40,17 +41,37 @@ test('groups 1 and 2 hold only their own verbs', () => {
 test('endings at a glance', () => assert.deepEqual(j(`endingsAtGlance().map(r=>[r.endings.join(''), r.te])`), [['うつる','って'],['むぶぬ','んで'],['く','いて'],['ぐ','いで'],['す','して']]));
 test('build rules complete', () => assert.equal(app.run(`PANEL_ORDER.length===12 && PANEL_ORDER.every(k => ['godan','ichidan','irregular'].every(g => FORM_BUILD_RULES[k] && FORM_BUILD_RULES[k][g]))`), true));
 test('every form has an English name and a panel position', () => assert.equal(app.run(`Object.keys(FORM_LABELS).every(k => FORM_EN[k] && PANEL_ORDER.includes(k))`), true));
-test('panel examples filled', () => assert.equal(app.run(`PANEL_ORDER.every(k => { const ex=panelExamples(k); return ex.length>=2 && ex.length<=3 && ex.every(e=>!e.jp.includes('___')&&!e.jp.includes('{o}')&&e.use); })`), true));
+test('panel examples filled', () => assert.equal(app.run(`PANEL_ORDER.every(k => { const ex=panelExamples(k); return ex.length>=2 && ex.length<=3 && ex.every(e=>{ const jp=e.jpBefore+e.model+e.jpAfter; return e.model && !jp.includes('___')&&!jp.includes('{o}')&&e.use; }); })`), true));
 test('panel examples are the drill sentences', () => {
   // Potential frames turn を into が: the panel must show that, not the raw complement.
-  const jp = j(`panelExamples('potential').map(e=>e.jp)`);
+  const jp = j(`panelExamples('potential').map(e=>e.jpBefore+e.model+e.jpAfter)`);
   assert.ok(jp[0].includes('手紙（てがみ）が書（か）ける'), jp[0]);
+  // The conjugated verb is split out so the page can mark it like the table's changed part.
   assert.deepEqual(j(`panelExamples('te')[0]`), {
-    jp: '手紙（てがみ）を書（か）いてください。',
+    jpBefore: '手紙（てがみ）を',
+    model: '書（か）いて',
+    jpAfter: 'ください。',
     en: 'Please ___ (to write) a letter.',
     use: 'て-form + ください: a polite request.'
   });
 });
+test('panel model is the drill answer', () => assert.equal(app.run(`PANEL_ORDER.every(k => panelExamples(k).every(e => VERBS.some(v => computeForms(v)[k] === e.model)))`), true));
+// 聞く "to listen, hear, ask" reads badly as "I often get ___ by my teacher".
+test('passive panel leads with 褒める', () => {
+  const ex = j(`panelExamples('passive')`);
+  assert.equal(ex[0].model, '褒（ほ）められる');
+  assert.ok(ex.every(e => e.model === '褒（ほ）められる'), JSON.stringify(ex));
+});
+test('panel examples fall back to the first fitting verb', () =>
+  assert.equal(j(`panelExamples('te')`)[0].model, '書（か）いて'));
+test('group 3 extras are every other noun+する verb', () => {
+  const extras = j(`referenceGroup3Extras().map(v=>stripReadings(v.dict))`);
+  assert.ok(extras.includes('料理する') && extras.includes('予約する'), extras.join(','));
+  assert.ok(!extras.includes('勉強する') && !extras.includes('する'));
+  assert.equal(extras.length, app.run(`VERBS.filter(v=>v.group===3).length - 3`));
+});
+test('irregular て note is generated', () => assert.deepEqual(j(`irregularTeNote()`), {dict:'行く', ta:'行った', te:'行って', wrongTa:'行いた', wrongTe:'行いて'}));
+test('polite note examples are generated', () => assert.deepEqual(j(`politeNoteExamples()`), ['書きます', '食べます']));
 test('every segment has at least 5', () => assert.equal(app.run(`CONJ_SEGMENTS.every(s => segmentIds(s.key).length >= 5)`), true));
 test('segment list', () => {
   assert.deepEqual(j(`CONJ_SEGMENTS.filter(s=>s.kind==='type').map(s=>s.key)`), ['g-kg','g-stu','g-nbm','g-ru','ichidan','trap','irregular','mixed']);

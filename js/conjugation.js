@@ -191,7 +191,8 @@ function explainForm(verb, formKey){
 // the verb tags the frame requires (see frameFits and the tag list in
 // verbs-data.js); a 'thing' frame has the complement as its subject. ga:true
 // marks a potential frame, where a direct object's を becomes が (see
-// frameComp). use is the "when do I use this form" note.
+// frameComp). use is the "when do I use this form" note. A verb drops a
+// single frame that reads badly for it with skipFrames (see frameInPool).
 // APPEND-ONLY by index (it is part of the qid): rewrite a frame in place or
 // mark it retired:true, never delete one.
 const CONJ_FRAMES = {
@@ -228,7 +229,7 @@ const CONJ_FRAMES = {
   ],
   nai: [
     {jp:'{o}___でください。', en:"Please don't ___ {o}.", needs:['dont'], use:'ない-form + でください: asking someone not to do it.'},
-    {jp:'明日（あした）は{o}___つもりです。', en:"Tomorrow, I don't plan to ___ {o}.", needs:['action'], use:'ない-form + つもりです: a plan not to do something.'},
+    {jp:'明日（あした）は{o}___つもりです。', en:"Tomorrow, I don't plan to ___ {o}.", needs:['action','event'], use:'ない-form + つもりです: a plan not to do something.'},
     {jp:'たぶん{o}___。', en:"I probably won't ___ {o}.", use:'Plain negative (ない): casual "do not".'},
     {jp:'明日（あした）は{o}___。', en:"Tomorrow, {o} won't ___ (plain).", needs:['thing'], use:'Plain negative (ない) with a thing as the subject (が).'}
   ],
@@ -279,7 +280,8 @@ function fillFrame(text, compPart){
 // The verb's complement as a given frame uses it. In a potential frame
 // (ga:true) a direct object's を becomes が (手紙が書ける), unless the verb's
 // comp says ga:false because its を is a route or a person (橋を渡れる,
-// 父を手伝える), where が would change the meaning.
+// 父を手伝える), where が would change the meaning, or because を simply
+// reads better with that verb (写真を見せられる, 部屋を掃除できる).
 function frameComp(verb, frame){
   const comp = verb.comp || {jp:'', en:''};
   if(frame.ga && comp.ga !== false && comp.jp.endsWith('を'))
@@ -287,12 +289,20 @@ function frameComp(verb, frame){
   return comp;
 }
 
+// The one pool-membership rule: the frame fits the verb, and the verb skips
+// neither the whole form (skip) nor this one frame (skipFrames, written
+// '<formKey>-<frameIdx>'). The pool and the reference panels both use it.
+function frameInPool(verb, formKey, frameIdx){
+  return frameFits(verb, CONJ_FRAMES[formKey][frameIdx])
+    && !(verb.skip||[]).includes(formKey)
+    && !(verb.skipFrames||[]).includes(`${formKey}-${frameIdx}`);
+}
+
 const CONJ_SENTENCE_POOL = [];
 VERBS.forEach((v,vi)=>{
   Object.keys(FORM_UNLOCK_LESSON).forEach(formKey=>{
-    if((v.skip||[]).includes(formKey)) return;
     CONJ_FRAMES[formKey].forEach((f,frameIdx)=>{
-      if(!frameFits(v, f)) return;
+      if(!frameInPool(v, formKey, frameIdx)) return;
       CONJ_SENTENCE_POOL.push({ qid:`conjs-${vi}-${formKey}-${frameIdx}`, verbIdx:vi, formKey, frameIdx });
     });
   });

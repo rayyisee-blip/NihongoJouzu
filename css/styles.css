@@ -655,6 +655,10 @@
   table.conj-table tr.is-odd td{background:var(--odd-bg);}
   .conj-hint{font-weight:400; color:var(--ink-soft);}
   .conj-final{color:var(--vermillion); font-weight:700;}
+  /* The changed part of a form, in the tables and in the panel examples. Colour
+     as well as weight: Shippori Mincho loads only at 500/700/800, so bold alone
+     barely shows. Green, not vermillion, which marks the basic form's last kana. */
+  .conj-chg{color:var(--indigo); font-weight:800;}
   .conj-meaning{color:var(--ink-soft); font-size:13px;}
   .conj-jlpt{display:inline-block; font-size:10px; letter-spacing:.04em; color:var(--ink-soft); border:1px solid var(--edge); padding:0 4px; margin-left:2px; vertical-align:1px;}
   .conj-legend{font-size:12px; color:var(--ink-soft); margin:10px 0 0;}

@@ -719,7 +719,7 @@ function referenceRowHtml(verb){
   const cls = verb.irregularTe ? ' class="is-odd"' : (verb.trap ? ' class="is-trap"' : '');
   const cells = REFERENCE_COLUMNS.slice(1).map(c => {
     const f = displayForm(verb, c.key);
-    return `<td>${escapeHtml(f.lead)}${f.changed ? `<b>${escapeHtml(f.changed)}</b>` : ''}${escapeHtml(f.tail)}</td>`;
+    return `<td>${escapeHtml(f.lead)}${f.changed ? `<b class="conj-chg">${escapeHtml(f.changed)}</b>` : ''}${escapeHtml(f.tail)}</td>`;
   }).join('');
   return `<tr${cls}>${referenceBasicCell(verb)}${cells}</tr>`;
 }
@@ -739,14 +739,24 @@ function endingsGlanceHtml(){
     `<div class="conj-glance-row"><span class="conj-glance-ends">${r.endings.join('・')}</span> <span>→ ${r.ta} / ${r.te}</span></div>`
   ).join('');
   const rowPairs = idx => Object.keys(GODAN_ROWS).map(k => `${k}→${GODAN_ROWS[k][idx]}`).join('　');
+  const odd = irregularTeNote();
   return `<div class="conj-glance">
     <div class="conj-glance-title">Endings at a glance (Group 1)</div>
     <div class="conj-glance-sub">Past / て-form, by the verb's last kana</div>
     ${teTa}
     <div class="conj-glance-line"><b>Negative:</b> change the last kana to the あ-row, then add ない (う becomes わ). ${rowPairs(0)}</div>
     <div class="conj-glance-line"><b>Polite:</b> change the last kana to the い-row, then add ます. ${rowPairs(1)}</div>
-    <div class="conj-glance-line"><b>Exception:</b> 行く does not follow the く rule: 行った・行って, not 行いた・行いて.</div>
+    <div class="conj-glance-line"><b>Exception:</b> ${escapeHtml(`${odd.dict} does not follow the く rule: ${odd.ta}・${odd.te}, not ${odd.wrongTa}・${odd.wrongTe}.`)}</div>
   </div>`;
+}
+
+// One line under the Group 3 table naming the noun+する verbs it leaves out.
+function group3ExtrasNote(){
+  const extras = referenceGroup3Extras();
+  if(!extras.length) return '';
+  const ex = extras[0];
+  return `Also noun＋する, conjugated just like する (${stripReadings(ex.dict)} → ${stripReadings(computeForms(ex).ta)}): `
+    + `${extras.map(v => stripReadings(v.dict)).join('・')}.`;
 }
 
 function referenceCardHtml(){
@@ -758,7 +768,7 @@ function referenceCardHtml(){
     </details>`).join('');
   return `<div class="card"><div class="card-inner">
     <div class="section-title" style="font-size:17px;">Reference &mdash; the three groups</div>
-    <p class="muted" style="margin:6px 0 0;">Readings are in brackets. The <span class="conj-final">red kana</span> is the verb's last kana and the <b>bold part</b> is what changes in each form.</p>
+    <p class="muted" style="margin:6px 0 0;">Readings are in brackets. The <span class="conj-final">red kana</span> is the verb's last kana and the <b class="conj-chg">green part</b> is what changes in each form.</p>
     ${endingsGlanceHtml()}
     <div class="gstruct">
       <div class="gstruct-title">Group 1 &mdash; godan / う-verbs</div>
@@ -775,6 +785,7 @@ function referenceCardHtml(){
       <div class="gstruct-title">Group 3 &mdash; irregular</div>
       <p class="muted" style="margin:6px 0 10px;">Only する and 来る, plus noun＋する compounds like 勉強する. Learn them outright; 来る shifts its reading between き and こ depending on the form.</p>
       ${referenceTableHtml(g3.verbs)}
+      <p class="conj-legend">${escapeHtml(group3ExtrasNote())}</p>
     </div>
   </div></div>`;
 }
@@ -782,10 +793,10 @@ function referenceCardHtml(){
 function formPanelHtml(k){
   const rules = FORM_BUILD_RULES[k];
   const polite = ['masuNeg','masuPast','masuPastNeg'].includes(k)
-    ? `<p class="conj-panel-note">The polite present is the ます form (書きます, 食べます). This form builds on it.</p>` : '';
+    ? `<p class="conj-panel-note">${escapeHtml(`The polite present is the ます form (${politeNoteExamples().join(', ')}). This form builds on it.`)}</p>` : '';
   const examples = panelExamples(k).map(ex => `
     <div class="gexample">
-      <div class="gexample-jp">${escapeHtml(ex.jp)}</div>
+      <div class="gexample-jp">${escapeHtml(ex.jpBefore)}<b class="conj-chg">${escapeHtml(ex.model)}</b>${escapeHtml(ex.jpAfter)}</div>
       <div class="gexample-en">${escapeHtml(ex.en)}</div>
       <div class="conj-use">${escapeHtml(ex.use)}</div>
     </div>`).join('');

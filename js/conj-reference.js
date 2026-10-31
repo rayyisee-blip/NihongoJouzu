@@ -11,8 +11,8 @@ function stripReadings(jp){
   return jp.replace(CHECK_KANJI_READING_RE, '$1');
 }
 
-// One table cell, split for display: lead stays plain, changed is bold,
-// tail is plain again. colKey is a FORM_LABELS key or 'masu' (the polite
+// One table cell, split for display: lead stays plain, changed is marked
+// (green and heavy, .conj-chg), tail is plain again. colKey is a FORM_LABELS key or 'masu' (the polite
 // present, which has no FORM_LABELS entry). changed starts at the first
 // character that differs from the dictionary form; the trailing ます of the
 // polite column is the tail. 来る keeps its reading on the 来 (来（こ）ない)
@@ -62,6 +62,10 @@ function referenceGroups(){
     {group: 2, verbs: VERBS.filter(v => v.group === 2)},
     {group: 3, verbs: REFERENCE_GROUP3.map(d => VERBS.find(v => stripReadings(v.dict) === d))}
   ];
+}
+// The noun+する verbs the Group 3 table leaves out; they conjugate like する.
+function referenceGroup3Extras(){
+  return VERBS.filter(v => v.irregular === 'suru' && !REFERENCE_GROUP3.includes(stripReadings(v.dict)));
 }
 
 // The godan て／た endings grouped by their て-form: [{endings:['う','つ','る'], te, ta}, ...]
@@ -149,19 +153,54 @@ const FORM_BUILD_RULES = {
   }
 };
 
+// Verbs a panel should show first, by plain dictionary form, where the first
+// fitting verb in VERBS order reads badly in that form's frames (聞く "to
+// listen, hear, ask" in "I often get ___ by my teacher").
+const PANEL_PREFERRED_VERBS = {
+  passive: ['褒める']
+};
+
 // Up to three example sentences for a form, one per live frame: the first
-// verb in VERBS order that fits it and is drilled on that form. Built through
-// resolveConjSentence, so each is exactly the sentence the drill asks.
+// preferred verb that the drill uses with that frame, else the first such
+// verb in VERBS order. Built through resolveConjSentence, so each is exactly
+// the sentence the drill asks. The sentence comes in three parts, so the page
+// can mark the conjugated verb (model) the way the tables mark a change.
 function panelExamples(formKey){
+  const preferred = (PANEL_PREFERRED_VERBS[formKey] || [])
+    .map(d => VERBS.findIndex(v => stripReadings(v.dict) === d));
   const out = [];
   CONJ_FRAMES[formKey].forEach((frame, frameIdx) => {
     if(out.length >= 3) return;
-    const vi = VERBS.findIndex(v => frameFits(v, frame) && !(v.skip || []).includes(formKey));
+    const fits = vi => vi !== -1 && frameInPool(VERBS[vi], formKey, frameIdx);
+    let vi = preferred.find(fits);
+    if(vi === undefined) vi = VERBS.findIndex((v, i) => fits(i));
     if(vi === -1) return;
     const q = resolveConjSentence(`conjs-${vi}-${formKey}-${frameIdx}`);
-    out.push({jp: q.frameJp.replace('___', () => q.model), en: q.promptEn, use: q.use});
+    const at = q.frameJp.indexOf('___');
+    out.push({
+      jpBefore: q.frameJp.slice(0, at), model: q.model, jpAfter: q.frameJp.slice(at + 3),
+      en: q.promptEn, use: q.use
+    });
   });
   return out;
+}
+
+// The polite-present examples quoted in the polite panels' note (書きます, 食べます),
+// generated so the note can never disagree with masuForm.
+function politeNoteExamples(){
+  return ['書く', '食べる'].map(d => stripReadings(masuForm(VERBS.find(v => stripReadings(v.dict) === d))));
+}
+
+// 行く's odd て／た forms next to the ones the く rule would give (行いた・行いて).
+function irregularTeNote(){
+  const verb = VERBS.find(v => v.irregularTe);
+  const forms = computeForms(verb);
+  const regular = godanForms(verb.oku);
+  const stem = stripReadings(verb.stem || '');
+  return {
+    dict: stripReadings(verb.dict), ta: stripReadings(forms.ta), te: stripReadings(forms.te),
+    wrongTa: stem + regular.ta, wrongTe: stem + regular.te
+  };
 }
 
 // ---- Drill segments --------------------------------------------------

@@ -2,6 +2,24 @@ const test=require('node:test'); const assert=require('node:assert/strict'); con
 
 test('frames well formed', () => assert.equal(app.run(`Object.keys(FORM_UNLOCK_LESSON).every(k => CONJ_FRAMES[k].filter(f=>!f.retired).length >= 2 && CONJ_FRAMES[k].every(f => f.jp.split('___').length===2 && f.en.split('___').length===2 && f.jp.split('{o}').length<=2 && f.en.split('{o}').length<=2 && f.use))`), true));
 test('pool respects needs, skip, drill', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.every(it => { const v=VERBS[it.verbIdx], f=CONJ_FRAMES[it.formKey][it.frameIdx]; return frameFits(v,f) && !(v.skip||[]).includes(it.formKey); })`), true));
+// skipFrames drops single <formKey>-<frameIdx> pairs that read badly for one verb.
+test('no pool item matches its verb skipFrames', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.every(it => !(VERBS[it.verbIdx].skipFrames||[]).includes(it.formKey+'-'+it.frameIdx))`), true));
+test('skipFrames name real frames the verb would otherwise get', () => assert.deepEqual(JSON.parse(app.run(`JSON.stringify(VERBS.flatMap(v => (v.skipFrames||[]).filter(sf => {
+  const m = /^([A-Za-z]+)-(\\d+)$/.exec(sf);
+  const f = m && CONJ_FRAMES[m[1]] && CONJ_FRAMES[m[1]][+m[2]];
+  return !f || !frameFits(v, f) || (v.skip||[]).includes(m[1]);
+}).map(sf => v.dict + ' ' + sf)))`)), []));
+test('frameInPool is the pool rule', () => assert.equal(app.run(`VERBS.every((v,vi) => Object.keys(CONJ_FRAMES).every(k => CONJ_FRAMES[k].every((f,fi) => frameInPool(v,k,fi) === CONJ_SENTENCE_POOL.some(it => it.verbIdx===vi && it.formKey===k && it.frameIdx===fi))))`), true));
+test('skipFrames is per frame, not per form', () => {
+  const i = app.run(`VERBS.findIndex(v=>v.dict==='浴（あ）びる')`);
+  const has = id => app.run(`CONJ_SENTENCE_POOL.some(it => it.qid==='${id}')`);
+  assert.equal(has(`conjs-${i}-volitional-0`), false);
+  assert.equal(has(`conjs-${i}-volitional-1`), true);
+});
+test('見せる keeps を in potential frames', () => {
+  const i = app.run(`VERBS.findIndex(v=>v.dict==='見（み）せる')`);
+  assert.equal(app.run(`resolveConjSentence('conjs-${i}-potential-1').frameJp`), '明日（あした）なら写真（しゃしん）を___。');
+});
 test('no verb lacking action in a request', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='te'&&it.frameIdx===0).every(it=>VERBS[it.verbIdx].tags.includes('action'))`), true));
 test('passive only for person verbs', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='passive').every(it=>VERBS[it.verbIdx].tags.includes('person'))`), true));
 test('already-state frame only for state verbs', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='te'&&it.frameIdx===3).every(it=>VERBS[it.verbIdx].tags.includes('state'))`), true));
@@ -18,7 +36,7 @@ test('progressive frame only for ongoing verbs', () => assert.equal(onlyFor('te'
 test('result frame only for result verbs', () => assert.equal(onlyFor('te', 4, 'result'), true));
 test("please-don't frame only for dont verbs", () => assert.equal(onlyFor('nai', 0, 'dont'), true));
 test('last-week and plan frames only for event verbs', () => {
-  [['masuPast',1],['masuPastNeg',1],['ta',1],['naiPast',1],['dict',0]].forEach(([f,i]) => assert.equal(onlyFor(f, i, 'event'), true));
+  [['masuPast',1],['masuPastNeg',1],['ta',1],['naiPast',1],['dict',0],['nai',1]].forEach(([f,i]) => assert.equal(onlyFor(f, i, 'event'), true));
 });
 test('outcome verbs skip plain negatives', () => assert.equal(app.run("['勝（か）つ','見（み）つける'].every(d => !CONJ_SENTENCE_POOL.some(it => VERBS[it.verbIdx].dict===d && ['masuPastNeg','naiPast','nai'].includes(it.formKey)))"), true));
 test('causative frames need school or home', () => {
