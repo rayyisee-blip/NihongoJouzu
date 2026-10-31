@@ -708,8 +708,10 @@ function renderGrammar(){
 // kana picked out in vermillion, the meaning muted and an N5/N4 tag.
 function referenceBasicCell(verb){
   const dict = verb.dict;
+  // Words as well as colour, so the odd and trap rows read in greyscale too.
+  const flag = verb.irregularTe ? 'odd one' : (verb.trap ? 'looks like Group 2' : '');
   return `<td class="conj-basic"><span class="conj-dict">${escapeHtml(dict.slice(0, -1))}<span class="conj-final">${escapeHtml(dict.slice(-1))}</span></span>`
-    + ` <span class="conj-meaning">${escapeHtml(verb.meaning)}</span>`
+    + ` <span class="conj-meaning">${escapeHtml(verb.meaning)}${flag ? ` &mdash; ${escapeHtml(flag)}` : ''}</span>`
     + ` <span class="conj-jlpt">N${verb.jlpt}</span></td>`;
 }
 
