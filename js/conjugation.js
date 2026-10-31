@@ -5,69 +5,11 @@
      Group 1 (godan/う-verbs):  書く, 飲む, 帰る
      Group 2 (ichidan/る-verbs): 食べる, 見る
      Group 3 (irregular):       する, 来る (+ noun+する compounds)
-   Every verb below is tagged with its group, and one rule table
+   Every verb in VERBS (verbs-data.js) is tagged with its group, and one rule table
    per group produces every form. Distractors are built the same
    way real learners get it wrong: wrong verb-group rule, wrong
    godan branch, or right form/wrong tense-polarity.
    ============================================================ */
-const VERBS = [
-  // ---- Group 1 (godan) ----
-  {dict:"書（か）く", stem:"書（か）", oku:"く", group:1, meaning:"to write"},
-  {dict:"聞（き）く", stem:"聞（き）", oku:"く", group:1, meaning:"to listen, hear, ask"},
-  {dict:"歩（ある）く", stem:"歩（ある）", oku:"く", group:1, meaning:"to walk"},
-  {dict:"働（はたら）く", stem:"働（はたら）", oku:"く", group:1, meaning:"to work"},
-  {dict:"泳（およ）ぐ", stem:"泳（およ）", oku:"ぐ", group:1, meaning:"to swim"},
-  {dict:"飲（の）む", stem:"飲（の）", oku:"む", group:1, meaning:"to drink"},
-  {dict:"読（よ）む", stem:"読（よ）", oku:"む", group:1, meaning:"to read"},
-  {dict:"住（す）む", stem:"住（す）", oku:"む", group:1, meaning:"to live (somewhere)"},
-  {dict:"死（し）ぬ", stem:"死（し）", oku:"ぬ", group:1, meaning:"to die"},
-  {dict:"遊（あそ）ぶ", stem:"遊（あそ）", oku:"ぶ", group:1, meaning:"to play"},
-  {dict:"話（はな）す", stem:"話（はな）", oku:"す", group:1, meaning:"to speak"},
-  {dict:"消（け）す", stem:"消（け）", oku:"す", group:1, meaning:"to turn off, erase"},
-  {dict:"貸（か）す", stem:"貸（か）", oku:"す", group:1, meaning:"to lend"},
-  {dict:"待（ま）つ", stem:"待（ま）", oku:"つ", group:1, meaning:"to wait"},
-  {dict:"立（た）つ", stem:"立（た）", oku:"つ", group:1, meaning:"to stand"},
-  {dict:"買（か）う", stem:"買（か）", oku:"う", group:1, meaning:"to buy"},
-  {dict:"使（つか）う", stem:"使（つか）", oku:"う", group:1, meaning:"to use"},
-  {dict:"手伝（てつだ）う", stem:"手伝（てつだ）", oku:"う", group:1, meaning:"to help"},
-  {dict:"会（あ）う", stem:"会（あ）", oku:"う", group:1, meaning:"to meet"},
-  {dict:"帰（かえ）る", stem:"帰（かえ）", oku:"る", group:1, meaning:"to go home / return", trap:true},
-  {dict:"入（はい）る", stem:"入（はい）", oku:"る", group:1, meaning:"to enter", trap:true},
-  {dict:"要（い）る", stem:"要（い）", oku:"る", group:1, meaning:"to be necessary", trap:true},
-  {dict:"知（し）る", stem:"知（し）", oku:"る", group:1, meaning:"to know", trap:true},
-  {dict:"走（はし）る", stem:"走（はし）", oku:"る", group:1, meaning:"to run", trap:true},
-  {dict:"作（つく）る", stem:"作（つく）", oku:"る", group:1, meaning:"to make"},
-  {dict:"座（すわ）る", stem:"座（すわ）", oku:"る", group:1, meaning:"to sit"},
-  {dict:"撮（と）る", stem:"撮（と）", oku:"る", group:1, meaning:"to take (a photo)"},
-  {dict:"曲（ま）がる", stem:"曲（ま）", oku:"がる", group:1, meaning:"to turn"},
-  {dict:"渡（わた）る", stem:"渡（わた）", oku:"る", group:1, meaning:"to cross"},
-  {dict:"通（とお）る", stem:"通（とお）", oku:"る", group:1, meaning:"to pass through"},
-  {dict:"分（わ）かる", stem:"分（わ）", oku:"かる", group:1, meaning:"to understand"},
-  {dict:"行（い）く", stem:"行（い）", oku:"く", group:1, meaning:"to go", irregularTe:true},
-  // ---- Group 2 (ichidan) ----
-  {dict:"食（た）べる", stem:"食（た）", oku:"べる", group:2, meaning:"to eat"},
-  {dict:"見（み）る", stem:"見（み）", oku:"る", group:2, meaning:"to see, watch"},
-  {dict:"起（お）きる", stem:"起（お）", oku:"きる", group:2, meaning:"to wake up"},
-  {dict:"寝（ね）る", stem:"寝（ね）", oku:"る", group:2, meaning:"to sleep"},
-  {dict:"出（で）る", stem:"出（で）", oku:"る", group:2, meaning:"to leave, go out"},
-  {dict:"見（み）せる", stem:"見（み）", oku:"せる", group:2, meaning:"to show"},
-  {dict:"教（おし）える", stem:"教（おし）", oku:"える", group:2, meaning:"to teach"},
-  {dict:"覚（おぼ）える", stem:"覚（おぼ）", oku:"える", group:2, meaning:"to remember"},
-  {dict:"着（き）る", stem:"着（き）", oku:"る", group:2, meaning:"to wear"},
-  {dict:"借（か）りる", stem:"借（か）", oku:"りる", group:2, meaning:"to borrow"},
-  {dict:"降（お）りる", stem:"降（お）", oku:"りる", group:2, meaning:"to get off, go down"},
-  {dict:"疲（つか）れる", stem:"疲（つか）", oku:"れる", group:2, meaning:"to get tired"},
-  {dict:"褒（ほ）める", stem:"褒（ほ）", oku:"める", group:2, meaning:"to praise"},
-  {dict:"閉（し）める", stem:"閉（し）", oku:"める", group:2, meaning:"to close"},
-  // ---- Group 3 (irregular) ----
-  {dict:"する", group:3, irregular:'suru', meaning:"to do", stem:""},
-  {dict:"来（く）る", group:3, irregular:'kuru', meaning:"to come"},
-  {dict:"勉強（べんきょう）する", group:3, irregular:'suru', meaning:"to study", stem:"勉強（べんきょう）"},
-  {dict:"洗濯（せんたく）する", group:3, irregular:'suru', meaning:"to do laundry", stem:"洗濯（せんたく）"},
-  {dict:"掃除（そうじ）する", group:3, irregular:'suru', meaning:"to clean", stem:"掃除（そうじ）"},
-  {dict:"結婚（けっこん）する", group:3, irregular:'suru', meaning:"to marry", stem:"結婚（けっこん）"}
-];
-
 const FORM_LABELS = {
   masuNeg: "polite negative (ません) form",
   masuPast: "polite past (ました) form",
@@ -244,70 +186,99 @@ function explainForm(verb, formKey){
 }
 // ---- Sentence frames -------------------------------------------------
 // Each frame is a short, natural N5 sentence with one blank for the verb
-// form. No frame has an object tied to one verb, so every verb fits.
-// jp/en both hold ___ exactly once; use is the "when do I use this form" note.
+// form. jp/en both hold ___ exactly once and {o} at most once: {o} is the
+// verb's complement (verb.comp), dropped when the verb has none. needs lists
+// the verb tags the frame requires (see frameFits); a 'thing' frame has the
+// complement as its subject. use is the "when do I use this form" note.
+// APPEND-ONLY by index (it is part of the qid): rewrite a frame in place or
+// mark it retired:true, never delete one.
 const CONJ_FRAMES = {
   masuNeg: [
-    {jp:'今日（きょう）は___。', en:"I don't ___ today.", use:'Polite negative: say you do not do something, politely.'},
-    {jp:'あまり___。', en:"I don't ___ much.", use:'Polite negative; あまり always pairs with a negative.'},
-    {jp:'家（いえ）では___。', en:"I don't ___ at home.", use:'Polite negative: something you do not do in a place.'}
+    {jp:'今日（きょう）は{o}___。', en:"I won't ___ {o} today.", needs:['action'], use:'Polite negative: say you do not do something, politely.'},
+    {jp:'あまり{o}___。', en:"I don't ___ {o} much.", use:'Polite negative; あまり always pairs with a negative.'},
+    {jp:'もう{o}___。', en:"I won't ___ {o} anymore.", needs:['action'], use:'Polite negative with もう: something you no longer do.'},
+    {jp:'今日（きょう）は{o}___。', en:"Today, {o} doesn't ___.", needs:['thing'], use:'Polite negative with a thing as the subject (が).'}
   ],
   masuPast: [
-    {jp:'昨日（きのう）、___。', en:'Yesterday, I ___.', use:'Polite past: something you did, said politely.'},
-    {jp:'先週（せんしゅう）、___。', en:'Last week, I ___.', use:'Polite past: a finished action in the past.'},
-    {jp:'さっき___。', en:'A little while ago, I ___.', use:'Polite past: something that just happened.'}
+    {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o}.', use:'Polite past: something you did, said politely.'},
+    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o}.', needs:['action'], use:'Polite past: a finished action in the past.'},
+    {jp:'さっき{o}___。', en:'A little while ago, I ___ {o}.', needs:['action'], use:'Polite past: something that just happened.'},
+    {jp:'昨日（きのう）は{o}___。', en:'Yesterday, {o} ___.', needs:['thing'], use:'Polite past with a thing as the subject (が).'}
   ],
   masuPastNeg: [
-    {jp:'昨日（きのう）は___。', en:"I didn't ___ yesterday.", use:'Polite past negative: something you did not do, politely.'},
-    {jp:'先週（せんしゅう）は___。', en:"I didn't ___ last week.", use:'Polite past negative: an action that did not happen.'}
+    {jp:'昨日（きのう）は{o}___。', en:"I didn't ___ {o} yesterday.", use:'Polite past negative: something you did not do, politely.'},
+    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week.", needs:['action'], use:'Polite past negative: an action that did not happen.'},
+    {jp:'昨日（きのう）は{o}___。', en:"Yesterday, {o} didn't ___.", needs:['thing'], use:'Polite past negative with a thing as the subject (が).'}
   ],
   te: [
-    {jp:'___ください。', en:'Please ___.', use:'て-form + ください: a polite request.'},
-    {jp:'___もいいですか。', en:'May I ___?', use:'て-form + もいいですか: asking permission.'},
-    {jp:'いま、___います。', en:'Right now, I am ___ing.', use:'て-form + います: an action in progress.'}
+    {jp:'{o}___ください。', en:'Please ___ {o}.', needs:['action'], use:'て-form + ください: a polite request.'},
+    {jp:'{o}___もいいですか。', en:'May I ___ {o}?', needs:['action'], use:'て-form + もいいですか: asking permission.'},
+    {jp:'いま、{o}___います。', en:'I am ___ {o} right now.', needs:['action'], use:'て-form + います: an action in progress.'},
+    {jp:'もう{o}___います。', en:'I already ___ {o}.', use:'て-form + います: a state that is already true (知っています, 疲れています).'}
   ],
   ta: [
-    {jp:'昨日（きのう）、___。', en:'Yesterday, I ___ (plain past).', use:'Plain past (た): casual or written past tense.'},
-    {jp:'先週（せんしゅう）、___。', en:'Last week, I ___ (plain past).', use:'Plain past (た): a finished action, casually.'},
-    {jp:'さっき___。', en:'A little while ago, I ___ (plain past).', use:'Plain past (た): something that just happened.'}
+    {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o} (plain past).', use:'Plain past (た): casual or written past tense.'},
+    {jp:'先週（せんしゅう）、{o}___。', en:'Last week, I ___ {o} (plain past).', needs:['action'], use:'Plain past (た): a finished action, casually.'},
+    {jp:'さっき{o}___。', en:'A little while ago, I ___ {o} (plain past).', needs:['action'], use:'Plain past (た): something that just happened.'},
+    {jp:'昨日（きのう）は{o}___。', en:'Yesterday, {o} ___ (plain past).', needs:['thing'], use:'Plain past (た) with a thing as the subject (が).'}
   ],
   nai: [
-    {jp:'___でください。', en:"Please don't ___.", use:'ない-form + でください: asking someone not to do it.'},
-    {jp:'明日（あした）は___つもりです。', en:"Tomorrow, I don't plan to ___.", use:'ない-form + つもりです: a plan not to do something.'},
-    {jp:'たぶん___。', en:"I probably won't ___.", use:'Plain negative (ない): casual "do not".'}
+    {jp:'{o}___でください。', en:"Please don't ___ {o}.", needs:['action'], use:'ない-form + でください: asking someone not to do it.'},
+    {jp:'明日（あした）は{o}___つもりです。', en:"Tomorrow, I don't plan to ___ {o}.", needs:['action'], use:'ない-form + つもりです: a plan not to do something.'},
+    {jp:'たぶん{o}___。', en:"I probably won't ___ {o}.", use:'Plain negative (ない): casual "do not".'},
+    {jp:'明日（あした）は{o}___。', en:"Tomorrow, {o} won't ___ (plain).", needs:['thing'], use:'Plain negative (ない) with a thing as the subject (が).'}
   ],
   naiPast: [
-    {jp:'昨日（きのう）は___。', en:"I didn't ___ yesterday (plain).", use:'Plain past negative (なかった): casual "did not".'},
-    {jp:'先週（せんしゅう）は___。', en:"I didn't ___ last week (plain).", use:'Plain past negative (なかった): an action that did not happen.'}
+    {jp:'昨日（きのう）は{o}___。', en:"I didn't ___ {o} yesterday (plain).", use:'Plain past negative (なかった): casual "did not".'},
+    {jp:'先週（せんしゅう）は{o}___。', en:"I didn't ___ {o} last week (plain).", needs:['action'], use:'Plain past negative (なかった): an action that did not happen.'},
+    {jp:'昨日（きのう）は{o}___。', en:"Yesterday, {o} didn't ___ (plain).", needs:['thing'], use:'Plain past negative (なかった) with a thing as the subject (が).'}
   ],
   dict: [
-    {jp:'明日（あした）、___つもりです。', en:'Tomorrow, I plan to ___.', use:'Dictionary form + つもりです: a plan to do something.'},
-    {jp:'___ことができます。', en:'I can ___.', use:'Dictionary form + ことができます: ability.'},
-    {jp:'毎日（まいにち）___。', en:'Every day, I ___ (plain).', use:'Dictionary form: plain present or habit.'}
+    {jp:'明日（あした）、{o}___つもりです。', en:'Tomorrow, I plan to ___ {o}.', needs:['action'], use:'Dictionary form + つもりです: a plan to do something.'},
+    {jp:'{o}___ことができます。', en:'I can ___ {o}.', needs:['action'], use:'Dictionary form + ことができます: ability.'},
+    {jp:'毎日（まいにち）{o}___。', en:'Every day, I ___ {o} (plain).', needs:['action'], use:'Dictionary form: plain present or habit.'}
   ],
   potential: [
-    {jp:'私（わたし）は___。', en:'I can ___.', use:'Potential form: be able to do something.'},
-    {jp:'明日（あした）なら___。', en:'If it is tomorrow, I can ___.', use:'Potential form: what you are able to do.'}
+    {jp:'私（わたし）は{o}___。', en:'I can ___ {o}.', needs:['action'], use:'Potential form: be able to do something.'},
+    {jp:'明日（あした）なら{o}___。', en:'If it is tomorrow, I can ___ {o}.', needs:['action'], use:'Potential form: what you are able to do.'}
   ],
   volitional: [
-    {jp:'一緒（いっしょ）に___。', en:"Let's ___ together.", use:'Volitional form: "let\'s" or "shall we".'},
-    {jp:'そろそろ___。', en:"Shall we ___ soon?", use:'Volitional form: suggesting that you start.'},
-    {jp:'今（いま）から___。', en:"Let's ___ from now.", use:'Volitional form: proposing to start now.'}
+    {jp:'一緒（いっしょ）に{o}___。', en:"Let's ___ {o} together.", needs:['action'], use:'Volitional form: "let\'s" or "shall we".'},
+    {jp:'そろそろ{o}___。', en:"Shall we ___ {o} soon?", needs:['action'], use:'Volitional form: suggesting that you start.'},
+    {jp:'今（いま）から{o}___。', en:"Let's ___ {o}, starting now.", needs:['action'], use:'Volitional form: proposing to start now.'}
   ],
   passive: [
-    {jp:'よく先生（せんせい）に___。', en:'I often get ___ by my teacher (passive).', use:'Passive form: something is done to the subject, by someone (に).'},
-    {jp:'よく友達（ともだち）に___。', en:'I often get ___ by a friend (passive).', use:'Passive form: something is done to the subject, by someone (に).'}
+    {jp:'よく先生（せんせい）に___。', en:'I often get ___ by my teacher (passive).', needs:['action','person'], use:'Passive form: something is done to the subject, by someone (に).'},
+    {jp:'よく友達（ともだち）に___。', en:'I often get ___ by a friend (passive).', needs:['action','person'], use:'Passive form: something is done to the subject, by someone (に).'}
   ],
   causative: [
-    {jp:'先生（せんせい）は、毎日（まいにち）___。', en:'My teacher makes us ___ every day.', use:'Causative form: someone makes other people do something.'},
-    {jp:'母（はは）は、いつも___。', en:'My mother always makes us ___.', use:'Causative form: someone makes other people do something.'}
+    {jp:'先生（せんせい）は、毎日（まいにち）{o}___。', en:'My teacher makes us ___ {o} every day.', needs:['action'], use:'Causative form: someone makes other people do something.'},
+    {jp:'母（はは）は、いつも{o}___。', en:'My mother always makes us ___ {o}.', needs:['action'], use:'Causative form: someone makes other people do something.'}
   ]
 };
+
+// A frame fits a verb when the verb is drilled, the frame is live, the verb
+// has every tag the frame needs, and the frame is a 'thing' frame exactly
+// when the verb is a 'thing' verb (a thing subject never fits an "I" frame).
+function frameFits(verb, frame){
+  const tags = verb.tags || [], needs = frame.needs || [];
+  return verb.drill !== false && !frame.retired
+    && needs.every(t => tags.includes(t))
+    && needs.includes('thing') === tags.includes('thing');
+}
+// Fills a frame's {o} slot with the complement, or drops the slot and one
+// adjacent space when there is none ('Please ___ {o}.' -> 'Please ___.').
+function fillFrame(text, compPart){
+  if(compPart) return text.replace('{o}', compPart);
+  return text.replace(/ \{o\}|\{o\} ?/, '');
+}
 
 const CONJ_SENTENCE_POOL = [];
 VERBS.forEach((v,vi)=>{
   Object.keys(FORM_UNLOCK_LESSON).forEach(formKey=>{
+    if((v.skip||[]).includes(formKey)) return;
     CONJ_FRAMES[formKey].forEach((f,frameIdx)=>{
+      if(!frameFits(v, f)) return;
       CONJ_SENTENCE_POOL.push({ qid:`conjs-${vi}-${formKey}-${frameIdx}`, verbIdx:vi, formKey, frameIdx });
     });
   });
@@ -321,15 +292,18 @@ function conjSentenceIdsUpTo(lessonNum){
 function allConjSentenceIds(){
   return CONJ_SENTENCE_POOL.map(it => it.qid);
 }
+// Resolves any well-formed qid, including ones no longer in the pool, so
+// old saved progress still renders.
 function resolveConjSentence(qid){
   const parts = qid.split('-');
   const verb = VERBS[Number(parts[1])];
   const formKey = parts[2];
   const frame = CONJ_FRAMES[formKey][Number(parts[3])];
+  const comp = verb.comp || {jp:'', en:''};
   return {
     qid, lesson: 14, type:'typed', kind:'conj',
-    promptEn: frame.en.replace('___', `___ (${verb.meaning})`),
-    frameJp: frame.jp,
+    promptEn: fillFrame(frame.en.replace('___', `___ (${verb.meaning})`), comp.en),
+    frameJp: fillFrame(frame.jp, comp.jp),
     dict: verb.dict,
     model: computeForms(verb)[formKey],
     use: frame.use,
