@@ -8,6 +8,8 @@
              'action' a chosen action (requests, permission, plans,
                       "let's", potential, causative)
              'person' can be done to a person (passive frames)
+             'state'  non-action, subject "I", natural as a state in
+                      もう___います (知っています, 分かっています)
              'thing'  the subject is a thing, not "I"; comp is then
                       that subject (e.g. 雨（あめ）が)
      comp  optional complement with its particle, filled into a
@@ -39,7 +41,7 @@ const VERBS = [
   {dict:"帰（かえ）る", stem:"帰（かえ）", oku:"る", group:1, meaning:"to go home / return", trap:true, jlpt:5, tags:['action']},
   {dict:"入（はい）る", stem:"入（はい）", oku:"る", group:1, meaning:"to enter", trap:true, jlpt:5, tags:['action'], comp:{jp:'部屋（へや）に', en:'the room'}},
   {dict:"要（い）る", stem:"要（い）", oku:"る", group:1, meaning:"to be necessary", trap:true, jlpt:5, tags:[], comp:{jp:'傘（かさ）が', en:'an umbrella'}, skip:['te']},
-  {dict:"知（し）る", stem:"知（し）", oku:"る", group:1, meaning:"to know", trap:true, jlpt:5, tags:[], skip:['dict']},
+  {dict:"知（し）る", stem:"知（し）", oku:"る", group:1, meaning:"to know", trap:true, jlpt:5, tags:['state'], skip:['dict']},
   {dict:"走（はし）る", stem:"走（はし）", oku:"る", group:1, meaning:"to run", trap:true, jlpt:5, tags:['action']},
   {dict:"作（つく）る", stem:"作（つく）", oku:"る", group:1, meaning:"to make", jlpt:5, tags:['action'], comp:{jp:'晩（ばん）ご飯（はん）を', en:'dinner'}},
   {dict:"座（すわ）る", stem:"座（すわ）", oku:"る", group:1, meaning:"to sit", jlpt:5, tags:['action'], comp:{jp:'ここに', en:'here'}},
@@ -47,7 +49,7 @@ const VERBS = [
   {dict:"曲（ま）がる", stem:"曲（ま）", oku:"がる", group:1, meaning:"to turn", jlpt:5, tags:['action'], comp:{jp:'右（みぎ）に', en:'right'}},
   {dict:"渡（わた）る", stem:"渡（わた）", oku:"る", group:1, meaning:"to cross", jlpt:5, tags:['action'], comp:{jp:'橋（はし）を', en:'the bridge'}},
   {dict:"通（とお）る", stem:"通（とお）", oku:"る", group:1, meaning:"to pass through", jlpt:4, tags:['action'], comp:{jp:'この道（みち）を', en:'this road'}},
-  {dict:"分（わ）かる", stem:"分（わ）", oku:"かる", group:1, meaning:"to understand", jlpt:5, tags:[]},
+  {dict:"分（わ）かる", stem:"分（わ）", oku:"かる", group:1, meaning:"to understand", jlpt:5, tags:['state']},
   {dict:"行（い）く", stem:"行（い）", oku:"く", group:1, meaning:"to go", irregularTe:true, jlpt:5, tags:['action'], comp:{jp:'学校（がっこう）に', en:'to school'}},
   // ---- Group 2 (ichidan) ----
   {dict:"食（た）べる", stem:"食（た）", oku:"べる", group:2, meaning:"to eat", jlpt:5, tags:['action'], comp:{jp:'野菜（やさい）を', en:'vegetables'}},
@@ -61,7 +63,7 @@ const VERBS = [
   {dict:"着（き）る", stem:"着（き）", oku:"る", group:2, meaning:"to wear", jlpt:5, tags:['action'], comp:{jp:'セーターを', en:'a sweater'}},
   {dict:"借（か）りる", stem:"借（か）", oku:"りる", group:2, meaning:"to borrow", jlpt:5, tags:['action'], comp:{jp:'本（ほん）を', en:'a book'}},
   {dict:"降（お）りる", stem:"降（お）", oku:"りる", group:2, meaning:"to get off, go down", jlpt:5, tags:['action'], comp:{jp:'電車（でんしゃ）を', en:'the train'}},
-  {dict:"疲（つか）れる", stem:"疲（つか）", oku:"れる", group:2, meaning:"to get tired", jlpt:5, tags:[]},
+  {dict:"疲（つか）れる", stem:"疲（つか）", oku:"れる", group:2, meaning:"to get tired", jlpt:5, tags:['state']},
   {dict:"褒（ほ）める", stem:"褒（ほ）", oku:"める", group:2, meaning:"to praise", jlpt:4, tags:['action','person']},
   {dict:"閉（し）める", stem:"閉（し）", oku:"める", group:2, meaning:"to close", jlpt:5, tags:['action'], comp:{jp:'窓（まど）を', en:'the window'}},
   // ---- Group 3 (irregular) ----

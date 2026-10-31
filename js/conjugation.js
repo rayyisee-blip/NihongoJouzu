@@ -214,7 +214,7 @@ const CONJ_FRAMES = {
     {jp:'{o}___ください。', en:'Please ___ {o}.', needs:['action'], use:'て-form + ください: a polite request.'},
     {jp:'{o}___もいいですか。', en:'May I ___ {o}?', needs:['action'], use:'て-form + もいいですか: asking permission.'},
     {jp:'いま、{o}___います。', en:'I am ___ {o} right now.', needs:['action'], use:'て-form + います: an action in progress.'},
-    {jp:'もう{o}___います。', en:'I already ___ {o}.', use:'て-form + います: a state that is already true (知っています, 疲れています).'}
+    {jp:'もう{o}___います。', en:'I already ___ {o}.', needs:['state'], use:'て-form + います: a state that is already true (知っています, 疲れています).'}
   ],
   ta: [
     {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o} (plain past).', use:'Plain past (た): casual or written past tense.'},

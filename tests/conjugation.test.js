@@ -4,6 +4,7 @@ test('frames well formed', () => assert.equal(app.run(`Object.keys(FORM_UNLOCK_L
 test('pool respects needs, skip, drill', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.every(it => { const v=VERBS[it.verbIdx], f=CONJ_FRAMES[it.formKey][it.frameIdx]; return frameFits(v,f) && !(v.skip||[]).includes(it.formKey); })`), true));
 test('no verb lacking action in a request', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='te'&&it.frameIdx===0).every(it=>VERBS[it.verbIdx].tags.includes('action'))`), true));
 test('passive only for person verbs', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='passive').every(it=>VERBS[it.verbIdx].tags.includes('person'))`), true));
+test('already-state frame only for state verbs', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='te'&&it.frameIdx===3).every(it=>VERBS[it.verbIdx].tags.includes('state'))`), true));
 test('死ぬ is reference only', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.some(it=>it.verbIdx===8)`), false));
 test('every drill verb has a sentence', () => assert.equal(app.run(`VERBS.every((v,i)=> v.drill===false || CONJ_SENTENCE_POOL.some(it=>it.verbIdx===i))`), true));
 test('complement filled', () => {
