@@ -18,6 +18,8 @@
     --success-soft:#E2EADF;
     --radius:4px;
     --gold-faint:#E8D7A8;
+    --trap-bg:#F0D9C4;   /* conjugation reference: godan verbs that look like ichidan */
+    --odd-bg:#F3E8C2;    /* conjugation reference: 行く, the odd て/past form */
     --font-body:'Alegreya','Shippori Mincho','Zen Kaku Gothic New',serif;
     --font-display:'Alegreya','Shippori Mincho',serif;
     --font-label:'Alegreya','Shippori Mincho',serif;
@@ -631,6 +633,39 @@
   }
   .reading-listen.is-loading{opacity:.6;}
   .reading-listen.is-playing{border-color:var(--vermillion); color:var(--vermillion);}
+
+  /* ---------- Conjugate tab: reference tables and form panels ---------- */
+  .conj-glance{border:1px solid var(--line); background:var(--surface); padding:10px 12px; margin-top:12px; font-size:15px;}
+  .conj-glance-title{font-family:var(--font-display); font-weight:700; font-size:15px;}
+  .conj-glance-sub{font-size:12px; color:var(--ink-soft); margin-bottom:4px;}
+  .conj-glance-row{padding:2px 0;}
+  .conj-glance-ends{display:inline-block; min-width:5.5em; font-weight:700; color:var(--vermillion);}
+  .conj-glance-line{font-size:13px; color:var(--ink-soft); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px;}
+
+  details.conj-section{border-top:1px solid var(--edge); padding:6px 0 10px;}
+  details.conj-section > summary{cursor:pointer; display:flex; align-items:baseline; gap:10px; padding:4px 0;}
+  .conj-ending{font-family:var(--font-display); font-weight:700; font-size:24px; line-height:1.2; color:var(--vermillion);}
+  .conj-count{font-size:12px; color:var(--ink-soft);}
+  .conj-table-wrap{overflow-x:auto; margin-top:6px;}
+  table.conj-table{border-collapse:collapse; width:100%; min-width:620px; font-size:15px; line-height:1.5;}
+  table.conj-table th{text-align:left; font-size:12px; font-weight:700; padding:4px 8px; border-bottom:2px solid var(--edge); white-space:nowrap;}
+  table.conj-table td{padding:5px 8px; border-top:1px solid var(--line); white-space:nowrap;}
+  table.conj-table tr.is-trap td{background:var(--trap-bg);}
+  table.conj-table tr.is-odd td{background:var(--odd-bg);}
+  .conj-hint{font-weight:400; color:var(--ink-soft);}
+  .conj-final{color:var(--vermillion); font-weight:700;}
+  .conj-meaning{color:var(--ink-soft); font-size:13px;}
+  .conj-jlpt{display:inline-block; font-size:10px; letter-spacing:.04em; color:var(--ink-soft); border:1px solid var(--edge); padding:0 4px; margin-left:2px; vertical-align:1px;}
+  .conj-legend{font-size:12px; color:var(--ink-soft); margin:10px 0 0;}
+
+  details.conj-panel{border-top:1px solid var(--line); padding:4px 0;}
+  details.conj-panel:last-child{border-bottom:1px solid var(--line);}
+  details.conj-panel > summary{cursor:pointer; font-weight:700; padding:8px 0;}
+  .conj-panel-jp{font-weight:400; font-size:12px; color:var(--ink-soft); margin-left:6px;}
+  .conj-panel-note{font-size:13px; color:var(--ink-soft); margin:2px 0 6px;}
+  .conj-rules{margin:4px 0 6px; padding-left:20px; font-size:15px;}
+  .conj-rules li{margin:3px 0;}
+  .conj-use{font-size:12px; color:var(--ink-soft); margin-top:3px;}
 
   footer{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); font-family:var(--font-label); font-size:12px; color:var(--ink-soft); letter-spacing:.12em; text-transform:uppercase;}
 

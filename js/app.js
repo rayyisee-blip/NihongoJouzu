@@ -701,18 +701,114 @@ function renderGrammar(){
   });
 }
 
+// ---- Conjugate tab: reference tables and sentence panels ------------------
+// These HTML builders take no DOM, so they can be exercised headless.
+
+// The basic-form cell: dictionary form with readings in brackets, the final
+// kana picked out in vermillion, the meaning muted and an N5/N4 tag.
+function referenceBasicCell(verb){
+  const dict = verb.dict;
+  return `<td class="conj-basic"><span class="conj-dict">${escapeHtml(dict.slice(0, -1))}<span class="conj-final">${escapeHtml(dict.slice(-1))}</span></span>`
+    + ` <span class="conj-meaning">${escapeHtml(verb.meaning)}</span>`
+    + ` <span class="conj-jlpt">N${verb.jlpt}</span></td>`;
+}
+
+function referenceRowHtml(verb){
+  const cls = verb.irregularTe ? ' class="is-odd"' : (verb.trap ? ' class="is-trap"' : '');
+  const cells = REFERENCE_COLUMNS.slice(1).map(c => {
+    const f = displayForm(verb, c.key);
+    return `<td>${escapeHtml(f.lead)}${f.changed ? `<b>${escapeHtml(f.changed)}</b>` : ''}${escapeHtml(f.tail)}</td>`;
+  }).join('');
+  return `<tr${cls}>${referenceBasicCell(verb)}${cells}</tr>`;
+}
+
+function referenceTableHtml(verbs){
+  const head = REFERENCE_COLUMNS.map(c =>
+    `<th>${escapeHtml(c.en)}${c.hint ? ` <span class="conj-hint">${escapeHtml(c.hint)}</span>` : ''}</th>`
+  ).join('');
+  return `<div class="conj-table-wrap"><table class="conj-table">
+    <thead><tr>${head}</tr></thead>
+    <tbody>${verbs.map(referenceRowHtml).join('')}</tbody>
+  </table></div>`;
+}
+
+function endingsGlanceHtml(){
+  const teTa = endingsAtGlance().map(r =>
+    `<div class="conj-glance-row"><span class="conj-glance-ends">${r.endings.join('・')}</span> <span>→ ${r.ta} / ${r.te}</span></div>`
+  ).join('');
+  const rowPairs = idx => Object.keys(GODAN_ROWS).map(k => `${k}→${GODAN_ROWS[k][idx]}`).join('　');
+  return `<div class="conj-glance">
+    <div class="conj-glance-title">Endings at a glance (Group 1)</div>
+    <div class="conj-glance-sub">Past / て-form, by the verb's last kana</div>
+    ${teTa}
+    <div class="conj-glance-line"><b>Negative:</b> change the last kana to the あ-row, then add ない (う becomes わ). ${rowPairs(0)}</div>
+    <div class="conj-glance-line"><b>Polite:</b> change the last kana to the い-row, then add ます. ${rowPairs(1)}</div>
+    <div class="conj-glance-line"><b>Exception:</b> 行く does not follow the く rule: 行った・行って, not 行いた・行いて.</div>
+  </div>`;
+}
+
+function referenceCardHtml(){
+  const [g1, g2, g3] = referenceGroups();
+  const sections = g1.sections.map(sec => `
+    <details class="conj-section" open>
+      <summary><span class="conj-ending">${escapeHtml(sec.label)}</span> <span class="conj-count">${sec.verbs.length} verbs</span></summary>
+      ${referenceTableHtml(sec.verbs)}
+    </details>`).join('');
+  return `<div class="card"><div class="card-inner">
+    <div class="section-title" style="font-size:17px;">Reference &mdash; the three groups</div>
+    <p class="muted" style="margin:6px 0 0;">Readings are in brackets. The <span class="conj-final">red kana</span> is the verb's last kana and the <b>bold part</b> is what changes in each form.</p>
+    ${endingsGlanceHtml()}
+    <div class="gstruct">
+      <div class="gstruct-title">Group 1 &mdash; godan / う-verbs</div>
+      <p class="muted" style="margin:6px 0 10px;">Every form branches off the verb's final kana. Find the kana, then read across the row.</p>
+      ${sections}
+      <p class="conj-legend">Orange rows look like Group 2 (ichidan) but are Group 1. Amber row: 行く has an odd て/past form.</p>
+    </div>
+    <div class="gstruct">
+      <div class="gstruct-title">Group 2 &mdash; ichidan / る-verbs</div>
+      <p class="muted" style="margin:6px 0 10px;">How to tell: the verb ends in る and the sound before it is an い-row or え-row kana (見る, 食べる, 起きる). Drop る, then attach the ending. If the kana before る is from the あ-, う- or お-row, it is always Group 1. If it is い-row or え-row, check the orange rows above before you decide.</p>
+      ${referenceTableHtml(g2.verbs)}
+    </div>
+    <div class="gstruct">
+      <div class="gstruct-title">Group 3 &mdash; irregular</div>
+      <p class="muted" style="margin:6px 0 10px;">Only する and 来る, plus noun＋する compounds like 勉強する. Learn them outright; 来る shifts its reading between き and こ depending on the form.</p>
+      ${referenceTableHtml(g3.verbs)}
+    </div>
+  </div></div>`;
+}
+
+function formPanelHtml(k){
+  const rules = FORM_BUILD_RULES[k];
+  const polite = ['masuNeg','masuPast','masuPastNeg'].includes(k)
+    ? `<p class="conj-panel-note">The polite present is the ます form (書きます, 食べます). This form builds on it.</p>` : '';
+  const examples = panelExamples(k).map(ex => `
+    <div class="gexample">
+      <div class="gexample-jp">${escapeHtml(ex.jp)}</div>
+      <div class="gexample-en">${escapeHtml(ex.en)}</div>
+      <div class="conj-use">${escapeHtml(ex.use)}</div>
+    </div>`).join('');
+  return `<details class="conj-panel">
+    <summary>${escapeHtml(FORM_EN[k])} <span class="conj-panel-jp">${escapeHtml(FORM_JP[k])}</span></summary>
+    ${polite}
+    <ul class="conj-rules">
+      <li><b>Group 1:</b> ${escapeHtml(rules.godan)}</li>
+      <li><b>Group 2:</b> ${escapeHtml(rules.ichidan)}</li>
+      <li><b>Group 3:</b> ${escapeHtml(rules.irregular)}</li>
+    </ul>
+    ${examples}
+  </details>`;
+}
+
+function formPanelsHtml(){
+  return `<div class="card"><div class="card-inner">
+    <div class="section-title" style="font-size:17px;">Using a form in a sentence</div>
+    <p class="muted" style="margin:6px 0 10px;">Tap a form to see how it is built and how it sits in a sentence.</p>
+    ${PANEL_ORDER.map(formPanelHtml).join('')}
+  </div></div>`;
+}
+
 function renderConjugate(){
   if(quizState){ renderQuizQuestion(); return; }
-
-  const godanRowHtml = Object.keys(GODAN_ROWS).map(k=>{
-    const row = GODAN_ROWS[k], teTa = TE_TA_MAP[k];
-    return `<div class="barrow" style="font-family:'JetBrains Mono',monospace; font-size:12px;">
-      <div class="lname" style="width:36px;">${k}〜</div>
-      <div style="flex:1; display:grid; grid-template-columns:repeat(5,1fr); gap:4px;">
-        <span>〜${row[1]}ます</span><span>〜${row[0]}ない</span><span>〜${teTa.te}</span><span>〜${teTa.ta}</span><span>〜${row[3]}る</span>
-      </div>
-    </div>`;
-  }).join('');
 
   const seenConj = CONJ_SENTENCE_POOL.filter(it=>PROGRESS.seen[it.qid] && PROGRESS.seen[it.qid].count>0).length;
 
@@ -724,23 +820,8 @@ function renderConjugate(){
       <button class="primary" id="startConjDrillBtn" style="margin-top:14px;">Start Conjugation Drill</button>
     </div></div>
 
-    <div class="card"><div class="card-inner">
-      <div class="section-title" style="font-size:17px;">Reference &mdash; the three groups</div>
-      <div class="gstruct">
-        <div class="gstruct-title">Group 1 &mdash; godan / う-verbs</div>
-        <p class="muted" style="margin:6px 0 10px;">Every form branches off the verb's final kana. This is the branch table &mdash; memorize the row, not each verb individually.</p>
-        <div style="border:1px solid var(--line); padding:10px 12px; margin-top:6px;">${godanRowHtml}</div>
-        <div class="gexample-note" style="margin-top:10px;">Watch for traps: 帰る・入る・要る・知る・走る all end in る but are godan, not ichidan &mdash; conjugate them off this table, not the Group 2 rule below.</div>
-      </div>
-      <div class="gstruct">
-        <div class="gstruct-title">Group 2 &mdash; ichidan / る-verbs</div>
-        <p class="muted" style="margin:6px 0 10px;">Drop る, then attach the ending directly &mdash; no branching. 食べる → 食べます・食べない・食べて・食べた・食べられる・食べよう.</p>
-      </div>
-      <div class="gstruct">
-        <div class="gstruct-title">Group 3 &mdash; irregular</div>
-        <p class="muted" style="margin:6px 0 10px;">Only する and 来る (plus noun＋する compounds like 勉強する). Both are memorized outright: します／して／した／しない, and 来る shifts reading between き and こ depending on the form.</p>
-      </div>
-    </div></div>
+    ${referenceCardHtml()}
+    ${formPanelsHtml()}
   `;
 
   document.getElementById('startConjDrillBtn').addEventListener('click', ()=>{
