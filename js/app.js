@@ -244,6 +244,9 @@ function renderQuizQuestion(){
 
   if(quizState.idx >= quizState.qids.length){
     const qids = quizState.qids;
+    const isConj = quizState.mode === 'conjugation';
+    const roundAnswers = quizState.answers || {};
+    const roundSeg = quizState.seg || 'mixed';
     if(isDaily){
       dailySet.completed = true;
       updateStreakOnComplete();
@@ -254,6 +257,10 @@ function renderQuizQuestion(){
     if(isDaily){
       document.getElementById('streakNum').textContent = PROGRESS.streak;
       renderDoneScreen(dailySet.answers || {}, qids);
+      return;
+    }
+    if(isConj){
+      renderConjRoundDone(roundAnswers, qids, roundSeg);
       return;
     }
     render();
@@ -432,16 +439,22 @@ function finishTyped(qid, input, correct){
   renderQuizQuestion();
 }
 
-// End-of-day summary: score, streak, and what was missed with the right answer.
-function renderDoneScreen(answers, qids){
-  const correctCount = qids.filter(qid => answers[qid] && answers[qid].correct).length;
+// Shared by the daily and conjugation-round summaries: each missed item with its right answer.
+function missedListHtml(answers, qids){
   const missed = qids.filter(qid => !(answers[qid] && answers[qid].correct));
-  const missedHtml = missed.map(qid=>{
+  return missed.map(qid=>{
     const q = qByQid(qid);
     const prompt = q.type === 'typed' ? q.promptEn : q.prompt;
     const answer = q.type === 'typed' ? q.model : q.choices[q.a];
     return `<li><div class="missed-prompt">${escapeHtml(prompt)}</div><div class="missed-answer">${escapeHtml(answer)}</div></li>`;
   }).join('');
+}
+
+// End-of-day summary: score, streak, and what was missed with the right answer.
+function renderDoneScreen(answers, qids){
+  const correctCount = qids.filter(qid => answers[qid] && answers[qid].correct).length;
+  const missed = qids.filter(qid => !(answers[qid] && answers[qid].correct));
+  const missedHtml = missedListHtml(answers, qids);
   main.innerHTML = `
     <div class="card"><div class="card-inner">
       <div class="section-title">Done for today</div>
@@ -459,6 +472,32 @@ function renderDoneScreen(answers, qids){
     renderQuizQuestion();
   });
   document.getElementById('backTodayBtn').addEventListener('click', ()=>{
+    quizState = null;
+    render();
+  });
+}
+
+// End of a conjugation drill round: score and misses. Does not touch the daily streak.
+function renderConjRoundDone(answers, qids, segKey){
+  const correctCount = qids.filter(qid => answers[qid] && answers[qid].correct).length;
+  const missed = qids.filter(qid => !(answers[qid] && answers[qid].correct));
+  const missedHtml = missedListHtml(answers, qids);
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="section-title">Round complete</div>
+      <p class="done-score">${correctCount} / ${qids.length} correct</p>
+      ${missed.length ? `<div class="section-title" style="font-size:16px; margin-top:18px;">Missed</div><ul class="missed-list">${missedHtml}</ul>` : '<p class="muted">No misses this round.</p>'}
+      <div class="done-actions">
+        <button class="ghost" id="conjAgainBtn">Another round</button>
+        <button class="primary" id="conjBackBtn">Back to drills</button>
+      </div>
+    </div></div>
+  `;
+  document.getElementById('conjAgainBtn').addEventListener('click', ()=>{
+    quizState = { qids: segmentRound(segKey), idx:0, mode:'conjugation', seg:segKey, answers:{} };
+    renderQuizQuestion();
+  });
+  document.getElementById('conjBackBtn').addEventListener('click', ()=>{
     quizState = null;
     render();
   });
@@ -706,7 +745,7 @@ function renderConjugate(){
 
   document.getElementById('startConjDrillBtn').addEventListener('click', ()=>{
     const ids = weightedSample(allConjSentenceIds(), boxWeight, Math.min(15, CONJ_SENTENCE_POOL.length));
-    quizState = { qids: ids, idx:0, mode:'conjugation', answers:{} };
+    quizState = { qids: ids, idx:0, mode:'conjugation', seg:'mixed', answers:{} };
     renderQuizQuestion();
   });
 }
