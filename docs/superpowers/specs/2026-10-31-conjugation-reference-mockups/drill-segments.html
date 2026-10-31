@@ -1,0 +1,66 @@
+<h2>How should the drill be broken up?</h2>
+<p class="subtitle">Today it's one run of 15 mixed questions. Here are three ways to cut it into shorter, focused pieces. Click what feels right.</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Pick-a-segment menu</h3>
+      <p>Tiles you choose from, each a short round of about 5 questions on one thing. You see which ones you've done.</p>
+      <div class="mockup" style="margin-top:10px;">
+        <div class="mockup-header">Conjugate &rarr; Drills</div>
+        <div class="mockup-body" style="font-size:13px; line-height:1.5;">
+          <span class="label">By verb type</span>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:6px 0 12px;">
+            <div style="border:1px solid #999; padding:6px 8px;">Godan: く・ぐ <span style="float:right">&#10003; 5/5</span></div>
+            <div style="border:1px solid #999; padding:6px 8px;">Godan: す・つ・う <span style="float:right">2/5</span></div>
+            <div style="border:1px solid #999; padding:6px 8px;">Godan: ぬ・ぶ・む</div>
+            <div style="border:1px solid #999; padding:6px 8px;">Godan: る</div>
+            <div style="border:1px solid #999; padding:6px 8px;">Ichidan</div>
+            <div style="border:1px solid #999; padding:6px 8px; background:#fde8d8;">Trap verbs (帰る 入る…)</div>
+            <div style="border:1px solid #999; padding:6px 8px;">する・来る</div>
+            <div style="border:1px solid #999; padding:6px 8px;">Mixed review</div>
+          </div>
+          <span class="label">By form</span>
+          <div style="margin-top:6px;">ます &nbsp;|&nbsp; て-form &nbsp;|&nbsp; ない &nbsp;|&nbsp; た &nbsp;|&nbsp; potential &nbsp;|&nbsp; …</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Step-through per round</h3>
+      <p>One short round (5 verbs) that walks you through three small steps for each verb, so each question is easier on its own.</p>
+      <div class="mockup" style="margin-top:10px;">
+        <div class="mockup-header">Round: て-form &middot; verb 2 of 5</div>
+        <div class="mockup-body" style="font-size:14px; line-height:1.8;">
+          <b>待つ</b> &mdash; to wait<br>
+          <span class="label">Step 1</span> Which group? &nbsp;[ Godan ] [ Ichidan ] [ Irregular ] <span style="opacity:.6">&larr; tap</span><br>
+          <span class="label">Step 2</span> Ending is <b>つ</b> &rarr; て-form is って / んで / いて ? <span style="opacity:.6">&larr; tap</span><br>
+          <span class="label">Step 3</span> 少し___ください。 <span style="opacity:.6">&larr; type the word in a sentence</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Just make the one drill shorter</h3>
+      <p>Same drill, but 5 questions by default and a small filter bar before you start (group, form).</p>
+      <div class="mockup" style="margin-top:10px;">
+        <div class="mockup-header">Conjugate &rarr; Drill</div>
+        <div class="mockup-body" style="font-size:14px; line-height:1.9;">
+          Verbs: [ All ] [ Godan ] [ Ichidan ] [ Irregular ]<br>
+          Form: &nbsp;[ All ] [ ます ] [ て ] [ ない ] [ た ] …<br>
+          Length: [ 5 ] [ 10 ] [ 15 ]<br>
+          <button class="mock-button">Start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
