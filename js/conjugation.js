@@ -188,8 +188,10 @@ function explainForm(verb, formKey){
 // Each frame is a short, natural N5 sentence with one blank for the verb
 // form. jp/en both hold ___ exactly once and {o} at most once: {o} is the
 // verb's complement (verb.comp), dropped when the verb has none. needs lists
-// the verb tags the frame requires (see frameFits); a 'thing' frame has the
-// complement as its subject. use is the "when do I use this form" note.
+// the verb tags the frame requires (see frameFits and the tag list in
+// verbs-data.js); a 'thing' frame has the complement as its subject. ga:true
+// marks a potential frame, where a direct object's を becomes が (see
+// frameComp). use is the "when do I use this form" note.
 // APPEND-ONLY by index (it is part of the qid): rewrite a frame in place or
 // mark it retired:true, never delete one.
 const CONJ_FRAMES = {
@@ -213,8 +215,10 @@ const CONJ_FRAMES = {
   te: [
     {jp:'{o}___ください。', en:'Please ___ {o}.', needs:['action'], use:'て-form + ください: a polite request.'},
     {jp:'{o}___もいいですか。', en:'May I ___ {o}?', needs:['action'], use:'て-form + もいいですか: asking permission.'},
-    {jp:'いま、{o}___います。', en:'I am ___ {o} right now.', needs:['action'], use:'て-form + います: an action in progress.'},
-    {jp:'もう{o}___います。', en:'I already ___ {o}.', needs:['state'], use:'て-form + います: a state that is already true (知っています, 疲れています).'}
+    {jp:'いま、{o}___います。', en:'I am ___ {o} right now.', needs:['ongoing'], use:'て-form + います: an action in progress.'},
+    {jp:'もう{o}___います。', en:'I already ___ {o}.', needs:['state'], use:'て-form + います: a state that is already true (知っています, 分かっています).'},
+    {jp:'もう{o}___います。', en:"I'm already ___ {o}.", needs:['result'], use:'て-form + います: the result of a change that already happened (疲れています, 結婚しています).'},
+    {jp:'{o}___ください。', en:'Please ___ {o}.', needs:['ask'], use:'て-form + ください: a polite request.'}
   ],
   ta: [
     {jp:'昨日（きのう）、{o}___。', en:'Yesterday, I ___ {o} (plain past).', use:'Plain past (た): casual or written past tense.'},
@@ -223,7 +227,7 @@ const CONJ_FRAMES = {
     {jp:'昨日（きのう）は{o}___。', en:'Yesterday, {o} ___ (plain past).', needs:['thing'], use:'Plain past (た) with a thing as the subject (が).'}
   ],
   nai: [
-    {jp:'{o}___でください。', en:"Please don't ___ {o}.", needs:['action'], use:'ない-form + でください: asking someone not to do it.'},
+    {jp:'{o}___でください。', en:"Please don't ___ {o}.", needs:['dont'], use:'ない-form + でください: asking someone not to do it.'},
     {jp:'明日（あした）は{o}___つもりです。', en:"Tomorrow, I don't plan to ___ {o}.", needs:['action'], use:'ない-form + つもりです: a plan not to do something.'},
     {jp:'たぶん{o}___。', en:"I probably won't ___ {o}.", use:'Plain negative (ない): casual "do not".'},
     {jp:'明日（あした）は{o}___。', en:"Tomorrow, {o} won't ___ (plain).", needs:['thing'], use:'Plain negative (ない) with a thing as the subject (が).'}
@@ -236,11 +240,11 @@ const CONJ_FRAMES = {
   dict: [
     {jp:'明日（あした）、{o}___つもりです。', en:'Tomorrow, I plan to ___ {o}.', needs:['action'], use:'Dictionary form + つもりです: a plan to do something.'},
     {jp:'{o}___ことができます。', en:'I can ___ {o}.', needs:['action'], use:'Dictionary form + ことができます: ability.'},
-    {jp:'毎日（まいにち）{o}___。', en:'Every day, I ___ {o} (plain).', needs:['action'], use:'Dictionary form: plain present or habit.'}
+    {jp:'これから{o}___。', en:"Starting now, I'll ___ {o} (plain).", needs:['action'], use:'Dictionary form: plain non-past, for what you are about to do.'}
   ],
   potential: [
-    {jp:'私（わたし）は{o}___。', en:'I can ___ {o}.', needs:['action'], use:'Potential form: be able to do something.'},
-    {jp:'明日（あした）なら{o}___。', en:'If it is tomorrow, I can ___ {o}.', needs:['action'], use:'Potential form: what you are able to do.'}
+    {jp:'私（わたし）は{o}___。', en:'I can ___ {o}.', needs:['action'], ga:true, use:'Potential form: be able to do something (the object takes が).'},
+    {jp:'明日（あした）なら{o}___。', en:'Tomorrow works: I can ___ {o} then.', needs:['action'], ga:true, use:'Potential form: what you are able to do.'}
   ],
   volitional: [
     {jp:'一緒（いっしょ）に{o}___。', en:"Let's ___ {o} together.", needs:['action'], use:'Volitional form: "let\'s" or "shall we".'},
@@ -248,12 +252,12 @@ const CONJ_FRAMES = {
     {jp:'今（いま）から{o}___。', en:"Let's ___ {o}, starting now.", needs:['action'], use:'Volitional form: proposing to start now.'}
   ],
   passive: [
-    {jp:'よく先生（せんせい）に___。', en:'I often get ___ by my teacher (passive).', needs:['action','person'], use:'Passive form: something is done to the subject, by someone (に).'},
-    {jp:'よく友達（ともだち）に___。', en:'I often get ___ by a friend (passive).', needs:['action','person'], use:'Passive form: something is done to the subject, by someone (に).'}
+    {jp:'よく先生（せんせい）に___。', en:'I often get ___ by my teacher (passive).', needs:['person'], use:'Passive form: something is done to the subject, by someone (に).'},
+    {jp:'よく友達（ともだち）に___。', en:'I often get ___ by a friend (passive).', needs:['person'], use:'Passive form: something is done to the subject, by someone (に).'}
   ],
   causative: [
-    {jp:'先生（せんせい）は、毎日（まいにち）{o}___。', en:'My teacher makes us ___ {o} every day.', needs:['action'], use:'Causative form: someone makes other people do something.'},
-    {jp:'母（はは）は、いつも{o}___。', en:'My mother always makes us ___ {o}.', needs:['action'], use:'Causative form: someone makes other people do something.'}
+    {jp:'先生（せんせい）は、毎日（まいにち）{o}___。', en:'My teacher makes us ___ {o} every day.', needs:['action','school'], use:'Causative form: someone makes other people do something.'},
+    {jp:'母（はは）は、いつも{o}___。', en:'My mother always makes us ___ {o}.', needs:['action','home'], use:'Causative form: someone makes other people do something.'}
   ]
 };
 
@@ -271,6 +275,16 @@ function frameFits(verb, frame){
 function fillFrame(text, compPart){
   if(compPart) return text.replace('{o}', compPart);
   return text.replace(/ \{o\}|\{o\} ?/, '');
+}
+// The verb's complement as a given frame uses it. In a potential frame
+// (ga:true) a direct object's を becomes が (手紙が書ける), unless the verb's
+// comp says ga:false because its を is a route or a person (橋を渡れる,
+// 父を手伝える), where が would change the meaning.
+function frameComp(verb, frame){
+  const comp = verb.comp || {jp:'', en:''};
+  if(frame.ga && comp.ga !== false && comp.jp.endsWith('を'))
+    return {jp: comp.jp.slice(0, -1) + 'が', en: comp.en};
+  return comp;
 }
 
 const CONJ_SENTENCE_POOL = [];
@@ -299,7 +313,7 @@ function resolveConjSentence(qid){
   const verb = VERBS[Number(parts[1])];
   const formKey = parts[2];
   const frame = CONJ_FRAMES[formKey][Number(parts[3])];
-  const comp = verb.comp || {jp:'', en:''};
+  const comp = frameComp(verb, frame);
   return {
     qid, lesson: 14, type:'typed', kind:'conj',
     promptEn: fillFrame(frame.en.replace('___', `___ (${verb.meaning})`), comp.en),

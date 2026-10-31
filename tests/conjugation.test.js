@@ -9,8 +9,30 @@ test('死ぬ is reference only', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.
 test('every drill verb has a sentence', () => assert.equal(app.run(`VERBS.every((v,i)=> v.drill===false || CONJ_SENTENCE_POOL.some(it=>it.verbIdx===i))`), true));
 test('complement filled', () => {
   const q = app.run(`resolveConjSentence('conjs-5-te-0')`);
-  assert.equal(q.frameJp, '水（みず）を___ください。');
-  assert.equal(q.promptEn, 'Please ___ (to drink) water.');
+  assert.equal(q.frameJp, 'コーヒーを___ください。');
+  assert.equal(q.promptEn, 'Please ___ (to drink) coffee.');
+});
+// Frames gated by the finer tags only ever pair with verbs carrying them.
+const onlyFor = (form, idx, tag) => app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='${form}'&&it.frameIdx===${idx}).every(it=>VERBS[it.verbIdx].tags.includes('${tag}'))`);
+test('progressive frame only for ongoing verbs', () => assert.equal(onlyFor('te', 2, 'ongoing'), true));
+test('result frame only for result verbs', () => assert.equal(onlyFor('te', 4, 'result'), true));
+test("please-don't frame only for dont verbs", () => assert.equal(onlyFor('nai', 0, 'dont'), true));
+test('causative frames need school or home', () => {
+  assert.equal(onlyFor('causative', 0, 'school'), true);
+  assert.equal(onlyFor('causative', 1, 'home'), true);
+});
+// 'ask' gives a non-action verb its own ください request; an action verb already has te[0].
+test('ask request only for non-action verbs', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='te'&&it.frameIdx===5).every(it=>VERBS[it.verbIdx].tags.includes('ask')&&!VERBS[it.verbIdx].tags.includes('action'))`), true));
+test('potential object takes が, route を stays', () => {
+  const i = app.run(`VERBS.findIndex(v=>v.dict==='書（か）く')`);
+  assert.equal(app.run(`resolveConjSentence('conjs-${i}-potential-0').frameJp`), '私（わたし）は手紙（てがみ）が___。');
+  assert.equal(app.run(`resolveConjSentence('conjs-${i}-dict-1').frameJp`), '手紙（てがみ）を___ことができます。');
+  const j = app.run(`VERBS.findIndex(v=>v.dict==='渡（わた）る')`);
+  assert.equal(app.run(`resolveConjSentence('conjs-${j}-potential-0').frameJp`), '私（わたし）は橋（はし）を___。');
+});
+test('pools large enough for per-form drills', () => {
+  const n = form => app.run(`CONJ_SENTENCE_POOL.filter(it=>it.formKey==='${form}').length`);
+  assert.ok(n('passive') >= 10); assert.ok(n('causative') >= 10);
 });
 test('no slot token left', () => assert.equal(app.run(`CONJ_SENTENCE_POOL.every(it => { const q=resolveConjSentence(it.qid); return !q.frameJp.includes('{o}') && !q.promptEn.includes('{o}'); })`), true));
 test('excluded combos still resolve', () => assert.equal(app.run(`resolveConjSentence('conjs-8-te-0').model`), '死（し）んで'));
