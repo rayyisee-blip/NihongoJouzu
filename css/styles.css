@@ -696,3 +696,19 @@
     .tb-vocab-list{grid-template-columns:1fr;}
     .card{padding:22px 18px 24px;}
   }
+
+  /* History tab: one collapsible block per day, newest first. */
+  .hist-days{margin-top:14px;}
+  details.hist-day{border-top:1px solid var(--line); padding:8px 0;}
+  details.hist-day > summary{cursor:pointer; padding:4px 0;}
+  .hist-date{font-family:var(--font-display); font-weight:700; font-size:17px;}
+  .hist-count{margin-left:10px; font-size:13px; color:var(--ink-soft);}
+  .hist-list{list-style:none; padding:0; margin:6px 0 4px;}
+  .hist-list li{position:relative; padding:9px 0 9px 28px; border-top:1px dashed var(--line);}
+  .hist-mark{position:absolute; left:4px; top:9px; font-weight:700;}
+  .hist-mark.ok{color:var(--indigo);}
+  .hist-mark.miss{color:var(--vermillion);}
+  .hist-prompt{font-size:14px; color:var(--ink-soft);}
+  .hist-mode{margin-left:6px; font-family:var(--font-label); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); white-space:nowrap;}
+  .hist-answer{font-size:17px; font-weight:700; overflow-wrap:anywhere;}
+  .hist-yours{font-size:13px; color:var(--vermillion); overflow-wrap:anywhere;}

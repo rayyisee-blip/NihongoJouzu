@@ -75,6 +75,7 @@ function defaultProgress(){
     currentLesson: 1,
     seen: {},              // qKey -> {count, correct}
     dailyLog: {},           // date -> {qids:[], completed:bool}
+    history: [],            // answers from practice and conjugation rounds (see history.js)
     capstoneStatus: {},     // lessonNum -> 'locked'|'available'|'done'
     capstoneResults: {},    // lessonNum -> {sentenceIdx: 'good'|'retry'}
     reviewCapstoneStatus: {}, // block (5/10/15/20/25) -> 'available'|'done'
@@ -114,6 +115,7 @@ async function loadProgress(){
   if(!PROGRESS.reviewCapstoneStatus) PROGRESS.reviewCapstoneStatus = {};
   if(!PROGRESS.capstoneRequeue) PROGRESS.capstoneRequeue = [];
   if(!PROGRESS.dailyLog) PROGRESS.dailyLog = {};
+  if(!Array.isArray(PROGRESS.history)) PROGRESS.history = [];
   // Notes used to be a single freeform string; migrate any old save into
   // the new one-entry-per-note-bar array format so nothing is lost.
   if(typeof PROGRESS.notes === 'string'){

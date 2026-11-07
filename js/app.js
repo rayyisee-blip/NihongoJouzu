@@ -107,7 +107,7 @@ function render(){
   else if(activeTab==='conjugate') renderConjugate();
   else if(activeTab==='textbook') renderTextbook();
   else if(activeTab==='reading') renderReading();
-  else if(activeTab==='stats') renderStats();
+  else if(activeTab==='history') renderHistory();
   else if(activeTab==='notes') renderNotes();
 }
 
@@ -308,9 +308,13 @@ function selectAnswer(qid, q, pickedIdx){
     const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
     if(!dailySet.answers) dailySet.answers = {};
     dailySet.answers[qid] = { picked: pickedIdx, correct };
+    // Generated questions pick fresh options each time they are built, so
+    // the index alone can't say later what was chosen; History reads this.
+    if(!correct) dailySet.answers[qid].pickedText = q.choices[pickedIdx];
   }
 
   recordResult(qid, correct);
+  if(!isDaily) logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: q.choices[pickedIdx] });
 
   saveProgress();
   lockChoices(q, pickedIdx);
@@ -433,6 +437,8 @@ function finishTyped(qid, input, correct){
     const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
     if(!dailySet.answers) dailySet.answers = {};
     dailySet.answers[qid] = { correct, typed: input };
+  } else {
+    logHistory(PROGRESS, { qid, mode: quizState.mode, correct, typed: input });
   }
   saveProgress();
   quizState.idx += 1;
@@ -1025,44 +1031,72 @@ function renderReading(){
   });
 }
 
-function renderStats(){
-  const seenIds = Object.keys(PROGRESS.seen);
-  let totalAttempts=0, totalCorrect=0;
-  seenIds.forEach(id=>{
-    totalAttempts += PROGRESS.seen[id].count;
-    totalCorrect += PROGRESS.seen[id].correct;
-  });
-  const acc = totalAttempts>0 ? Math.round(100*totalCorrect/totalAttempts) : 0;
-  const lessonsDone = Object.values(PROGRESS.capstoneStatus).filter(s=>s==='done').length;
+/* ============================================================
+   HISTORY — the questions answered over the past 7 days, grouped by
+   day (see history.js). Backup & Restore also lives here.
+   ============================================================ */
+const HISTORY_MODE_LABELS = { daily:'Daily session', practice:'Practice round', conjugation:'Conjugation drill' };
 
-  let barsHtml = '';
-  LESSONS.filter(l=>l.n<=PROGRESS.currentLesson).forEach(l=>{
-    const ids = lessonQuestionIds(l.n);
-    let att=0, cor=0;
-    ids.forEach(id=>{
-      if(PROGRESS.seen[id]){ att+=PROGRESS.seen[id].count; cor+=PROGRESS.seen[id].correct; }
-    });
-    const pct = att>0 ? Math.round(100*cor/att) : 0;
-    barsHtml += `
-      <div class="barrow">
-        <div class="lname">L${l.n}</div>
-        <div class="barwrap"><div class="barfill" style="width:${pct}%"></div></div>
-        <div style="width:34px; text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px;">${pct}%</div>
-      </div>
-    `;
-  });
+// The question behind a logged qid, or null if it no longer resolves
+// (content that was removed or renamed since it was answered).
+function historyQuestion(qid){
+  try{ return qByQid(qid) || null; }catch(e){ return null; }
+}
+
+function historyDayLabel(date, today){
+  if(date === today) return 'Today';
+  if(date === recentDates(today, 2)[1]) return 'Yesterday';
+  const [y, m, d] = date.split('-').map(Number);
+  return new Date(y, m-1, d).toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'});
+}
+
+function historyItemHtml(e){
+  const q = historyQuestion(e.qid);
+  const isTyped = q.type === 'typed';
+  const prompt = isTyped ? q.promptEn : q.prompt;
+  // Conjugation drills show the whole sentence, not just the missing word.
+  let answer = isTyped ? q.model : q.choices[q.a];
+  if(q.kind === 'conj' && q.frameJp) answer = q.frameJp.replace('___', q.model);
+  let yours = '';
+  if(!e.correct){
+    // Older daily answers only have an index, which is only meaningful for the
+    // fixed lesson questions; generated ones (gen-) shuffle on every build.
+    const said = e.typed !== undefined ? e.typed
+      : e.pickedText !== undefined ? e.pickedText
+      : (e.picked !== undefined && q.choices && e.qid.indexOf('gen-') !== 0 ? q.choices[e.picked] : '');
+    if(said) yours = `<div class="hist-yours">You answered: ${escapeHtml(said)}</div>`;
+  }
+  return `<li>
+    <span class="hist-mark ${e.correct ? 'ok' : 'miss'}" aria-label="${e.correct ? 'Correct' : 'Missed'}">${e.correct ? '&#10003;' : '&#10007;'}</span>
+    <div class="hist-prompt">${escapeHtml(prompt)} <span class="hist-mode">${escapeHtml(HISTORY_MODE_LABELS[e.mode] || '')}</span></div>
+    <div class="hist-answer">${escapeHtml(answer)}</div>
+    ${yours}
+  </li>`;
+}
+
+function renderHistory(){
+  const today = todayStr();
+  const week = weekHistory(PROGRESS, today, 7)
+    .map(day => ({ date: day.date, entries: day.entries.filter(e => historyQuestion(e.qid)) }))
+    .filter(day => day.entries.length);
+  const sum = weekSummary(week);
+  const pct = sum.total ? Math.round(100*sum.correct/sum.total) : 0;
+
+  const daysHtml = week.map((day, i) => {
+    const ds = weekSummary([day]);
+    return `<details class="hist-day"${i === 0 ? ' open' : ''}>
+      <summary><span class="hist-date">${escapeHtml(historyDayLabel(day.date, today))}</span><span class="hist-count">${ds.correct} / ${ds.total} correct</span></summary>
+      <ul class="hist-list">${day.entries.map(historyItemHtml).join('')}</ul>
+    </details>`;
+  }).join('');
 
   main.innerHTML = `
-    <div class="statgrid">
-      <div class="statbox"><div class="num">${PROGRESS.streak}</div><div class="lbl">Day Streak</div></div>
-      <div class="statbox"><div class="num">${acc}%</div><div class="lbl">Overall Accuracy</div></div>
-      <div class="statbox"><div class="num">${lessonsDone}/25</div><div class="lbl">Lessons Complete</div></div>
-      <div class="statbox"><div class="num">${PROGRESS.totalStamps}</div><div class="lbl">Total Stamps</div></div>
-    </div>
     <div class="card"><div class="card-inner">
-      <div class="section-title" style="font-size:17px;">Mastery by Lesson</div>
-      <p class="muted">Accuracy across all attempts so far, current lesson and earlier.</p>
-      <div style="margin-top:16px;">${barsHtml || '<p class="muted">Answer some questions to see lesson breakdowns here.</p>'}</div>
+      <div class="section-title">History</div>
+      <p class="muted">The questions you answered in the past 7 days.</p>
+      ${sum.total
+        ? `<p class="muted" style="margin-top:10px; font-size:13px;">${sum.total} question${sum.total===1?'':'s'} &middot; ${sum.correct} correct (${pct}%)</p><div class="hist-days">${daysHtml}</div>`
+        : `<p class="muted" style="margin-top:14px;">Nothing yet this week. Finish a daily session, a practice round or a conjugation drill and it will show up here.</p>`}
     </div></div>
 
     <div class="card"><div class="card-inner">
