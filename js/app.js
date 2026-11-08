@@ -269,12 +269,8 @@ function renderQuizQuestion(){
   const qid = quizState.qids[quizState.idx];
   const q = qByQid(qid);
   const alreadyAnswered = quizState.answers[qid];
-  if(itemType(qid) === 'conj'){
-    renderConjChoiceQuestion(qid, q);
-    return;
-  }
   if(itemType(qid) !== 'mc'){
-    renderTypedQuestion(qid, q);
+    renderSentenceChoiceQuestion(qid, q);
     return;
   }
 
@@ -324,22 +320,12 @@ function selectAnswer(qid, q, pickedIdx){
   lockChoices(q, pickedIdx);
 }
 
-// ---------- Typed questions ----------
+// ---------- Sentence and conjugation questions (multiple choice) ----------
 
-// Meta line shared by multiple-choice and typed screens.
+// Meta line shared by every question screen.
 function quizMetaLine(q){
   const label = quizState.mode==='daily' ? 'Today’s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round';
-  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.kind==='conj' ? 'multiple choice' : q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
-}
-
-// Both lines of the "Not quite" diff come from one diffChars result.
-// You: your characters only (same + del, del struck out). Model: same + add (add underlined).
-function diffLinesHtml(yours, modelKana){
-  const d = diffChars(yours, modelKana);
-  const span = (x, op) => `<span class="diff-${op}">${escapeHtml(x.ch)}</span>`;
-  const youHtml = d.filter(x=>x.op!=='add').map(x=> x.op==='del' ? span(x,'del') : escapeHtml(x.ch)).join('');
-  const modelHtml = d.filter(x=>x.op!=='del').map(x=> x.op==='add' ? span(x,'add') : escapeHtml(x.ch)).join('');
-  return { youHtml, modelHtml };
+  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type==='typed' ? 'multiple choice' : q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
 }
 
 // Verb and form key behind a conjs-<verbIdx>-<formKey>-<frameIdx> id.
@@ -348,16 +334,23 @@ function conjParts(qid){
   return { verb: VERBS[Number(parts[1])], formKey: parts[2] };
 }
 
-// Multiple-choice screen for conjugation-in-sentence items: four forms of the
-// verb (see conjChoices). The pick is recorded at once; Next moves on.
-function renderConjChoiceQuestion(qid, q){
-  const { verb, formKey } = conjParts(qid);
-  const choices = conjChoices(verb, formKey);
+// Screen for sentence (type-) and conjugation (conjs-) items: four options,
+// built by sentenceChoices or conjChoices. Their records keep type:'typed'
+// and a model answer, which the summaries and History read. The pick is
+// recorded at once; Next moves on.
+function renderSentenceChoiceQuestion(qid, q){
+  const isConj = q.kind === 'conj';
+  const choices = isConj
+    ? (({verb, formKey}) => conjChoices(verb, formKey).map(text => ({text})))(conjParts(qid))
+    : sentenceChoices(qid);
+  const promptHtml = isConj
+    ? `<p class="frame-jp">${escapeHtml(q.frameJp).replace('___', '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')} <span class="muted">(${escapeHtml(q.dict)})</span></p>`
+    : `<p class="muted typed-hint">${escapeHtml(q.hint)}</p>`;
   main.innerHTML = `
     <div class="card"><div class="card-inner">
       <div class="qmeta">${quizMetaLine(q)}</div>
       <p class="qprompt">${escapeHtml(q.promptEn)}</p>
-      <p class="frame-jp">${escapeHtml(q.frameJp).replace('___', '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')} <span class="muted">(${escapeHtml(q.dict)})</span></p>
+      ${promptHtml}
       <div class="choices" id="choicesWrap"></div>
       <div id="feedbackArea"></div>
       <div class="nextbar" id="nextBar" style="display:none;">
@@ -366,17 +359,30 @@ function renderConjChoiceQuestion(qid, q){
     </div></div>
   `;
   const wrap = document.getElementById('choicesWrap');
-  choices.forEach(text=>{
+  choices.forEach(opt=>{
     const btn = document.createElement('button');
     btn.className = 'choice';
     btn.lang = 'ja';
-    btn.textContent = text;
-    btn.addEventListener('click', ()=> pickConjChoice(qid, q, verb, formKey, text));
+    btn.textContent = opt.text;
+    btn.addEventListener('click', ()=> pickSentenceChoice(qid, q, opt));
     wrap.appendChild(btn);
   });
 }
 
-function pickConjChoice(qid, q, verb, formKey, picked){
+// Why a wrong option is wrong: the conjugation slip, the swapped particle,
+// or what the other sentence actually says.
+function choiceSlip(qid, q, opt){
+  if(q.kind === 'conj'){
+    const { verb, formKey } = conjParts(qid);
+    return diagnoseConj(verb, formKey, opt.text) || '';
+  }
+  if(opt.kind === 'particle') return `Particle: that one uses ${opt.used}, this needs ${opt.needed}.`;
+  if(opt.kind === 'other') return `That one means: “${opt.en}”`;
+  return '';
+}
+
+function pickSentenceChoice(qid, q, opt){
+  const picked = opt.text;
   const correct = picked === q.model;
   Array.from(document.getElementById('choicesWrap').children).forEach(btn=>{
     btn.disabled = true;
@@ -395,18 +401,22 @@ function pickConjChoice(qid, q, verb, formKey, picked){
   }
   saveProgress();
 
-  const sentence = `<div class="verdict-model" lang="ja">${escapeHtml(q.frameJp).replace('___', `<b class="conj-chg">${escapeHtml(q.model)}</b>`)}</div>`;
+  const isConj = q.kind === 'conj';
+  const sentence = isConj
+    ? `<div class="verdict-model" lang="ja">${escapeHtml(q.frameJp).replace('___', `<b class="conj-chg">${escapeHtml(q.model)}</b>`)}</div>`
+    : `<div class="verdict-model" lang="ja">${escapeHtml(q.model)}</div>`;
+  const why = (isConj ? [q.use, q.explain] : [q.explain]).filter(Boolean);
   const area = document.getElementById('feedbackArea');
   if(correct){
-    area.innerHTML = `<div class="feedback-note verdict-ok"><strong>Correct</strong>${sentence}<p class="verdict-line">${escapeHtml(q.use)}</p></div>`;
+    area.innerHTML = `<div class="feedback-note verdict-ok"><strong>Correct</strong>${sentence}<p class="verdict-line">${escapeHtml(why[0] || '')}</p></div>`;
   } else {
-    const specific = diagnoseConj(verb, formKey, picked) || '';
+    const specific = choiceSlip(qid, q, opt);
     area.innerHTML = `
       <div class="feedback-note verdict-bad">
         <strong>Not quite</strong>
         ${sentence}
         ${specific ? `<p class="verdict-line">${escapeHtml(specific)}</p>` : ''}
-        ${[q.use, q.explain].filter(Boolean).map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
+        ${why.map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
       </div>`;
   }
   document.getElementById('nextBar').style.display = 'flex';
@@ -414,107 +424,6 @@ function pickConjChoice(qid, q, verb, formKey, picked){
     quizState.idx += 1;
     renderQuizQuestion();
   };
-}
-
-// Typed screen for sentence items. The result is
-// held until Next so "I was right" can still flip it; only then is it recorded.
-function renderTypedQuestion(qid, q){
-  const isConj = q.kind === 'conj';
-  const promptHtml = isConj
-    ? `<p class="qprompt">${escapeHtml(q.promptEn)}</p>
-       <p class="frame-jp">${escapeHtml(q.frameJp).replace('___', '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')} <span class="muted">(${escapeHtml(q.dict)})</span></p>`
-    : `<p class="qprompt">${escapeHtml(q.promptEn)}</p>
-       <p class="muted typed-hint">${escapeHtml(q.hint)}</p>`;
-
-  main.innerHTML = `
-    <div class="card"><div class="card-inner">
-      <div class="qmeta">${quizMetaLine(q)}</div>
-      ${promptHtml}
-      <div class="typed-row">
-        <input type="text" id="typedInput" class="typed-input" lang="ja" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="${isConj ? 'Type the missing word' : 'Type in Japanese or romaji'}">
-        <button class="primary" id="checkBtn">Check</button>
-      </div>
-      <div id="feedbackArea"></div>
-      <div class="nextbar" id="nextBar" style="display:none;">
-        <button class="primary" id="nextBtn">Next &rarr;</button>
-      </div>
-    </div></div>
-  `;
-  const input = document.getElementById('typedInput');
-  const checkBtn = document.getElementById('checkBtn');
-  input.focus();
-
-  let finalCorrect = null;
-  function runCheck(){
-    if(finalCorrect !== null) return;
-    const value = input.value;
-    const res = checkTyped(value, q.model);
-    if(res.kind === 'empty') return;   // nothing typed: no verdict, nothing recorded
-    finalCorrect = res.correct;
-    input.disabled = true;
-    checkBtn.style.display = 'none';
-    showTypedVerdict(qid, q, value, res, ()=>{ finalCorrect = true; });
-    document.getElementById('nextBar').style.display = 'flex';
-    document.getElementById('nextBtn').onclick = ()=> finishTyped(qid, value, finalCorrect);
-  }
-  checkBtn.addEventListener('click', runCheck);
-  input.addEventListener('keydown', e=>{
-    if(e.key === 'Enter'){ e.preventDefault(); runCheck(); }
-  });
-}
-
-function showTypedVerdict(qid, q, value, res, markCorrect){
-  const area = document.getElementById('feedbackArea');
-  // No furigana helper exists in the app, so the model is shown as stored.
-  const modelHtml = `<div class="verdict-model">${escapeHtml(q.model)}</div>`;
-  if(res.correct){
-    area.innerHTML = `<div class="feedback-note verdict-ok"><strong>Correct</strong>${modelHtml}</div>`;
-    return;
-  }
-  const isConj = q.kind === 'conj';
-  const diff = diffLinesHtml(normalizeAnswer(value), res.expected);
-  let specific = '';
-  // Conjugation items skip particle diagnosis so diagnoseConj gets its turn.
-  if(res.kind === 'particle' && !isConj){
-    specific = `Particle: you used ${res.used}, this needs ${res.needed}.`;
-  } else if(isConj){
-    const { verb, formKey } = conjParts(qid);
-    specific = diagnoseConj(verb, formKey, value) || '';
-  }
-  const why = isConj ? [q.use, q.explain] : [q.explain];
-  area.innerHTML = `
-    <div class="feedback-note verdict-bad">
-      <div id="verdictStatus"><strong>Not quite</strong></div>
-      <div class="diff-block">
-        <div class="diff-line"><span class="diff-label">You</span> ${diff.youHtml}</div>
-        <div class="diff-line"><span class="diff-label">Model</span> ${diff.modelHtml}</div>
-      </div>
-      ${modelHtml}
-      ${specific ? `<p class="verdict-line">${escapeHtml(specific)}</p>` : ''}
-      ${why.filter(Boolean).map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
-      <button class="ghost" id="rightBtn" style="margin-top:8px;">I was right</button>
-    </div>`;
-  document.getElementById('rightBtn').addEventListener('click', ()=>{
-    markCorrect();
-    document.getElementById('verdictStatus').innerHTML = '<strong>Counted as correct.</strong>';
-    document.getElementById('rightBtn').remove();
-  });
-}
-
-// Writes a typed result (called when Next is pressed) and moves on.
-function finishTyped(qid, input, correct){
-  recordResult(qid, correct);
-  quizState.answers[qid] = { correct, typed: input };
-  if(quizState.mode === 'daily'){
-    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
-    if(!dailySet.answers) dailySet.answers = {};
-    dailySet.answers[qid] = { correct, typed: input };
-  } else {
-    logHistory(PROGRESS, { qid, mode: quizState.mode, correct, typed: input });
-  }
-  saveProgress();
-  quizState.idx += 1;
-  renderQuizQuestion();
 }
 
 // Shared by the daily and conjugation-round summaries: each missed item with its right answer.

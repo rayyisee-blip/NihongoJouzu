@@ -55,3 +55,31 @@ test('ensureTodaysSession reuse returns the same object', () => {
   const first = app.run(`ensureTodaysSession(PROGRESS,'2026-11-01',3)`);
   assert.equal(app.run(`ensureTodaysSession(PROGRESS,'2026-11-01',3) === PROGRESS.dailyLog['2026-11-01']`), true);
 });
+
+// Multiple-choice options for sentence items.
+const choicesOf = id => JSON.parse(app.run(`JSON.stringify(sentenceChoices(${JSON.stringify(id)}))`));
+const idFor = jp => app.run(`typedSentenceIdsUpTo(25).find(id => resolveTypedSentence(id).model === ${JSON.stringify(jp)})`);
+test('sentenceChoices gives 4 distinct options with the answer once, for every sentence', () => assert.deepEqual(JSON.parse(app.run(`JSON.stringify(typedSentenceIdsUpTo(25).filter(id => {
+  const c = sentenceChoices(id).map(o => o.text), model = resolveTypedSentence(id).model;
+  return c.length !== 4 || new Set(c).size !== 4 || c.filter(x => x === model).length !== 1;
+}))`)), []));
+test('sentenceChoices swaps one particle for a clearly wrong one', () => {
+  const c = choicesOf(idFor('庭（にわ）に 犬（いぬ）が います。'));
+  const swaps = c.filter(o => o.kind === 'particle').map(o => o.text).sort();
+  assert.deepEqual(swaps, ['庭（にわ）に 犬（いぬ）に います。', '庭（にわ）を 犬（いぬ）が います。']);
+  assert.deepEqual(c.find(o => o.text === '庭（にわ）を 犬（いぬ）が います。'), {text:'庭（にわ）を 犬（いぬ）が います。', kind:'particle', used:'を', needed:'に'});
+});
+test('sentenceChoices leaves この and て-form + も alone', () => {
+  const texts = [idFor('この 町（まち）は 静（しず）かです。'), idFor('エアコンを つけても いいですか。')]
+    .flatMap(id => choicesOf(id).filter(o => o.kind === 'particle').map(o => o.text));
+  assert.equal(texts.some(t => /^こ[をへにが] |つけて[^も]/.test(t)), false);
+});
+test('other-sentence options carry their meaning', () => {
+  const c = choicesOf(idFor('3,000円（えん）です。'));
+  assert.equal(c.filter(o => o.kind === 'other').length, 3);
+  assert.ok(c.filter(o => o.kind === 'other').every(o => o.en));
+});
+test('a noun ending in ん still gets its particle swapped', () => {
+  const swaps = choicesOf(idFor('朝（あさ）ごはんを 食（た）べます。')).filter(o => o.kind === 'particle').map(o => o.text);
+  assert.deepEqual(swaps, ['朝（あさ）ごはんへ 食（た）べます。']);
+});
