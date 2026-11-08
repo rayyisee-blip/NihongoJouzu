@@ -96,3 +96,17 @@ test('recordResult wrong resets box', () => {
   assert.equal(app.run(`PROGRESS.seen['conjs-0-te-1'].box`), 1);
   assert.equal(app.run(`PROGRESS.seen['conjs-0-te-1'].count`), 2);
 });
+
+// Multiple-choice options: the right form plus three predictable mistakes.
+test('conjChoices gives 4 distinct options with the answer once, for every pool item', () => assert.deepEqual(JSON.parse(app.run(`JSON.stringify(CONJ_SENTENCE_POOL.filter(it => {
+  const v = VERBS[it.verbIdx], c = conjChoices(v, it.formKey), model = computeForms(v)[it.formKey];
+  return c.length !== 4 || new Set(c).size !== 4 || c.filter(x => x === model).length !== 1;
+}).map(it => it.qid))`)), []));
+test('conjChoices leads with the wrong-group mistake', () => {
+  const i = app.run(`VERBS.findIndex(v=>v.dict==='帰（かえ）る')`);
+  assert.equal(app.run(`conjChoices(VERBS[${i}], 'nai').includes('帰（かえ）ない')`), true);
+});
+test('diagnoseConj names the slip for a picked option with readings', () => {
+  const i = app.run(`VERBS.findIndex(v=>v.dict==='泳（およ）ぐ')`);
+  assert.equal(app.run(`diagnoseConj(VERBS[${i}], 'te', '泳（およ）いて')`), 'Verbs ending in ぐ take いで: 泳（およ）いで.');
+});

@@ -269,6 +269,10 @@ function renderQuizQuestion(){
   const qid = quizState.qids[quizState.idx];
   const q = qByQid(qid);
   const alreadyAnswered = quizState.answers[qid];
+  if(itemType(qid) === 'conj'){
+    renderConjChoiceQuestion(qid, q);
+    return;
+  }
   if(itemType(qid) !== 'mc'){
     renderTypedQuestion(qid, q);
     return;
@@ -325,7 +329,7 @@ function selectAnswer(qid, q, pickedIdx){
 // Meta line shared by multiple-choice and typed screens.
 function quizMetaLine(q){
   const label = quizState.mode==='daily' ? 'Today’s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round';
-  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
+  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.kind==='conj' ? 'multiple choice' : q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
 }
 
 // Both lines of the "Not quite" diff come from one diffChars result.
@@ -344,7 +348,75 @@ function conjParts(qid){
   return { verb: VERBS[Number(parts[1])], formKey: parts[2] };
 }
 
-// Typed screen for sentence and conjugation-in-sentence items. The result is
+// Multiple-choice screen for conjugation-in-sentence items: four forms of the
+// verb (see conjChoices). The pick is recorded at once; Next moves on.
+function renderConjChoiceQuestion(qid, q){
+  const { verb, formKey } = conjParts(qid);
+  const choices = conjChoices(verb, formKey);
+  main.innerHTML = `
+    <div class="card"><div class="card-inner">
+      <div class="qmeta">${quizMetaLine(q)}</div>
+      <p class="qprompt">${escapeHtml(q.promptEn)}</p>
+      <p class="frame-jp">${escapeHtml(q.frameJp).replace('___', '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>')} <span class="muted">(${escapeHtml(q.dict)})</span></p>
+      <div class="choices" id="choicesWrap"></div>
+      <div id="feedbackArea"></div>
+      <div class="nextbar" id="nextBar" style="display:none;">
+        <button class="primary" id="nextBtn">Next &rarr;</button>
+      </div>
+    </div></div>
+  `;
+  const wrap = document.getElementById('choicesWrap');
+  choices.forEach(text=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.lang = 'ja';
+    btn.textContent = text;
+    btn.addEventListener('click', ()=> pickConjChoice(qid, q, verb, formKey, text));
+    wrap.appendChild(btn);
+  });
+}
+
+function pickConjChoice(qid, q, verb, formKey, picked){
+  const correct = picked === q.model;
+  Array.from(document.getElementById('choicesWrap').children).forEach(btn=>{
+    btn.disabled = true;
+    if(btn.textContent === q.model) btn.classList.add('correct');
+    else if(btn.textContent === picked) btn.classList.add('incorrect');
+  });
+
+  recordResult(qid, correct);
+  quizState.answers[qid] = { correct, pickedText: picked };
+  if(quizState.mode === 'daily'){
+    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
+    if(!dailySet.answers) dailySet.answers = {};
+    dailySet.answers[qid] = { correct, pickedText: picked };
+  } else {
+    logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: picked });
+  }
+  saveProgress();
+
+  const sentence = `<div class="verdict-model" lang="ja">${escapeHtml(q.frameJp).replace('___', `<b class="conj-chg">${escapeHtml(q.model)}</b>`)}</div>`;
+  const area = document.getElementById('feedbackArea');
+  if(correct){
+    area.innerHTML = `<div class="feedback-note verdict-ok"><strong>Correct</strong>${sentence}<p class="verdict-line">${escapeHtml(q.use)}</p></div>`;
+  } else {
+    const specific = diagnoseConj(verb, formKey, picked) || '';
+    area.innerHTML = `
+      <div class="feedback-note verdict-bad">
+        <strong>Not quite</strong>
+        ${sentence}
+        ${specific ? `<p class="verdict-line">${escapeHtml(specific)}</p>` : ''}
+        ${[q.use, q.explain].filter(Boolean).map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
+      </div>`;
+  }
+  document.getElementById('nextBar').style.display = 'flex';
+  document.getElementById('nextBtn').onclick = ()=>{
+    quizState.idx += 1;
+    renderQuizQuestion();
+  };
+}
+
+// Typed screen for sentence items. The result is
 // held until Next so "I was right" can still flip it; only then is it recorded.
 function renderTypedQuestion(qid, q){
   const isConj = q.kind === 'conj';
@@ -855,7 +927,7 @@ function renderConjugate(){
   main.innerHTML = `
     <div class="card"><div class="card-inner">
       <div class="section-title">Conjugation Drill</div>
-      <p class="muted">Drill any verb in any form inside a real sentence, independent of your lesson pace. Type the conjugated verb; if you slip, you'll see which rule you broke (verb group, godan branch, or wrong tense).</p>
+      <p class="muted">Drill any verb in any form inside a real sentence, independent of your lesson pace. Pick the right form of the verb from four options; if you slip, you'll see which rule you broke (verb group, godan branch, or wrong tense).</p>
       <p class="muted" style="margin-top:10px; font-size:12px;">${VERBS.length} verbs &middot; ${Object.keys(FORM_LABELS).length} forms each &middot; ${seenConj}/${CONJ_SENTENCE_POOL.length} sentence drills practiced so far</p>
       ${drillMenuHtml()}
     </div></div>

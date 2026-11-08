@@ -147,13 +147,36 @@ function generateMistakes(verb, formKey, opts){
   return out.filter(m=>m.text!==correct);
 }
 
-// Names the slip behind a wrong typed answer, or null when it isn't one of
+// Four shuffled options for a conjugation item: the right form plus three
+// predictable mistakes, one of each kind first (wrong group, wrong godan
+// branch, neighbouring form) so the options test different rules. When the
+// mistakes run short (a る-verb's て-form has only one), the verb's other
+// forms fill the gaps. Forms that read the same as the answer are skipped
+// (食べられる is both potential and passive).
+function conjChoices(verb, formKey, rand){
+  rand = rand || Math.random;
+  const forms = computeForms(verb);
+  const correct = forms[formKey];
+  const mistakes = generateMistakes(verb, formKey);
+  const picked = [];
+  const add = t => { if(t && t !== correct && !picked.includes(t) && picked.length < 3) picked.push(t); };
+  ['group','branch','tense'].forEach(kind => {
+    const m = shuffle(mistakes.filter(x => x.kind === kind), rand)[0];
+    if(m) add(m.text);
+  });
+  shuffle(mistakes, rand).forEach(m => add(m.text));
+  shuffle(Object.keys(forms).filter(k => k !== formKey), rand).forEach(k => add(forms[k]));
+  return shuffle([correct, ...picked], rand);
+}
+
+// Names the slip behind a wrong answer, or null when it isn't one of
 // the predictable mistakes. Readings are stripped by matching the mistake
-// through buildAnswerRegex, so kana-only and kanji answers both match.
+// through buildAnswerRegex, so kana-only and kanji answers both match; a
+// picked option still carrying its readings matches the mistake text exactly.
 function diagnoseConj(verb, formKey, input){
   const norm = normalizeAnswer(input);
   const model = computeForms(verb)[formKey];
-  const hit = generateMistakes(verb, formKey, {allBranches:true}).find(m=>buildAnswerRegex(m.text).test(norm));
+  const hit = generateMistakes(verb, formKey, {allBranches:true}).find(m=>m.text===input || buildAnswerRegex(m.text).test(norm));
   if(!hit) return null;
   if(hit.kind==='group')
     return `${verb.dict} is Group ${verb.group}${verb.trap ? " (looks like a る-verb but isn't)" : ''}, so the ${FORM_LABELS[formKey]} is ${model}.`;
