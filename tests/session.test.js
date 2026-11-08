@@ -83,3 +83,21 @@ test('a noun ending in ん still gets its particle swapped', () => {
   const swaps = choicesOf(idFor('朝（あさ）ごはんを 食（た）べます。')).filter(o => o.kind === 'particle').map(o => o.text);
   assert.deepEqual(swaps, ['朝（あさ）ごはんへ 食（た）べます。']);
 });
+
+// "Try again": a question goes back into the running sequence a few places later.
+const retry = (seq, idx, item, gap) => JSON.parse(app.run(`JSON.stringify(withRetry(${JSON.stringify(seq)}, ${idx}, ${JSON.stringify(item)}${gap === undefined ? '' : ', ' + gap}))`));
+test('withRetry puts the item back three questions later', () => {
+  assert.deepEqual(retry(['a','b','c','d','e','f'], 0, 'a'), ['a','b','c','d','a','e','f']);
+});
+test('withRetry goes to the end when fewer questions remain', () => {
+  assert.deepEqual(retry(['a','b','c'], 1, 'b'), ['a','b','c','b']);
+  assert.deepEqual(retry(['a','b'], 1, 'b'), ['a','b','b']);
+});
+test('withRetry does not queue an item that is already waiting', () => {
+  assert.deepEqual(retry(['a','b','a'], 0, 'a'), ['a','b','a']);
+});
+test('withRetry does not change the sequence it was given', () => {
+  const seq = ['a','b','c'];
+  app.run(`var __seq = ${JSON.stringify(seq)}; withRetry(__seq, 0, 'a')`);
+  assert.deepEqual(JSON.parse(app.run(`JSON.stringify(__seq)`)), seq);
+});

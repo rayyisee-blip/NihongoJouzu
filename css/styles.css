@@ -315,7 +315,7 @@
     font-size:14px;
     color:var(--ink-soft);
   }
-  .nextbar{margin-top:20px; display:flex; justify-content:flex-end;}
+  .nextbar{margin-top:20px; display:flex; justify-content:flex-end; gap:10px;}
 
   /* ---------- Typed answers ---------- */
   .typed-hint{margin:-10px 0 16px; font-size:13px;}

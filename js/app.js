@@ -238,11 +238,19 @@ function renderToday(){
   if(requeueBtn) requeueBtn.addEventListener('click', startRequeueCapstone);
 }
 
+// The order questions are shown in. It starts as the round's ids; "Try again"
+// puts a question back into it (see withRetry). quizState.qids never changes,
+// so scoring and the saved daily set stay as they were.
+function quizSeq(){
+  if(!quizState.seq) quizState.seq = quizState.qids.slice();
+  return quizState.seq;
+}
+
 function renderQuizQuestion(){
   const isDaily = quizState.mode === 'daily';
   const dailySet = isDaily ? PROGRESS.dailyLog[quizState.date || todayStr()] : null;
 
-  if(quizState.idx >= quizState.qids.length){
+  if(quizState.idx >= quizSeq().length){
     const qids = quizState.qids;
     const isConj = quizState.mode === 'conjugation';
     const roundAnswers = quizState.answers || {};
@@ -266,9 +274,8 @@ function renderQuizQuestion(){
     render();
     return;
   }
-  const qid = quizState.qids[quizState.idx];
+  const qid = quizSeq()[quizState.idx];
   const q = qByQid(qid);
-  const alreadyAnswered = quizState.answers[qid];
   if(itemType(qid) !== 'mc'){
     renderSentenceChoiceQuestion(qid, q);
     return;
@@ -280,9 +287,7 @@ function renderQuizQuestion(){
       <p class="qprompt">${q.prompt}</p>
       <div class="choices" id="choicesWrap"></div>
       <div id="feedbackArea"></div>
-      <div class="nextbar" id="nextBar" style="display:none;">
-        <button class="primary" id="nextBtn">Next &rarr;</button>
-      </div>
+      ${nextBarHtml()}
     </div></div>
   `;
   const wrap = document.getElementById('choicesWrap');
@@ -293,28 +298,49 @@ function renderQuizQuestion(){
     btn.addEventListener('click', ()=> selectAnswer(qid, q, i));
     wrap.appendChild(btn);
   });
+}
 
-  if(alreadyAnswered){
-    lockChoices(q, alreadyAnswered.picked);
-  }
+// Next and Try again, shown once a question is answered. Try again moves on
+// like Next, and the question comes back a few questions later.
+function nextBarHtml(){
+  return `<div class="nextbar" id="nextBar" style="display:none;">
+    <button class="ghost" id="tryAgainBtn">Try again</button>
+    <button class="primary" id="nextBtn">Next &rarr;</button>
+  </div>`;
+}
+function showNextBar(qid){
+  document.getElementById('nextBar').style.display = 'flex';
+  document.getElementById('nextBtn').onclick = ()=>{
+    quizState.idx += 1;
+    renderQuizQuestion();
+  };
+  document.getElementById('tryAgainBtn').onclick = ()=>{
+    quizState.seq = withRetry(quizSeq(), quizState.idx, qid);
+    quizState.idx += 1;
+    renderQuizQuestion();
+  };
 }
 
 function selectAnswer(qid, q, pickedIdx){
   const isDaily = quizState.mode === 'daily';
   const correct = pickedIdx === q.a;
-  quizState.answers[qid] = { picked: pickedIdx, correct };
-
-  if(isDaily){
-    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
-    if(!dailySet.answers) dailySet.answers = {};
-    dailySet.answers[qid] = { picked: pickedIdx, correct };
-    // Generated questions pick fresh options each time they are built, so
-    // the index alone can't say later what was chosen; History reads this.
-    if(!correct) dailySet.answers[qid].pickedText = q.choices[pickedIdx];
+  // A question shown again by Try again is practice: it moves the Leitner box
+  // but leaves the first attempt in the score, the saved set and History.
+  const isRetry = qid in quizState.answers;
+  if(!isRetry){
+    quizState.answers[qid] = { picked: pickedIdx, correct };
+    if(isDaily){
+      const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
+      if(!dailySet.answers) dailySet.answers = {};
+      dailySet.answers[qid] = { picked: pickedIdx, correct };
+      // Generated questions pick fresh options each time they are built, so
+      // the index alone can't say later what was chosen; History reads this.
+      if(!correct) dailySet.answers[qid].pickedText = q.choices[pickedIdx];
+    }
   }
 
   recordResult(qid, correct);
-  if(!isDaily) logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: q.choices[pickedIdx] });
+  if(!isDaily && !isRetry) logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: q.choices[pickedIdx] });
 
   saveProgress();
   lockChoices(q, pickedIdx);
@@ -325,7 +351,7 @@ function selectAnswer(qid, q, pickedIdx){
 // Meta line shared by every question screen.
 function quizMetaLine(q){
   const label = quizState.mode==='daily' ? 'Today’s Quiz' : quizState.mode==='conjugation' ? 'Conjugation Drill' : 'Practice Round';
-  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type==='typed' ? 'multiple choice' : q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizState.qids.length}`;
+  return `${q.kind==='conj' ? 'Conjugation Drill' : 'Lesson '+q.lesson} &middot; ${q.type==='typed' ? 'multiple choice' : q.type} &middot; ${label} &middot; Question ${quizState.idx+1} of ${quizSeq().length}${q.qid in quizState.answers ? ' &middot; Try again' : ''}`;
 }
 
 // Verb and form key behind a conjs-<verbIdx>-<formKey>-<frameIdx> id.
@@ -353,9 +379,7 @@ function renderSentenceChoiceQuestion(qid, q){
       ${promptHtml}
       <div class="choices" id="choicesWrap"></div>
       <div id="feedbackArea"></div>
-      <div class="nextbar" id="nextBar" style="display:none;">
-        <button class="primary" id="nextBtn">Next &rarr;</button>
-      </div>
+      ${nextBarHtml()}
     </div></div>
   `;
   const wrap = document.getElementById('choicesWrap');
@@ -391,13 +415,16 @@ function pickSentenceChoice(qid, q, opt){
   });
 
   recordResult(qid, correct);
-  quizState.answers[qid] = { correct, pickedText: picked };
-  if(quizState.mode === 'daily'){
-    const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
-    if(!dailySet.answers) dailySet.answers = {};
-    dailySet.answers[qid] = { correct, pickedText: picked };
-  } else {
-    logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: picked });
+  // As in selectAnswer: only the first attempt is scored and logged.
+  if(!(qid in quizState.answers)){
+    quizState.answers[qid] = { correct, pickedText: picked };
+    if(quizState.mode === 'daily'){
+      const dailySet = PROGRESS.dailyLog[quizState.date || todayStr()];
+      if(!dailySet.answers) dailySet.answers = {};
+      dailySet.answers[qid] = { correct, pickedText: picked };
+    } else {
+      logHistory(PROGRESS, { qid, mode: quizState.mode, correct, pickedText: picked });
+    }
   }
   saveProgress();
 
@@ -419,11 +446,7 @@ function pickSentenceChoice(qid, q, opt){
         ${why.map(t=>`<p class="verdict-line">${escapeHtml(t)}</p>`).join('')}
       </div>`;
   }
-  document.getElementById('nextBar').style.display = 'flex';
-  document.getElementById('nextBtn').onclick = ()=>{
-    quizState.idx += 1;
-    renderQuizQuestion();
-  };
+  showNextBar(qid);
 }
 
 // Shared by the daily and conjugation-round summaries: each missed item with its right answer.
@@ -498,11 +521,7 @@ function lockChoices(q, pickedIdx){
     else if(i===pickedIdx) btn.classList.add('incorrect');
   });
   document.getElementById('feedbackArea').innerHTML = `<div class="feedback-note">${q.note}</div>`;
-  document.getElementById('nextBar').style.display = 'flex';
-  document.getElementById('nextBtn').onclick = ()=>{
-    quizState.idx += 1;
-    renderQuizQuestion();
-  };
+  showNextBar(q.qid);
 }
 
 // capstoneState shapes:
@@ -524,15 +543,20 @@ function startRequeueCapstone(){
   renderCapstone();
 }
 function renderCapstone(){
-  const sentence = capstoneState.list[capstoneState.idx];
-  const isLast = capstoneState.idx === capstoneState.list.length - 1;
+  // order holds positions in list; Try again puts one back (see withRetry),
+  // and list itself is never touched, so results stay keyed by list position.
+  if(!capstoneState.order) capstoneState.order = capstoneState.list.map((_, i)=> i);
+  const order = capstoneState.order;
+  const pos = order[capstoneState.idx];
+  const isRetry = order.indexOf(pos) < capstoneState.idx;
+  const sentence = capstoneState.list[pos];
   const heading = capstoneState.mode==='lesson' ? `Lesson ${capstoneState.lessonNum} Capstone`
     : capstoneState.mode==='review' ? REVIEW_CAPSTONES.find(r=>r.block===capstoneState.lessonNum).title
     : 'Needs-Work Review';
 
   main.innerHTML = `
     <div class="card"><div class="card-inner">
-      <div class="qmeta">${heading} &middot; ${capstoneState.idx+1} of ${capstoneState.list.length}</div>
+      <div class="qmeta">${heading} &middot; ${capstoneState.idx+1} of ${order.length}${isRetry ? ' &middot; Try again' : ''}</div>
       <p class="en-sentence">&ldquo;${sentence.en}&rdquo;</p>
       <textarea id="capInput" placeholder="Type your Japanese translation here..."></textarea>
       <div style="margin-top:14px;" id="capActionArea">
@@ -542,7 +566,15 @@ function renderCapstone(){
     </div></div>
   `;
 
-  document.getElementById('revealBtn').addEventListener('click', ()=>{
+  // The answer can be revealed with nothing typed; the label says so.
+  const capInput = document.getElementById('capInput');
+  const revealBtn = document.getElementById('revealBtn');
+  capInput.addEventListener('input', ()=>{
+    revealBtn.textContent = capInput.value.trim() ? 'Show Model Answer' : 'Skip & Show Model Answer';
+  });
+  revealBtn.textContent = 'Skip & Show Model Answer';
+
+  revealBtn.addEventListener('click', ()=>{
     const checkHtml = sentence.check ? `
       <div class="feedback-note" style="margin-top:12px;">
         <b>Check your answer for:</b>
@@ -557,25 +589,21 @@ function renderCapstone(){
       <div class="selfgrade">
         <button class="ghost" id="gotItBtn">✓ Got it right</button>
         <button class="ghost" id="retryBtn">Needs more work</button>
+        <button class="ghost" id="tryAgainBtn">Try again</button>
       </div>
     `;
     document.getElementById('capActionArea').innerHTML = '';
     document.getElementById('gotItBtn').addEventListener('click', ()=> gradeCapstone(true));
     document.getElementById('retryBtn').addEventListener('click', ()=> gradeCapstone(false));
+    // Try again grades nothing now: the sentence comes back a few sentences later.
+    document.getElementById('tryAgainBtn').addEventListener('click', ()=>{
+      capstoneState.order = withRetry(order, capstoneState.idx, pos);
+      advance();
+    });
   });
 
-  function gradeCapstone(good){
-    if(capstoneState.mode==='lesson'){
-      if(!PROGRESS.capstoneResults[capstoneState.lessonNum]) PROGRESS.capstoneResults[capstoneState.lessonNum] = {};
-      PROGRESS.capstoneResults[capstoneState.lessonNum][capstoneState.idx] = good ? 'good' : 'retry';
-      if(!good) requeueSentence(sentence);
-    } else if(capstoneState.mode==='review'){
-      if(!good) requeueSentence(sentence);
-    } else if(capstoneState.mode==='requeue' && good){
-      PROGRESS.capstoneRequeue = PROGRESS.capstoneRequeue.filter(x=>x.jp!==sentence.jp);
-    }
-    saveProgress();
-    if(isLast){
+  function advance(){
+    if(capstoneState.idx === capstoneState.order.length - 1){
       if(capstoneState.mode==='lesson') completeCapstone(capstoneState.lessonNum);
       else if(capstoneState.mode==='review') PROGRESS.reviewCapstoneStatus[capstoneState.lessonNum] = 'done';
       saveProgress();
@@ -585,6 +613,23 @@ function renderCapstone(){
       capstoneState.idx += 1;
       renderCapstone();
     }
+  }
+
+  function gradeCapstone(good){
+    if(capstoneState.mode==='lesson'){
+      if(!PROGRESS.capstoneResults[capstoneState.lessonNum]) PROGRESS.capstoneResults[capstoneState.lessonNum] = {};
+      PROGRESS.capstoneResults[capstoneState.lessonNum][pos] = good ? 'good' : 'retry';
+      if(!good) requeueSentence(sentence);
+    } else if(capstoneState.mode==='review'){
+      if(!good) requeueSentence(sentence);
+    } else if(capstoneState.mode==='requeue' && good){
+      PROGRESS.capstoneRequeue = PROGRESS.capstoneRequeue.filter(x=>x.jp!==sentence.jp);
+    }
+    // Getting a sentence right on a retry clears the "needs more work" mark
+    // an earlier attempt in this run may have left.
+    if(good && isRetry) PROGRESS.capstoneRequeue = PROGRESS.capstoneRequeue.filter(x=>x.jp!==sentence.jp);
+    saveProgress();
+    advance();
   }
 }
 

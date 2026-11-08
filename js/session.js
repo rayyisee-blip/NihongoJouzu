@@ -100,6 +100,20 @@ function sentenceChoices(qid, rand){
   return shuffle([{ text: q.model, kind: 'answer' }, ...picked], rand);
 }
 
+// "Try again": the item at position idx goes back into the sequence a few
+// places later (RETRY_GAP other questions in between, or the end if fewer
+// remain), so it comes back during the same round or session. Returns a new
+// array; an item that is already waiting later in the sequence is not queued
+// twice. Used for question ids and for capstone sentence positions alike.
+const RETRY_GAP = 3;
+function withRetry(seq, idx, item, gap){
+  const out = seq.slice();
+  if(out.indexOf(item, idx + 1) !== -1) return out;
+  const pos = Math.min(idx + 1 + (gap === undefined ? RETRY_GAP : gap), out.length);
+  out.splice(pos, 0, item);
+  return out;
+}
+
 function itemType(qid){
   if(qid.indexOf('type-') === 0) return 'typed';
   if(qid.indexOf('conjs-') === 0) return 'conj';
