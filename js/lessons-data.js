@@ -26,7 +26,7 @@ const LESSONS = [
  cap:[
   {en:"This pen is 500 yen.",jp:"この ペンは 500円（えん）です。",note:"この + noun for 'this ___', then price + です."},
   {en:"Whose dictionary is that (over there)?",jp:"あれは 誰（だれ）の 辞書（じしょ）ですか。",note:"あれ stands alone (no noun follows) since it means 'that thing over there'."},
-  {en:"This car isn't mine.",jp:"この 車（くるま）は 私（わたし）のじゃありません。",note:"Negative of です for nouns: 〜じゃありません (casual, same weight as 〜ではありません)."},
+  {en:"This car isn't mine.",jp:"この 車（くるま）は 私（わたし）のじゃありません。",note:"Negative of です for nouns: 〜じゃありません is the everyday spoken form; 〜ではありません means the same and is more formal."},
   {en:"How much is that watch?",jp:"その 時計（とけい）は いくらですか。",note:"その + noun for 'that (near the listener)', then いくらですか to ask its price."},
   {en:"Whose shoes are these?",jp:"これは 誰（だれ）の 靴（くつ）ですか。",note:"誰の (whose) + noun asks who something belongs to; これ stands alone as the subject since it isn't modified by a demonstrative adjective."}
  ]},
@@ -104,7 +104,7 @@ const LESSONS = [
  q:[
   {type:"vocab",prompt:"「静（しず）か」means:",choices:["Noisy","Quiet","Busy","Kind"],a:1,note:"静（しず）かな = quiet (な-adjective)."},
   {type:"vocab",prompt:"「おいしい」means:",choices:["Delicious","Expensive","Difficult","Interesting"],a:0,note:"おいしい = delicious (い-adjective)."},
-  {type:"grammar",prompt:"この 町（まち）は あまり ___ ありません。(This town isn't very lively.)",choices:["にぎやかで","にぎやかだ","にぎやかいで","にぎやかくて"],a:0,note:"な-adjective negative: 〜で + ありません (or じゃありません)."},
+  {type:"grammar",prompt:"この 町（まち）は あまり ___ ありません。(This town isn't very lively.)",choices:["にぎやかじゃ","にぎやかく","にぎやかな","にぎやかだ"],a:0,note:"な-adjective negative: 〜じゃありません (or 〜ではありません). く is the い-adjective pattern."},
   {type:"structure",prompt:"Which correctly says \"This book is very interesting\"?",choices:["この 本（ほん）を とても 面白（おもしろ）いです。","この 本（ほん）は とても 面白（おもしろ）いくです。","この 本（ほん）は とても 面白（おもしろ）です。","この 本（ほん）は とても 面白（おもしろ）いです。"],a:3,note:"とても + い-adjective + です, straightforward word order."}
  ],
  cap:[
@@ -122,7 +122,7 @@ const LESSONS = [
   {type:"structure",prompt:"Which correctly says \"I don't understand Japanese very well\"?",choices:["日本語（にほんご）を あまり わかりません。","日本語（にほんご）が あまり わかります。","日本語（にほんご）が あまり わかりません。","日本語（にほんご）に あまり わかりません。"],a:2,note:"わかります pairs with が for the thing understood."}
  ],
  cap:[
-  {en:"I like Japanese food, but I'm not good at cooking.",jp:"日本料理（にほんりょうり）が 好（す）きですが、料理（りょうり）は 上手（じょうず）じゃありません。",note:"が marks each liked/skilled-at item; が as a connector here means 'but'."},
+  {en:"I like Japanese food, but I'm not good at cooking.",jp:"日本料理（にほんりょうり）が 好（す）きですが、料理（りょうり）は 上手（じょうず）じゃありません。",note:"好き takes が. In the second half は replaces が to mark contrast (\"cooking, though, I'm not good at\"). The が after 好きです means \"but\"."},
   {en:"Do you understand this sentence?",jp:"この 文（ぶん）が わかりますか。",note:"文（ぶん）= sentence; わかります takes が."},
   {en:"Yamada-san is bad at cooking.",jp:"山田（やまだ）さんは 料理（りょうり）が 下手（へた）です。",note:"下手（へた）is the opposite of 上手（じょうず） — both pair with が, never を."},
   {en:"Do you like Japanese food?",jp:"日本料理（にほんりょうり）が 好（す）きですか。",note:"が marks 日本料理 as the thing liked; the same が + 好きです pattern works equally well as a question."},
@@ -146,12 +146,12 @@ const LESSONS = [
  q:[
   {type:"vocab",prompt:"「卵（たまご）」means:",choices:["Apple","Egg","Bread","Milk"],a:1,note:"卵（たまご）= egg."},
   {type:"vocab",prompt:"「だけ」means:",choices:["Also","Only","Still","Already"],a:1,note:"だけ = only, just."},
-  {type:"grammar",prompt:"りんごを 三（さん） ___ 買（か）いました。(I bought three apples.)",choices:["つ","人（ひと）","枚（まい）","匹（びき）"],a:0,note:"つ is the general counter for small round/miscellaneous objects like apples."},
+  {type:"grammar",prompt:"りんごを ___ 買（か）いました。(I bought three apples.)",choices:["三（みっ）つ","三人（さんにん）","三枚（さんまい）","三匹（さんびき）"],a:0,note:"つ is the general counter for small round/miscellaneous objects like apples. With つ, 三 is read みっ: 三つ（みっつ）, not さんつ."},
   {type:"structure",prompt:"Which correctly says \"I only have 500 yen\"?",choices:["500円（えん）しか あります。","500円（えん）だけ あります。","500円（えん）だけ ありません。","500円（えん）だけ います。"],a:1,note:"Quantity + だけ + verb."}
  ],
  cap:[
-  {en:"I bought two tickets and one bag.",jp:"切符（きっぷ）を 二枚（にまい）と かばんを 一（いち）つ 買（か）いました。",note:"枚（まい） counts flat objects (tickets); つ is the general counter for the bag."},
-  {en:"There are only three students in this class.",jp:"この クラスに 学生（がくせい）が 三人（さんにん）だけ います。",note:"人（ひと） counts people; だけ follows the counted quantity."},
+  {en:"I bought two tickets and one bag.",jp:"切符（きっぷ）を 二枚（にまい）と かばんを 一（ひと）つ 買（か）いました。",note:"枚（まい） counts flat objects (tickets); つ is the general counter for the bag."},
+  {en:"There are only three students in this class.",jp:"この クラスに 学生（がくせい）が 三人（さんにん）だけ います。",note:"人（にん） counts people (一人 ひとり and 二人 ふたり are irregular); だけ follows the counted quantity."},
   {en:"I bought five mandarin oranges and two apples.",jp:"みかんを 五（いつ）つ、りんごを 二（ふた）つ 買（か）いました。",note:"Both use the general counter つ, since みかん and りんご are both small round objects."},
   {en:"I drank two cups of coffee this morning.",jp:"今朝（けさ） コーヒーを 二杯（にはい） 飲（の）みました。",note:"杯（はい） counts cupfuls of liquid; the quantity phrase comes right before the verb, with no particle."},
   {en:"There are only two dogs in this park.",jp:"この 公園（こうえん）に 犬（いぬ）が 二匹（にひき）だけ います。",note:"匹（ひき） counts small animals; だけ follows right after the counted quantity."}
@@ -248,7 +248,7 @@ const LESSONS = [
   {type:"structure",prompt:"Which correctly says \"On holidays I read books or watch movies\"?",choices:["休（やす）みの日（ひ）は 本（ほん）を 読（よ）んだり 映画（えいが）を 見（み）ます。","休（やす）みの日（ひ）は 本（ほん）を 読（よ）んでから 映画（えいが）を 見（み）ます。","休（やす）みの日（ひ）は 本（ほん）を 読（よ）んだり 映画（えいが）を 見（み）たり します。","休（やす）みの日（ひ）は 本（ほん）を 読（よ）むたり 映画（えいが）を 見（み）るたり します。"],a:2,note:"〜たり〜たりします lists a few representative activities, not an exhaustive list."}
  ],
  cap:[
-  {en:"On Sundays I clean, do laundry, and sometimes go shopping.",jp:"日曜日（にちようび）は 掃除（そうじ）したり 洗濯（せんたく）したり、時（じ）々 買（か）い物（もの）に 行（い）ったり します。",note:"Chain several たり clauses, ending in します once."},
+  {en:"On Sundays I clean, do laundry, and sometimes go shopping.",jp:"日曜日（にちようび）は 掃除（そうじ）したり 洗濯（せんたく）したり、時々（ときどき） 買（か）い物（もの）に 行（い）ったり します。",note:"Chain several たり clauses, ending in します once."},
   {en:"During the trip we took photos and ate delicious food.",jp:"旅行中（りょこうちゅう）に 写真（しゃしん）を 撮（と）ったり おいしい 物（もの）を 食（た）べたり しました。",note:"Past tense: 〜たり〜たりしました."},
   {en:"On rainy days I read books or clean.",jp:"雨（あめ）の 日（ひ）は 本（ほん）を 読（よ）んだり 掃除（そうじ）したり します。",note:"たり〜たりします lists example activities; 雨の日 ('a rainy day') reuses the noun-modification idea from earlier lessons."},
   {en:"On my day off I do laundry and go for a walk.",jp:"休（やす）みの日（ひ）は 洗濯（せんたく）したり 散歩（さんぽ）したり します。",note:"休みの日 ('day off') reuses the noun-modification idea from earlier lessons; たり〜たりします lists example activities."},
@@ -264,7 +264,7 @@ const LESSONS = [
  cap:[
   {en:"I'm thinking of returning to my country next month.",jp:"来月（らいげつ） 帰国（きこく）しようと 思（おも）っています。",note:"Volitional (帰国（きこく）しよう) + と思（おも）っています = an intention held over time."},
   {en:"This weekend I plan to clean my room and do laundry.",jp:"今週末（こんしゅうまつ）は 部屋（へや）を 掃除（そうじ）したり 洗濯（せんたく）したり する 予定（よてい）です。",note:"Combine たり listing with 予定（よてい）です for a planned itinerary."},
-  {en:"I'm thinking of studying Japanese next year too.",jp:"来年（らいねん）も 日本語（にほんご）を 勉強（べんきょう）しようと 思（おも）っています。",note:"も (Lesson 6) replacing は／を, combined with volitional + と思っています for an ongoing intention."},
+  {en:"I'm thinking of studying Japanese next year too.",jp:"来年（らいねん）も 日本語（にほんご）を 勉強（べんきょう）しようと 思（おも）っています。",note:"も (Lesson 1) replacing は／を, combined with volitional + と思っています for an ongoing intention."},
   {en:"I plan to graduate next spring.",jp:"来年（らいねん）の 春（はる） 卒業（そつぎょう）する 予定（よてい）です。",note:"Dictionary form (卒業する, not 卒業します) placed directly before 予定です states the plan."},
   {en:"I'm thinking of moving next month too.",jp:"来月（らいげつ）も 引（ひ）っ越（こ）そうと 思（おも）っています。",note:"Volitional 引っ越そう + と思っています expresses an intention held over time, not a spur-of-the-moment idea."}
  ]},
@@ -277,7 +277,7 @@ const LESSONS = [
  ],
  cap:[
   {en:"You ate too much, so you should rest a bit.",jp:"食（た）べすぎましたから、少（すこ）し 休（やす）んだ ほうが いいです。",note:"すぎました states the excess; ほうがいいです gives the recommendation."},
-  {en:"Trains are crowded in the morning, so it's better to leave early.",jp:"朝（あさ）は 電車（でんしゃ）が 込（こ）みますから、早（はや）く 出（だ）た ほうが いいです。",note:"から gives the reason for the advice that follows."},
+  {en:"Trains are crowded in the morning, so it's better to leave early.",jp:"朝（あさ）は 電車（でんしゃ）が 込（こ）みますから、早（はや）く 出（で）た ほうが いいです。",note:"から gives the reason for the advice that follows."},
   {en:"I worked too much yesterday, so I'm planning to rest today.",jp:"昨日（きのう）は 働（はたら）きすぎましたから、今日（きょう）は 休（やす）もうと 思（おも）っています。",note:"働きすぎました states the excess; volitional 休もう (not 休みます) before と思っています expresses the plan."},
   {en:"You've gained too much weight, so you'd better not eat too much.",jp:"太（ふと）りすぎましたから、食（た）べすぎない ほうが いいです。",note:"太りすぎました states the excess; 食べすぎないほうがいいです is the negative variant of the advice pattern — 'you'd better not'."},
   {en:"It gets crowded at night too, so it's better to eat early.",jp:"夜（よる）も 込（こ）みますから、早（はや）く 食（た）べた ほうが いいです。",note:"から gives the reason; 食べたほうがいいです applies the advice pattern to a new situation."}
@@ -291,17 +291,17 @@ const LESSONS = [
  ],
  cap:[
   {en:"I think this typhoon is quite big.",jp:"この 台風（たいふう）は かなり 大（おお）きいと 思（おも）います。",note:"い-adjective plain form + と思（おも）います, no だ needed after い-adjectives."},
-  {en:"Tanaka-san said the meeting is tomorrow.",jp:"田中（たなか）さんは 会議（かいぎ）は 明日（あした）だと 言（い）いました。",note:"Noun + だ + と言（い）いました reports what someone said (plain copula だ before と in casual quotes)."},
-  {en:"This test will probably be difficult.",jp:"この テストは 難（むずか）しいでしょう。",note:"い-adjective + でしょう for a probability guess — でしょう alone carries the same idea と思います does, more casually."},
+  {en:"Tanaka-san said the meeting is tomorrow.",jp:"田中（たなか）さんは 会議（かいぎ）は 明日（あした）だと 言（い）いました。",note:"Noun + だ + と言（い）いました: a quoted clause is in plain form, so a noun needs だ before と, even when the sentence ends politely."},
+  {en:"This test will probably be difficult.",jp:"この テストは 難（むずか）しいでしょう。",note:"い-adjective + でしょう gives a probability guess (\"probably\"). と思います states your own opinion; でしょう is the form used in forecasts."},
   {en:"I think there was an earthquake just now.",jp:"今（いま） 地震（じしん）が あったと 思（おも）います。",note:"Plain past あった + と思います reports a past-tense belief."},
-  {en:"The weather forecast said it will be a typhoon tomorrow.",jp:"天気予報（てんきよほう）は 明日（あした） 台風（たいふう）だと 言（い）いました。",note:"Noun + だ + と言いました reports what was said, the plain copula だ appearing before と in casual quotes."}
+  {en:"The weather forecast said it will be a typhoon tomorrow.",jp:"天気予報（てんきよほう）は 明日（あした） 台風（たいふう）だと 言（い）いました。",note:"Noun + だ + と言いました: a quoted clause is in plain form, so a noun needs だ before と, even when the sentence ends politely."}
  ]},
 {n:22,title:"名詞修飾（めいししゅうしょく）",topic:"Modifying nouns with verb/adjective clauses",
  q:[
   {type:"vocab",prompt:"「眼鏡（めがね）」means:",choices:["Glasses","Hat","Watch","Necklace"],a:0,note:"眼鏡（めがね）= eyeglasses."},
   {type:"vocab",prompt:"「人形（にんぎょう）」means:",choices:["Doll","Toy car","Puzzle","Photo frame"],a:0,note:"人形（にんぎょう）= doll."},
   {type:"grammar",prompt:"これは 私（わたし）が 撮（と）っ ___ 写真（しゃしん）です。(This is the photo that I took.)",choices:["ながら","て","た","たり"],a:2,note:"Plain past form directly modifies the following noun: 撮（と）った写真（しゃしん） = 'the photo [that I] took'."},
-  {type:"structure",prompt:"Which correctly says \"The woman wearing glasses is my mother\"?",choices:["眼鏡（めがね）が かけている 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけて 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけました 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけている 人（ひと）は 母（はは）です。"],a:3,note:"A clause ending in ている can modify a noun directly, just like an adjective."}
+  {type:"structure",prompt:"Which correctly says \"The person wearing glasses is my mother\"?",choices:["眼鏡（めがね）が かけている 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけて 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけました 人（ひと）は 母（はは）です。","眼鏡（めがね）を かけている 人（ひと）は 母（はは）です。"],a:3,note:"A clause ending in ている can modify a noun directly, just like an adjective."}
  ],
  cap:[
   {en:"The doll that Tanaka-san gave me is very cute.",jp:"田中（たなか）さんが くれた 人形（にんぎょう）は とても かわいいです。",note:"くれた (gave to me) modifies 人形（にんぎょう） directly, placed right before the noun."},

@@ -196,8 +196,8 @@
   },
   {
    "prompt": "この 町（まち）は あまり ___ ありません。(This town isn't very lively.)",
-   "answer": "にぎやかで",
-   "note": "な-adjective negative: 〜で + ありません (or じゃありません).",
+   "answer": "にぎやかじゃ",
+   "note": "な-adjective negative: 〜じゃありません (or 〜ではありません). く is the い-adjective pattern.",
    "type": "grammar"
   },
   {
@@ -273,9 +273,9 @@
    "type": "vocab"
   },
   {
-   "prompt": "りんごを 三（さん） ___ 買（か）いました。(I bought three apples.)",
-   "answer": "つ",
-   "note": "つ is the general counter for small round/miscellaneous objects like apples.",
+   "prompt": "りんごを ___ 買（か）いました。(I bought three apples.)",
+   "answer": "三（みっ）つ",
+   "note": "つ is the general counter for small round/miscellaneous objects like apples. With つ, 三 is read みっ: 三つ（みっつ）, not さんつ.",
    "type": "grammar"
   },
   {
@@ -565,7 +565,7 @@
    "type": "grammar"
   },
   {
-   "prompt": "Which correctly says \"The woman wearing glasses is my mother\"?",
+   "prompt": "Which correctly says \"The person wearing glasses is my mother\"?",
    "answer": "眼鏡（めがね）を かけている 人（ひと）は 母（はは）です。",
    "note": "A clause ending in ている can modify a noun directly, just like an adjective.",
    "type": "structure"

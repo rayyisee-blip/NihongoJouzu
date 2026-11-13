@@ -7,7 +7,7 @@
    ============================================================ */
 const REVIEW_CAPSTONES = [
   {block:5, title:"Review — Lessons 1–5", cap:[
-    {en:"That dictionary is mine. How much was it?",jp:"あの 辞書（じしょ）は 私（わたし）のです。いくらですか。",
+    {en:"That dictionary is mine. How much is it?",jp:"あの 辞書（じしょ）は 私（わたし）のです。いくらですか。",
      note:"Combines この／その／あの + noun (Lesson 2) with N1のN2 possession (Lesson 1) and いくらですか (Lesson 2).",
      check:["あの + noun, not あれ alone, since a specific dictionary is named","の for possession (私のです)","いくらですか kept as its own separate question"]},
     {en:"I'll go to the station by train, alone, at seven.",jp:"7時（じ）に 一人（ひとり）で 電車（でんしゃ）で 駅（えき）へ 行（い）きます。",
@@ -101,7 +101,7 @@ const PARTICLES = [
    ],
    confuse:"は vs が — は presents known/topic information or draws a contrast; が marks new information or specifically identifies the subject. 「私（わたし）は 田中（たなか）です」 answers \"who are you?\"; 「私（わたし）が 田中（たなか）です」 answers \"which one of you is Tanaka?\""},
   {p:"が", role:"Subject marker (new info)", level:"N5",
-   explain:"Marks the grammatical subject, especially when introducing new information, after question words (誰（だれ）が, 何（なに）が), and is required with 好（す）き, 嫌（きら）い, 上手（じょうず）, 下手（へた）, わかります, あります, います, ほしい, and the object of Vたい.",
+   explain:"Marks the grammatical subject, especially when introducing new information, after question words (誰（だれ）が, 何（なに）が), and is required with 好（す）き, 嫌（きら）い, 上手（じょうず）, 下手（へた）, わかります, あります, います, ほしい. With Vたい the object may take が or を.",
    pattern:"N + が + predicate",
    examples:[
      {jp:"誰（だれ）が 来（き）ますか。", en:"Who is coming?"},
@@ -115,7 +115,7 @@ const PARTICLES = [
      {jp:"公園（こうえん）を 歩（ある）きます。", en:"I walk through the park."}
    ]},
   {p:"に", role:"Time / location / goal / recipient", level:"N5",
-   explain:"One of the most versatile particles: (1) a specific point in time (7時（じ）に), (2) the place something exists with あります/います, (3) the destination of movement, (4) the recipient of an action (あげます/もらいます/会います), and (5) purpose before 行きます (Vます-stem + に行きます).",
+   explain:"One of the most versatile particles: (1) a specific point in time (7時（じ）に), (2) the place something exists with あります/います, (3) the destination of movement, (4) the other person in an exchange: the recipient with あげます, the giver with もらいます, the person met with 会います, and (5) purpose before 行きます (Vます-stem + に行きます).",
    pattern:"N(time/place/person) + に + verb",
    examples:[
      {jp:"7時（じ）に 起（お）きます。", en:"I get up at 7."},
@@ -208,7 +208,7 @@ const PARTICLES = [
      {jp:"500円（えん）しか ありません。", en:"I only have 500 yen (and that's a problem)."}
    ]},
   {p:"ばかり", role:"Only / nothing but / just did", level:"N4",
-   explain:"(1) After a noun or quantity: \"nothing but\". (2) After a た-form verb: \"just did (and nothing else lately)\", often with a mildly critical nuance.",
+   explain:"(1) After a noun or quantity: \"nothing but\". (2) After a た-form verb: \"just did\", a short time ago.",
    pattern:"N + ばかり　／　Vた-form + ばかり",
    examples:[
      {jp:"甘（あま）い物（もの）ばかり 食（た）べています。", en:"All I eat is sweet things."},
@@ -372,17 +372,17 @@ const TEXTBOOK = [
  patterns:[
    {title:"N（道具）で",explain:"で also marks the tool or method used to do something.",
     examples:[{jp:"はしで 食（た）べます。",en:"I eat with chopsticks."}]},
-   {title:"何語で〜ですか",explain:"Ask what something is called in a particular language.",
-    examples:[{jp:"これは 何語（なにご）で 何（なん）と 言（い）いますか。",en:"What is this called, in what language?"}]},
+   {title:"Nは 〜語（ご）で 何（なん）ですか",explain:"Ask what something is called in a given language.",
+    examples:[{jp:"これは 日本語（にほんご）で 何（なん）ですか。",en:"What is this in Japanese?"}]},
    {title:"あげます／もらいます",explain:"あげます = give (away from speaker); もらいます = receive. The giver/recipient is marked with に.",
-    examples:[{jp:"誕生日（たんじょうび）に プレゼントを あげました。",en:"I gave a present for their birthday."}]},
+    examples:[{jp:"友達（ともだち）に プレゼントを あげました。",en:"I gave a present to my friend."}]},
    {title:"もう＋Vました／まだ＋negative",explain:"もう + past = 'already did'; まだ + negative = 'not yet'.",
     examples:[{jp:"もう 晩（ばん）ごはんを 食（た）べましたか。",en:"Have you already eaten dinner?"},{jp:"いいえ、まだです。",en:"No, not yet."}]}
  ]},
 {n:8,
  vocab:[
    {jp:"大（おお）きい／小（ちい）さい",en:"big / small"},{jp:"新（あたら）しい／古（ふる）い",en:"new / old"},
-   {jp:"いい／悪（わる）い",en:"good / bad"},{jp:"熱（あつ）い／寒（さむ）い",en:"hot / cold"},
+   {jp:"いい／悪（わる）い",en:"good / bad"},{jp:"暑（あつ）い／寒（さむ）い",en:"hot / cold"},
    {jp:"難（むずか）しい／易（やさ）しい",en:"difficult / easy"},{jp:"高（たか）い／安（やす）い",en:"expensive (or tall) / cheap"},
    {jp:"きれい（な）",en:"pretty, clean (な-adj)"},{jp:"静（しず）か（な）",en:"quiet (な-adj)"},
    {jp:"便利（べんり）（な）",en:"convenient (な-adj)"},{jp:"元気（げんき）（な）",en:"healthy, energetic (な-adj)"}
@@ -593,7 +593,7 @@ const TEXTBOOK = [
    {jp:"招待（しょうたい）します",en:"to invite"},{jp:"発見（はっけん）します",en:"to discover"}
  ],
  patterns:[
-   {title:"受身形の作り方",explain:"The passive form: for group 1 verbs, change the final う-sound to あ-sound + れる (褒める→褒められる already ends in る so it follows group 2 rules: drop る, add られる).",
+   {title:"受身形の作り方",explain:"The passive form. Group 1: change the final う-sound to its あ-sound and add れる (叱る → 叱られる). Group 2: drop る and add られる (褒める → 褒められる).",
     examples:[{jp:"褒（ほ）める → 褒（ほ）められる",en:"'to praise' → 'to be praised'"}]},
    {title:"〜に ＋ 受身形",explain:"The person doing the action to you takes に in a passive sentence.",
     examples:[{jp:"先生（せんせい）に 褒（ほ）められました。",en:"I was praised by my teacher."}]}

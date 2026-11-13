@@ -193,6 +193,7 @@ function explainForm(verb, formKey){
   let rule = '';
   if(verb.group===1){
     if(formKey==='te'||formKey==='ta') rule = "Godan て/た-form depends on the final kana: う・つ・る→って/った, む・ぶ・ぬ→んで/んだ, く→いて/いた, ぐ→いで/いだ, す→して/した.";
+    if((formKey==='te'||formKey==='ta') && verb.irregularTe) rule += " 行く is the one exception: 行って／行った.";
     else if(formKey==='nai'||formKey==='naiPast') rule = "Godan ない-form: change the final う-row kana to its あ-row equivalent, then add ない (う verbs take わ, not あ).";
     else if(formKey==='potential') rule = "Godan potential: change the final う-row kana to its え-row equivalent, then add る.";
     else if(formKey==='volitional') rule = "Godan volitional: change the final う-row kana to its お-row equivalent, then add う.";
